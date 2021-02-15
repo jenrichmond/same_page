@@ -1,1 +1,3 @@
 README data_files
+
+This folder contains two datafiles from the Kidwell OSF repo, one that contains bibliographic metadata and the other contains the data that was analysed in the paper. Interestingly, they seem to be in .numbers format- I wonder whether they will read into R as a csv. 

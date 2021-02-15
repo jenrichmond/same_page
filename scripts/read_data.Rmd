@@ -1,0 +1,24 @@
+---
+title: "read_data"
+author: "Jen Richmond"
+date: "16/02/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load packages
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(here)
+library(janitor)
+```
+
+# read data
+
+```{r}
+kidwell <- read_csv(here("data_files", "dataset_for_kidwell_et_al._(2061)"))
+```
+
