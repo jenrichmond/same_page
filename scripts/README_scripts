@@ -1,1 +1,5 @@
 README scripts
+
+The kidwell et al (2016) folder contains all the scripts from teh OSF repo. 
+
+The read_data.Rmd is Jenny's attempt to reproduce the analysis in the 1st script- Actual Availability, All Journals. R

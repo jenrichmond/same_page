@@ -83,3 +83,12 @@ unique(empirical_kidwell$journal)
 
 ```
 
+# open access data
+
+filter for links to repo, personal, third party site. 
+```{r}
+openaccess_data <- empirical_kidwell %>%
+  filter(data_url_links_to %in% c("Independent archive / repository", "Personal site", "Third party site"))
+
+```
+
