@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+The point of this Rmd is to try and reproduce the cleaning process outlined in the first script /scripts/kidwell_et_al.(2016)/Actual Availability, All Journals.R
+
 # load packages
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -18,7 +20,66 @@ library(janitor)
 
 # read data
 
+The script above reads data straight from OSF (clever) but I wrote it to the data_files folder to make it easy to read back in. 
+
 ```{r}
-kidwell <- read_csv(here("data_files", "dataset_for_kidwell_et_al._(2061)"))
+kidwell <- read_csv(here("data_files", "master_dataset.csv")) %>%
+  clean_names()
+
+```
+
+# remove articles that are not empirical
+
+```{r}
+empirical_kidwell <- kidwell %>%
+  filter(number_of_experiments > 0)
+```
+
+# assign journal name
+
+Found this case_when + str_detect  combo came from https://bookdown.org/ansellbr/WEHI_tidyR_course_book/manipulating-data-with-dplyr.html#
+
+```{r}
+
+empirical_kidwell <- empirical_kidwell %>%
+  mutate(journal = case_when(str_detect(article_id_number,'PS') ~ "Psychological Science", 
+                             str_detect(article_id_number,'CPS') ~ "Clinical Psychological Science", 
+                             str_detect(article_id_number,'DP') ~ "Developmental Psychology", 
+                             str_detect(article_id_number,'JEPLMC') ~ "Journal of Experimental Psychology: Learning, Memory, and Cognition", 
+                             str_detect(article_id_number,'JPSP') ~ "Journal of Personality and Social Psychology", 
+                                      TRUE ~ "other")) %>%
+  relocate(journal, .after = article_id_number)
+
+unique(empirical_kidwell$journal)
+
+
+```
+
+hmmm check whether there are JPSP and CPS in this dataset--- ahhh there are, BUT because str_detect is looking for "PS" they get coded as PsychScience.
+
+I wonder if the order makes a difference. 
+
+```{r}
+empirical_kidwell %>%
+  filter(str_detect(article_id_number, "JPSP"))
+
+empirical_kidwell %>%
+  filter(str_detect(article_id_number, "CPS"))
+```
+
+Try this case_when with PS last ... ahhh that works better. case_when is an ordered function. 
+```{r}
+empirical_kidwell <- empirical_kidwell %>%
+  mutate(journal = case_when( 
+                             str_detect(article_id_number,'CPS') ~ "Clinical Psychological Science", 
+                             str_detect(article_id_number,'DP') ~ "Developmental Psychology", 
+                             str_detect(article_id_number,'JEPLMC') ~ "Journal of Experimental Psychology: Learning, Memory, and Cognition", 
+                             str_detect(article_id_number,'JPSP') ~ "Journal of Personality and Social Psychology", 
+                             str_detect(article_id_number,'PS') ~ "Psychological Science",
+                                      TRUE ~ "other")) %>%
+  relocate(journal, .after = article_id_number)
+
+unique(empirical_kidwell$journal)
+
 ```
 
