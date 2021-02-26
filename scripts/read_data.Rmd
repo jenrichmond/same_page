@@ -16,6 +16,7 @@ The point of this Rmd is to try and reproduce the cleaning process outlined in t
 library(tidyverse)
 library(here)
 library(janitor)
+library(lubridate)
 ```
 
 # read data
@@ -23,7 +24,7 @@ library(janitor)
 The script above reads data straight from OSF (clever) but I wrote it to the data_files folder to make it easy to read back in. 
 
 ```{r}
-kidwell <- read_csv(here("data_files", "master_dataset.csv")) %>%
+kidwell <- read_csv(here::here("data_files", "master_dataset.csv")) %>%
   clean_names()
 
 ```
@@ -39,35 +40,11 @@ empirical_kidwell <- kidwell %>%
 
 Found this case_when + str_detect  combo came from https://bookdown.org/ansellbr/WEHI_tidyR_course_book/manipulating-data-with-dplyr.html#
 
-```{r eval = FALSE}
 
-empirical_kidwell <- empirical_kidwell %>%
-  mutate(journal = case_when(str_detect(article_id_number,'PS') ~ "Psychological Science", 
-                             str_detect(article_id_number,'CPS') ~ "Clinical Psychological Science", 
-                             str_detect(article_id_number,'DP') ~ "Developmental Psychology", 
-                             str_detect(article_id_number,'JEPLMC') ~ "Journal of Experimental Psychology: Learning, Memory, and Cognition", 
-                             str_detect(article_id_number,'JPSP') ~ "Journal of Personality and Social Psychology", 
-                                      TRUE ~ "other")) %>%
-  relocate(journal, .after = article_id_number)
-
-unique(empirical_kidwell$journal)
+I worked out here that order is important. If you put PS as the first case_when, it only ends up capturing 3 journals because it counts CPS and JPSP as PS. Important to put PS as the last case it evaluates. 
 
 
-```
 
-hmmm check whether there are JPSP and CPS in this dataset--- ahhh there are, BUT because str_detect is looking for "PS" they get coded as PsychScience.
-
-I wonder if the order makes a difference. 
-
-```{r}
-empirical_kidwell %>%
-  filter(str_detect(article_id_number, "JPSP"))
-
-empirical_kidwell %>%
-  filter(str_detect(article_id_number, "CPS"))
-```
-
-Try this case_when with PS last ... ahhh that works better. case_when is an ordered function. 
 ```{r}
 empirical_kidwell <- empirical_kidwell %>%
   mutate(journal = case_when( 
@@ -77,8 +54,7 @@ empirical_kidwell <- empirical_kidwell %>%
                              str_detect(article_id_number,'JPSP') ~ "Journal of Personality and Social Psychology", 
                              str_detect(article_id_number,'PS') ~ "Psychological Science",
                                       TRUE ~ "other")) %>%
-  mutate(year = case_when( 
-                             str_detect(article_id_number,'2012') ~ "2012", 
+  mutate(year = case_when(str_detect(article_id_number,'2012') ~ "2012", 
                              str_detect(article_id_number,'2013') ~ "2013", 
                              str_detect(article_id_number,'2014') ~ "2014", 
                              str_detect(article_id_number,'2015') ~ "2015", 
@@ -90,6 +66,39 @@ unique(empirical_kidwell$journal)
 unique(empirical_kidwell$year)
 
 ```
+# get date out of article id
+
+```{r}
+empirical_kidwell <- empirical_kidwell %>%
+  separate(article_id_number, into = c("date", "journal_code"), sep = "\\s", remove = FALSE)
+
+```
+
+```{r}
+# change class to date 
+empirical_kidwell$date <- dmy(empirical_kidwell$date)
+
+#check class
+class(empirical_kidwell$date)
+```
+
+25 failed to parse, which ones? arrange by date and then select the botton (ie tail) 25 rows. Hmmmm those are not possible dates!
+
+```{r}
+
+which <- empirical_kidwell %>%
+  arrange(date) %>%
+  tail(25)
+```
+
+# check papers per journal
+```{r}
+journal_year <- empirical_kidwell %>%
+  tabyl(journal, year) 
+
+jy_long <- journal_year %>%
+  pivot_longer(names_to = "year", values_to = "total", 2:5)
+```
 
 # open access data
 
@@ -100,9 +109,37 @@ openaccess_data <- empirical_kidwell %>%
 
 ```
 
-# for loop
+Count how many open access in each journal each year
+```{r}
+open_journal_year <- openaccess_data %>%
+  tabyl(journal, year) 
 
-for loop to see within each year how many article received data badge and if they were found at their location. 
+ojy_long <- open_journal_year %>%
+  pivot_longer(names_to = "year", values_to = "open", 2:5)
+```
+
+
+# join total + open df
+
+```{r}
+open_total <- left_join(jy_long, ojy_long) %>%
+  mutate(open = replace_na(open, 0)) %>%
+  mutate(percent_open = (open/total)*100)
+```
+# plot percent open by year
+```{r}
+open_total %>%
+  ggplot(aes(x = year, y = percent_open, colour = journal, group = journal)) +
+  geom_point() + 
+  geom_line() +
+  scale_colour_discrete(name = "journal", labels = c("CPS", "DP", "JECPLMC", "JPSP", "PS"))
+```
+
+
+
+# actually locatable
+
+in the original code there was a loop calculating for each year how many papers that got a open data badge had data available at the location specified. 
 
 key variables in the loop
 - Did.the.article.receive.a.badge.for.open.data
@@ -112,7 +149,12 @@ key variables in the loop
 ```{r}
 loop <- openaccess_data %>%
   select(1:6, did_the_article_receive_a_badge_for_open_data, are_the_data_located_at_the_working_page) %>%
-  rename(badge = did_the_article_receive_a_badge_for_open_data, located = are_the_data_located_at_the_working_page)
+  rename(badge = did_the_article_receive_a_badge_for_open_data, 
+         located = are_the_data_located_at_the_working_page)
+
+```
+
+```{r}
 
 located <- loop %>%
   group_by(year, journal, badge) %>%
