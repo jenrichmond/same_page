@@ -1,0 +1,122 @@
+---
+title: "read qualtrics data 1B"
+author: "Jen Richmond"
+date: "12/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load packages
+
+https://cran.r-project.org/web/packages/qualtRics/vignettes/qualtRics.html
+
+
+```{r message=FALSE, warning=FALSE}
+library(qualtRics)
+library(tidyverse)
+library(janitor)
+
+qualtrics_api_credentials(api_key = "RZNCuPM7MvUJmhi7wcSLN7NHx0WCVeIU6H7XiSeE", 
+                          base_url = "unsw.syd1.qualtrics.com",
+                          install = TRUE, 
+                          overwrite = TRUE)
+```
+
+
+Replace {  } with the datacenter ID from Account Setting = syd1
+
+https://{datacenterid}.qualtrics.com/API/V3/pathToRequest
+
+https://syd1.qualtrics.com/API/V3/pathToRequest
+
+readRenviron("~/.Renviron")  
+
+# get surveys
+
+Pull all the surveys from qualtrics and get a list of survey IDs
+
+```{r}
+surveys <- all_surveys()
+
+surveys$id
+```
+
+Read in the questions and survey data from the 1B survey
+
+1B ID = SV_0GSSTcRvY9x0x4q
+1B ID = SV_86Um9YiXUcH6eGy
+
+## pull 1B questions
+
+```{r}
+questions <- survey_questions(surveyID = "SV_86Um9YiXUcH6eGy")
+```
+
+## pull 1B data
+
+```{r message=FALSE, warning=FALSE}
+data1B  <- fetch_survey(surveyID = "SV_86Um9YiXUcH6eGy", verbose = TRUE) %>%
+  clean_names()
+```
+
+Check the variable names, select just the variables related to timing and the key questions. Rename the variables from qX to make them meaningful. Separate id into 3 separate columns (date aka article ID, journal code, and paper title)
+```{r}
+names(data1B)
+
+data1B <- data1B %>%
+  select(start_date, end_date, duration_in_seconds, q2:q50) 
+
+data1B_rename <- data1B %>%
+  rename(name = q2, email = q3, id = q4_1, no_of_experiments = q51, type_of_article = q52, type_of_article_other = q52_2_text, human_animal = q5, human_animal_other = q5_3_text, 
+         age = q6, brain_beh = q7, topic = q8, topic_other = q8_5_text, 
+         data_badge = q9, data_available = q10, data_statement = q11, data_quote = q12, data_page_no = q13, data_accessible = q14, data_accessible_other = q14_4_text, dataset_URL = q15, type_of_data_repo = q16, type_of_data_repo_other = q16_3_text, which_data_repo = q17, which_data_repo_other = q17_6_text, dataset_URL_working = q18, data_locatable = q19, data_downloadable = q20, data_correspond = q21, data_complete = q22, software = q23, which_software = q24, which_other = q24_8_text, data_codebook = q25, data_scripts = q26, data_other_info = q27, materials_badge = q28, materials_available = q29, materials_statement = q30, materials_quote = q31, materials_page_no = q32, materials_accessible = q33, materials_accessible_other = q33_4_text, materials_URL = q34, type_of_materials_repo = q35, type_of_materials_repo_other = q35_3_text, which_materials_repo = q36, which_materials_repos_other = q36_6_text, materials_URL_working = q37, materials_locatable = q38, materials_downloadable = q39, materials_correspond = q40, materials_complete = q41, materials_explanation = q42, materials_other_info = q43, supplemental_info = q49, URL_supplemental_info = q50) 
+
+data1B_rename <- data1B_rename %>%
+  separate(id, into = c("date", "journal_code", "title"), sep = "\\s", remove= FALSE)
+
+```
+
+
+# Code subfield via case_when
+
+case_when notes
+
+http://jenrichmond.rbind.io/post/recoding-variables/
+
+```{r}
+data1B_subfield <- data1B_rename %>%
+  mutate(subfield = "") %>%
+  relocate(subfield, .before = name)
+
+data1B_subfield <- data1B_subfield %>%
+  mutate(subfield = case_when(experiments == 0 ~ "nonExp",
+                 human_animal == "Animals" ~ "Beh_NS", 
+                   human_animal == "Humans" & age == "0-18 years or 65 years+" ~ "Dev", 
+                    human_animal == "Humans" & brain_beh == "Brain"  ~ "Cog_NS",
+                     human_animal == "Humans" &  brain_beh == "Both" ~ "Cog_NS",
+                  human_animal == "Humans" & brain_beh == "Behaviour" & topic == "Sensation" ~ "Perception", 
+                human_animal == "Humans" & brain_beh == "Behaviour" & topic == "Emotion, personality, social behaviour" ~ "Social",
+                    human_animal == "Humans" & brain_beh == "Behaviour" & topic == "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" ~ "Cognition",
+                  human_animal == "Humans" & brain_beh == "Behaviour" & topic == "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" ~ "Health"   ))
+                  
+                           
+```
+
+Check NA values
+
+```{r}
+na_check <- data1B_subfield %>%
+    filter(is.na(subfield))
+```
+
+
+
+
+
+
+
+
+
