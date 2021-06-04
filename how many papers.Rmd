@@ -1,0 +1,66 @@
+---
+title: "how many papers"
+author: "Jen Richmond"
+date: "07/04/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+```
+
+```{r}
+kidwell <- read_csv(here::here("data_files", "master_dataset_edited_for_dates.csv")) %>%
+  clean_names()
+```
+
+# remove articles that are not empirical
+
+```{r}
+empirical <- kidwell %>%
+  filter(number_of_experiments > 0)
+```
+
+# assign journal name
+
+Found this case_when + str_detect  combo came from https://bookdown.org/ansellbr/WEHI_tidyR_course_book/manipulating-data-with-dplyr.html#
+
+I worked out here that order is important. If you put PS as the first case_when, it only ends up capturing 3 journals because it counts CPS and JPSP as PS. Important to put PS as the last case it evaluates. 
+
+
+```{r}
+empirical<- empirical %>%
+  mutate(journal = case_when( 
+          str_detect(article_id_number,'CPS') ~ "Clinical Psychological Science", 
+          str_detect(article_id_number,'DP') ~ "Developmental Psychology", 
+          str_detect(article_id_number,'JEPLMC') ~ "Journal of Experimental Psychology: Learning, Memory, and Cognition", 
+          str_detect(article_id_number,'JPSP') ~ "Journal of Personality and Social Psychology", 
+          str_detect(article_id_number,'PS') ~ "Psychological Science",  TRUE ~ "other")) %>%
+           mutate(year = case_when(str_detect(article_id_number,'2012') ~ "2012", 
+                             str_detect(article_id_number,'2013') ~ "2013", 
+                             str_detect(article_id_number,'2014') ~ "2014", 
+                             str_detect(article_id_number,'2015') ~ "2015", 
+                             TRUE ~ "other")) %>%
+  relocate(journal, .after = article_id_number) %>%
+  relocate(year, .before = article_id_number) %>%
+  separate(article_id_number, into = c("date", "journal_code"), sep = "\\s", remove = FALSE)
+
+unique(empirical$journal)
+unique(empirical$year)
+
+```
+
+```{r}
+empirical %>%
+  filter(journal_code == "PS") %>%
+  count(year)
+```
+
