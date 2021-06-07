@@ -74,7 +74,14 @@ nobadgeCPS <- empirical %>%
 nobadge_all <- rbind(nobadgeDP, nobadgeJEPLMC, nobadgeJPSP, nobadgeCPS)
 
 
+# ALTERNATIVE
 
+nobadge1 <- empirical %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "No") %>%
+  filter(journal_code %in% c("CPS", "DP", "JEPLMC", "JPSP"))
+
+nobadge2 <- empirical %>%
+  filter(journal_code != "PS")
 
 
 
