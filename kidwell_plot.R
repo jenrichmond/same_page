@@ -18,7 +18,7 @@ library(janitor)
 library(here)
 
 # load data
-kidwell <- read_csv(here("data_files", "master_dataset_edited_for_dates.csv") %>%
+kidwell <- read_csv(here("data_files", "master_dataset_edited_for_dates.csv")) %>%
   clean_names()
 
 
@@ -71,9 +71,7 @@ nobadgeCPS <- empirical %>%
   filter(journal_code == "CPS")
 
 #merging no badge data
-nobadge_all <- rbind(nobadgeDP, nobadgeJEPLMC, nobadgeJPSP)
-
-nobadgeCPS)
+nobadge_all <- rbind(nobadgeDP, nobadgeJEPLMC, nobadgeJPSP, nobadgeCPS)
 
 
 
@@ -505,3 +503,4 @@ newplot <- ggplot(fig4df, aes(y=percent,  group = badge_type, colour = badge_typ
 newplot
 
 theme(panel.border = element_rect(colour = "black", linetype = "solid", size=1.5))
+
