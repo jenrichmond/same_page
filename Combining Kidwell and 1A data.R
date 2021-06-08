@@ -76,17 +76,17 @@ data1A = data1A[,!(names(data1A) %in% c("start_date", "end_date", "status", "ip_
 data1A_rename <- data1A %>%
   rename(coder_name = q2, coder_email = q3, no_of_experiments = q31, type_of_article = q33, type_of_article_other = q33_7_text, participants = q5, participants_other = q5_3_text, 
          age = q6, brain_beh = q7, topic = q8, topic_other = q8_5_text, software = q9, type_of_software = q10, type_of_software_other = q10_8_text) 
-# need help here - for some reason this renaming isn't working 
+# need Jenny's help here - for some reason this renaming isn't working 
 
 # split the article ID column into ID, journal and title 
 data1A_rename <- data1A %>%
   separate(q4_1, into = c("article_id_number", "journal", "article_title"), sep = "\\s", remove = TRUE)
-# need help here - the title variable only has the first word of the title instead of the whole title
+# need Jenny's help here - the title variable only has the first word of the title instead of the whole title
 
 # merge data1A_rename dataset and relevant_kidwell_clean dataset
 master_1A_dataset <- merge(data1A_rename, relevant_kidwell_clean, by="article_id_number")
 
 # clean the master dataset so it doesn't contain replicated information
-# question: do we want to use this double-up information to check reliability or anything like that?
+# question for Jenny: do we want to use this double-up information to check reliability or anything like that?
 master_1A_dataset_clean = master_1A_dataset[,!(names(master_1A_dataset) %in% c("timestamp", "your_name", "if_other", "year", "journal.y", "number_of_experiments"))]
   
