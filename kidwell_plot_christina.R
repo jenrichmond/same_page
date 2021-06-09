@@ -95,6 +95,7 @@ count_percentage_nobadge_reportedly_available <- nobadge %>%
   count() %>%
   rename(total_nobadge_reportedly_available = n) %>%
   mutate(percent_nobadge_reportedly_available = (total_nobadge_reportedly_available/total_nobadge_reportedly_available)*100)
+
 # is the denominator and the numerator the same here?
 
 # Splitting percentages from count
@@ -412,7 +413,7 @@ fig4df$real_condition <- factor(fig4df$real_condition,levels = c("ravailable",
                                                                  "completedata"))
 
 
-newplot <- ggplot(fig4df, aes(y=percent,  group = badge_type, colour = badge_type)) +
+ggplot(fig4df, aes(y=percent,  group = badge_type, colour = badge_type)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(size=badge_type, colour=badge_type, x=real_condition)) +
   geom_point(aes(x=real_condition), size=8, shape=21, fill="white", position = position_dodge(width=0)) +
@@ -453,12 +454,13 @@ newplot <- ggplot(fig4df, aes(y=percent,  group = badge_type, colour = badge_typ
         panel.grid.minor = element_blank()) +
   theme(panel.background = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank())
+        panel.grid.major = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", linetype = "solid", size=1.5))
+
+
 
 
 
 
 newplot
-
-theme(panel.border = element_rect(colour = "black", linetype = "solid", size=1.5))
 
