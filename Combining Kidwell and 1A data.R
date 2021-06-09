@@ -107,6 +107,8 @@ master_1A_dataset <- full_join(data1A_sep, relevant_kidwell_clean, by="article_i
 
 # clean the master dataset so that duplicated and unwanted columns/variables are removed
 master_1A_dataset_clean <- master_1A_dataset %>%
-  select(coder_name:type_of_software_other, did_the_article_receive_a_badge_for_open_data:if_materials_url_links_to_an_independent_archive_repository_which_repository)
+  select(coder_name:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address)
 
+# write master_1A_dataset_clean to csv
 
+master_1A_dataset_clean %>% write_csv(here::here("data_files", "master_dataset_1A"))
