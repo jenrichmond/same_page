@@ -18,7 +18,7 @@ library(janitor)
 library(here)
 
 # load data
-kidwell <- read_csv(here("data_files", "master_dataset_edited_for_dates.csv")) %>%
+kidwell <- read_csv(here("data_files", "master_dataset.csv")) %>%
   clean_names()
 
 
@@ -49,6 +49,27 @@ empirical<- empirical %>%
 unique(empirical$journal)
 unique(empirical$year)
 
+# First let add a columns/variable separating the non-badge journals from the badge journals (i.e. PS)
+empirical_clean <- empirical %>%
+  mutate(journal = case_when(journal_code == 'PS') ~ "PS",
+                             (journal_code == 'DP') ~ "Non_PS",
+                             (journal_code == 'CPS') ~ "Non_PS",
+                             (journal_code == 'JEPLMC') ~ "Non_PS",
+                             (journal_code == 'JPSP') ~ "Non_PS", TRUE ~ "other")
+
+# Now let's separate the badge journal articles from pre-badge to post-badge
+empirical_clean <- empirical_clean %>%
+  mutate(pre_or_post_badge = case_when((journal, 'PS' & year, '2014'|'2015') ~ "Post_badge",
+                                       (journal, 'PS' & year, '2013'|'2014') ~ "Pre_badge", TRUE ~ "other"))
+
+----------
+  
+  
+  
+  
+  
+  
+  
 # First lets separate the non-badge journals from the badge journals (i.e. PS)
 
 
