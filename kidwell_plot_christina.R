@@ -51,16 +51,40 @@ unique(empirical$year)
 
 # First let add a columns/variable separating the non-badge journals from the badge journals (i.e. PS)
 empirical_clean <- empirical %>%
-  mutate(journal = case_when(journal_code == 'PS') ~ "PS",
-                             (journal_code == 'DP') ~ "Non_PS",
-                             (journal_code == 'CPS') ~ "Non_PS",
-                             (journal_code == 'JEPLMC') ~ "Non_PS",
-                             (journal_code == 'JPSP') ~ "Non_PS", TRUE ~ "other")
+  mutate(journal = case_when(journal_code == "PS" ~ "PS",
+                             journal_code == "DP"|"CPS"|"JEPLMC"|"JPSP" ~ "Non_PS", 
+                             TRUE ~ "other"))
 
 # Now let's separate the badge journal articles from pre-badge to post-badge
-empirical_clean <- empirical_clean %>%
-  mutate(pre_or_post_badge = case_when((journal, 'PS' & year, '2014'|'2015') ~ "Post_badge",
-                                       (journal, 'PS' & year, '2013'|'2014') ~ "Pre_badge", TRUE ~ "other"))
+empirical_clean %>%
+  mutate(pre_or_post_badge = case_when(journal, "PS" & year, "2014"|"2015" ~ "Post_badge",
+                                       journal, "PS" & year, "2013"|"2014" ~ "Pre_badge", 
+                                       TRUE ~ "other"))
+
+# Now let's separate the post-badge PS articles which earned a data badge to those that didn't
+empirical_clean %>%
+  mutate(badge_earned = case_when(pre_or_post_badge, 'Post_badge' & did_the_article_receive_a_badge_for_open_data == "Yes" ~ "yes",
+         pre_or_post_badge, 'Post_badge' & did_the_article_receive_a_badge_for_open_data == "No" ~ "no",
+         TRUE ~ "other"))
+
+# We've got all the variables we need, now we need to count up the number of responses in each variable/column
+total_counts <- empirical_clean_count %>%
+  journals_without_badges <- count(journal = "Non_PS") %>%
+  PS_before_badges <- count(pre_or_post_badge = "Pre_badge") %>%
+  PS_badges_not_earned <- count(badge_earned = "no") %>%
+  PS_badges_earned <- count(badge_earned = "yes")
+
+# Now let's calculate the number of articles that were reportedly available for each group
+reportedly_available_counts <- empirical_clean_count %>%
+  transmute(journals_without_badges_reportedly_available = case_when(journal = "Non_PS", data_statement_indicates_that_data_are == "Available" ~ "reportedly_available",
+  TRUE ~ "other")) %>%
+  transmute(PS_before_badges_reportedly_available = case_when(pre_or_post_badge = "Pre_badge", data_statement_indicates_that_data_are == "Available" ~ "reportedly_available",
+                                                                TRUE ~ "other")) %>%
+  transmute(PS_badges_not_earned_reportedly_available = case_when(badge_earned = "no", data_statement_indicates_that_data_are == "Available" ~ "reportedly_available",
+                                                            TRUE ~ "other")) %>%
+  transmute(PS_badges_earned_reportedly_available = case_when(badge_earned = "yes", data_statement_indicates_that_data_are == "Available" ~ "reportedly_available",
+                                                                TRUE ~ "other"))
+# continue for all other x-axis variables (i.e. actually available, correct data, usable, data, complete data) and then count them up
 
 ----------
   
