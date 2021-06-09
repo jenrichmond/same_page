@@ -67,7 +67,7 @@ data1A_rename <- data1A_select %>%
          participants_other = q5_3_text, age = q6, brain_beh = q7, topic = q8, 
          topic_other = q8_5_text, software = q9, type_of_software = q10,       type_of_software_other = q10_8_text) 
 
-
+names(data1A_rename)
 # need Jenny's help here - for some reason this renaming isn't working 
 # JR dont know why that wasn't working, I just started out renaming a few at a time and then strung them all together and it works now
 
@@ -80,6 +80,9 @@ data1A_sep <- data1A_rename %>%
 # need Jenny's help here - the title variable only has the first word of the title instead of the whole title
 # JR ahhhh this is because it is separating on space, do we need to whole title, maybe it is ok to pull the id number and journal and use remove = FALSE so we have the whole title still in q4_1 if we need it for something? Ive dropped the 3rd components of the into = so the title stays in Q4_1
 
+----------
+# I think we can delete this code/comments and replace it with what's below:
+  
 # merge data1A_rename dataset and relevant_kidwell_clean dataset
 
 master_1A_dataset <- merge(data1A_sep, relevant_kidwell_clean, by="article_id_number")
@@ -94,4 +97,16 @@ master_1A_dataset <- merge(data1A_sep, relevant_kidwell_clean, by="article_id_nu
 # JR as above, i think your code is cleaner and more understandble if you use select to keep the variables you want, rather than dropping the variables you don't via indexing. 
 
 master_1A_dataset_clean = master_1A_dataset[,!(names(master_1A_dataset) %in% c("timestamp", "your_name", "if_other", "year", "journal.y", "number_of_experiments"))]
+
+------------
   
+# join data1A_sep and relevant_kidwell_clean datasets by article ID
+
+master_1A_dataset <- full_join(data1A_sep, relevant_kidwell_clean, by="article_id_number")
+# CR I researched the join function to see whether it could automatically take out the duplicated variables, but all I came across was a function that removed duplicated rows instead of columns
+
+# clean the master dataset so that duplicated and unwanted columns/variables are removed
+master_1A_dataset_clean <- master_1A_dataset %>%
+  select(coder_name:type_of_software_other, did_the_article_receive_a_badge_for_open_data:if_materials_url_links_to_an_independent_archive_repository_which_repository)
+
+
