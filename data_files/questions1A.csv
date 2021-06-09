@@ -1,0 +1,13 @@
+qid,qname,question,force_resp
+QID4,Q1,"Thank you so much for your volunteering your time in this investigation, your help is truly appreciated!<div><br></div><div>This survey is for Study 1A. Please complete this survey if you have selected a <i>Psychological Science</i> article that was published between January 2014 and May 2015. </div><div><br></div><div>If you have selected an article that was published between July 2019 and December 2020, please close the tab for this survey and click on the corresponding link for the survey for Study 1B. </div>",FALSE
+QID1,Q2,What is your name? (Please provide your first and last name),TRUE
+QID2,Q3,What is your UNSW email address?,TRUE
+QID3,Q4,"What is the Article ID Number? (As you start typing, options should appear with corresponding Article Titles. Please select one.)",FALSE
+QID31,Q31,How many experiments were conducted in this study?,FALSE
+QID33,Q33,What type of article is this article?,FALSE
+QID5,Q5,What type of participants were used in this study?,FALSE
+QID6,Q6,How old were the participants used in this study?,FALSE
+QID7,Q7,What variable was being measured in the study?,FALSE
+QID8,Q8,What area of research did this study investigate?,FALSE
+QID9,Q9,Does the article state what software was used to carry out the analysis?,FALSE
+QID10,Q10,What type of software was used?,FALSE
