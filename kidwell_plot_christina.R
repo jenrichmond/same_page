@@ -91,12 +91,20 @@ empirical_earned %>%
   filter(journal == "PS") %>%
   count(pre_or_post_badge)
 
-# CR looking into why there are so many 'other' articles
+# CR looking into why there are so many 'other' articles 
+
 why_other <- empirical_earned %>%
   select(article_id_number, journal == "PS", pre_or_post_badge)
 
 why_other <- empirical_earned %>% select(c(journal == "PS", article_id_number, pre_or_post_badge))
 # I'm getting the error that object 'journal' is not found - I'm not sure what the difference between an object and a variable is - is select the wrong function to use here?
+
+# JR so select is just for selecting particular variables into a new dataframe (i.e. object) that is a subset of variables that make up another. Here you need all the info in the other cols to see why there are lots of others being coded in your PS + pre /post badge column, so you are probable best to leave all the columns and just use filter instead. 
+
+why_other <- empirical_earned %>%
+  filter(journal == "PS") %>%
+  filter(pre_or_post_badge == "other") ### ahhh I think it is 2012 data, are you interested in that ?
+
 
 # count how many in PS, post badge earned the basge vs. not (are there really only 46?)
 empirical_earned %>%
