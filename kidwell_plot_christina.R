@@ -91,6 +91,13 @@ empirical_earned %>%
   filter(journal == "PS") %>%
   count(pre_or_post_badge)
 
+# CR looking into why there are so many 'other' articles
+why_other <- empirical_earned %>%
+  select(article_id_number, journal == "PS", pre_or_post_badge)
+
+why_other <- empirical_earned %>% select(c(journal == "PS", article_id_number, pre_or_post_badge))
+# I'm getting the error that object 'journal' is not found - I'm not sure what the difference between an object and a variable is - is select the wrong function to use here?
+
 # count how many in PS, post badge earned the basge vs. not (are there really only 46?)
 empirical_earned %>%
   filter(journal == "PS") %>%
