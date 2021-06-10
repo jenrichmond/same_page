@@ -107,7 +107,22 @@ master_1A_dataset <- full_join(data1A_sep, relevant_kidwell_clean, by="article_i
 
 # clean the master dataset so that duplicated and unwanted columns/variables are removed
 master_1A_dataset_clean <- master_1A_dataset %>%
-  select(coder_name:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address)
+  select(coder_name:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address) 
+
+# let's check that we will have the same number of empirical articles as Kidwell et al. 
+master_1A_dataset_clean %>%
+  count(no_of_experiments %in% c("1", "2", "3", "4", "5_or_more"))
+# We coded there to be 333 empirical articles and 71 non-empirical articles
+# also - not sure if I'm using the correct function to count the number of variables here?
+
+# To check the empirical vs. non-empirical count for Kidwell, let's delete our no_of_experiments variable rather than the no_of_experiments variable from the Kidwell study
+master_1A_dataset_clean_check <- master_1A_dataset %>%
+  select(coder_name:journal.x, type_of_article:type_of_software_other, number_of_experiments:corresponding_author_e_mail_address) %>%
+  count(number_of_experiments > 0)
+# Kidwell coded there to be 334 empirical articles, 47 non-empirical articles and 23 NA articles
+
+# I don't know what the 23 NA articles from Kidwell are but there appears to be only 1 discrepancy between our data and their data (woohoo!!)
+# Question for Jenny: is there a function we can use to locate where this discrepancy is?
 
 # write master_1A_dataset_clean to csv
 
