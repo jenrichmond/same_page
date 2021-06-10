@@ -16,7 +16,7 @@ kidwell <- read_csv(here("data_files", "master_dataset_1A.csv")) %>%
 # remove non-empirical articles 
 master_dataset_1A_empirical <- master_dataset_1A %>%
   filter(no_of_experiments != "0")
-# CR we have a problem - the total number of non-empirical articles in Kidwell is 368 whilst the total number in our master data set is 349 - why is some data being lost? Does this mean we have some discrepancies between what we considered to be 'empirical' and what Kidwell did?
+# CR before we do this, we might want to investigate the 1 case where we said the article was non-empirical but Kidwell said it was
 
 # Let's assign each article to a subfield
 psyc_subfield <- master_dataset_1A_empirical %>%
@@ -86,10 +86,7 @@ data_scored_for_materials < data_long %>%
                                      question == "are_the_materials_complete" & response %in% c("Unclear_whether_or_not_all_of_the_materials_are_available", "No,_not_all_of_the_materials_are_available") ~ 0, question == "are_the_materials_complete" & response == "Yes,_but_only_some_of_the_materials_are_available" ~ 1, question == "are_the_materials_complete" & response == "Yes,_all_of_the_materials_appear_to_be_available" ~ 2,
                                      question == "does_the_article_state_whether_supplemental_information_available" & response %in% c("Yes,_but_it_is_not_freely_accessible", "No") ~ 0,question == "does_the_article_state_whether_supplemental_information_available" & response == "Yes,_and_it_is_freely_accessible" ~ 2
                                      
-                                     question == "are_the_materials_usable_and_understandable_after_brief_review" & response %in% c("Unclear", "No") ~ 0, question == "are_the_materials_usable_and_understandable_after_brief_review" & response == "Yes" ~ 5,
                                      question == "are_analysis_scripts_included_with_the_data" & response == "No" ~ 0, question == "are_analysis_scripts_included_with_the_data" & response == "Yes" ~ 5,))
-
-# CR it doesn't look like Kidwell coded for a material codebook after all so we might need to tweak our scoring system - for now, I've replaced the codebook variable with the 'are the materials understandable/usable variable'
 
 # Let's create a single open materials score for each article
 
