@@ -1,3 +1,17 @@
-README data_files
+README_data_files
 
-This folder contains two datafiles from the Kidwell OSF repo, one that contains bibliographic metadata and the other contains the data that was analysed in the paper. Interestingly, they seem to be in .numbers format- I wonder whether they will read into R as a csv. 
+bibliographic_metadata_for_kidwell_et_al.(2016) - contains bibliographic metadata for the articles analysed in the Kidwell et al. (2016) study
+
+data1A.csv - contains relevant data from Kidwell et al. (2016) for study 1A (all PS articles published between 2014-2015)
+
+examplestoscore.csv - contains a set of sample data from 1B Qualtrics survey with only a select number of variables
+
+exampletoscore1Ball.csv - contains the same set of sample data (as examplestoscore.csv) but contains all variables
+
+Master Dataset.csv - Kidwell et al. (2016) master dataset
+
+master_dataset_edited_for_dates.csv - at the start of this project, Christina and Jenny thought that the Article IDs Kidwell et al. had assigned the articles were dates. Some of the dates looked incorrect (e.g. some looked like 38-4-2014), so in this dataset we corrected them. However, Christina later realised that these article IDs weren't dates, they were the number of each article in the issue. So, this dataset is redundant 
+
+master_dataset.csv - Kidwell et al. (2016) master dataset (appears to be the same as Master Dataset.csv)
+
+questions1A.csv - contains all the questions that were asked in the 1A Qualtrics survey

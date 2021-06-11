@@ -1,5 +1,21 @@
-README scripts
+README_scripts
 
-The kidwell et al (2016) folder contains all the scripts from teh OSF repo. 
+This file describes what can be found in each file in this folder.
 
-The read_data.Rmd is Jenny's attempt to reproduce the analysis in the 1st script- Actual Availability, All Journals. R
+Combining Kidwell and 1A data.R - contains script which combines the relevant Kidwell data and our newly generated data for Study 1A
+
+Assigning and Scoring 1A.R - contains script required to assign each 1A article to a psychological subfield and to provide each article with an Open Data and Open Materials score
+
+get qualtrics data1B.Rmd - contains script required to download Survey 1B data from Qualtrics
+
+kidwell_plot_christina.R - contains script created by Jenny and Christina to reproduce fig4 in Kidwell et al. (2016) study
+
+kidwell_plot.R - contains script created by Julia to reproduce fig4 in Kidwell et al. (2016) study
+
+pull1Afromqualtrics.R - contains script required to download Survey 1A data from Qualtrics and to reformat the data into a csv. file
+
+kidwell_et_al.(2016) - contains all scripts from the Kidwell et al. (2016) Open Science Framework repository
+
+read_data.Rmd - contains Jenny's attempt to reproduce the analysis in the 1st script- Actual Availability, All Journals. R (from the Kidwell et al. folder)
+
+scoring - contains script Jenny made to trial scoring some sample data 
