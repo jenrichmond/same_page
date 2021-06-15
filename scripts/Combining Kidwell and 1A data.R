@@ -36,7 +36,7 @@ relevant_kidwell_clean <- kidwell_clean %>%
 
 # separate article_id_number variable into ID and journal
 relevant_kidwell_clean <- relevant_kidwell_clean %>%
-  separate(article_id_number, into = c("article_id_number", "journal"), sep = "\\s", remove = TRUE)
+  separate(article_id_number, into = c("article_id_number", "journal_code"), sep = "\\s", remove = TRUE)
   
 # read in 1A data from csv
 
@@ -51,58 +51,51 @@ data1A_select <- data1A %>%
   filter(status == "IP Address") %>%
   select(q2:q10_8_text)
 
-# delete unnecessary variables/columns
-# JR: the code below is A LOT :) to just select the 15 variables in the middle, using select and the range of variables (q2:q10_8_text OR 18:31)  might be easier... you can also pipe that on the end of your filter ABOVE and do it in one step
-
-data1A = data1A[,!(names(data1A) %in% c("start_date", "end_date", "status", "ip_address", "progress", "duration_in_seconds", "finished", "recorded_date", "response_id", "recipient_last_name", "recipient_first_name", "recipient_email", "external_reference", "location_latitude", "location_longitude", "distribution_channel", "user_language", "q10_8_text_parent_topics", "q10_8_text_sentiment_polarity", "q10_8_text_sentiment_score", "q10_8_text_sentiment", "q10_8_text_topic_sentiment_label", "q10_8_text_topic_sentiment_score", "q10_8_text_topics"))]
-
 
 # let's rename the variables
-# JR ok print the names first to make sure you are matching
-
-names(data1A_select)
 
 data1A_rename <- data1A_select %>%
   rename(coder_name = q2, coder_email = q3, no_of_experiments = q31, type_of_article = q33,         type_of_article_other = q33_7_text, participants = q5, 
          participants_other = q5_3_text, age = q6, brain_beh = q7, topic = q8, 
          topic_other = q8_5_text, software = q9, type_of_software = q10,       type_of_software_other = q10_8_text) 
 
-names(data1A_rename)
-# need Jenny's help here - for some reason this renaming isn't working 
-# JR dont know why that wasn't working, I just started out renaming a few at a time and then strung them all together and it works now
-
-# split the article ID column into ID, journal and title 
-
-#JR you want to be careful that you are working with the output of the last step. Here you were starting with the data1A, when the output of the last step was already data1A_rename. 
-
+# nseparate article id number and jounral code and filter OUT the articles that were reliablity checking 
 data1A_sep <- data1A_rename %>%
-  separate(q4_1, into = c("article_id_number", "journal"), sep = "\\s", remove = FALSE)
-# need Jenny's help here - the title variable only has the first word of the title instead of the whole title
-# JR ahhhh this is because it is separating on space, do we need to whole title, maybe it is ok to pull the id number and journal and use remove = FALSE so we have the whole title still in q4_1 if we need it for something? Ive dropped the 3rd components of the into = so the title stays in Q4_1
+  separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
+  filter(!str_detect(q4_1,'Check'))
 
-----------
-# I think we can delete this code/comments and replace it with what's below:
-  
+
 # merge data1A_rename dataset and relevant_kidwell_clean dataset
 
 master_1A_dataset <- merge(data1A_sep, relevant_kidwell_clean, by="article_id_number")
-
-# clean the master dataset so it doesn't contain replicated information
-# question for Jenny: do we want to use this double-up information to check reliability or anything like that?
-
-
-# JR re keeping for reliability, i think because it would throw errors if it couldn't match article id numbers, I think you can assume it hasn't stuff up the join. I wonder whether the join functions from dplyr https://dplyr.tidyverse.org/reference/join.html might automatically get rid of duplicates as part of the joining process?? 
-
-
-# JR as above, i think your code is cleaner and more understandble if you use select to keep the variables you want, rather than dropping the variables you don't via indexing. 
-
-master_1A_dataset_clean = master_1A_dataset[,!(names(master_1A_dataset) %in% c("timestamp", "your_name", "if_other", "year", "journal.y", "number_of_experiments"))]
-
-------------
   
-# join data1A_sep and relevant_kidwell_clean datasets by article ID
 
-master_1A_dataset <- full_join(data1A_sep, relevant_kidwell_clean, by="article_id_number")
+# change no of experiments to numeric
+
+master_1A_dataset$no_of_experiments <- as.numeric(master_1A_dataset$no_of_experiments)
+
+# make a new variable to make the 1A coding and kidwell number of experiment in consistent format (char)
+master_1A_dataset <- master_1A_dataset %>%
+  mutate(num_of_experiments = case_when(number_of_experiments >= 5 ~ "5 or more", 
+                                     number_of_experiments == 4 ~  "4", 
+                                     number_of_experiments == 3 ~  "3",
+                                     number_of_experiments == 2 ~  "2",
+                                     number_of_experiments == 1 ~  "1",
+                                     number_of_experiments == 0 ~  "0"))
+                                     
+ # mutate new variable that checks whether no (1A) and num (kidwell) of experiments is the same                                       
+master_1A_dataset <- master_1A_dataset %>%
+  mutate(exp_check = case_when(no_of_experiments == num_of_experiments ~ "TRUE", 
+                               no_of_experiments != num_of_experiments ~ "FALSE"))
+
+# filter only cases where it is NOT the same 
+exp_check <- master_1A_dataset %>%
+  filter(exp_check == FALSE) %>%
+  relocate(num_of_experiments, .after = no_of_experiments)
+
+
+##### JENNY AND CHRISTINA UP TO HERE
+
 # CR I researched the join function to see whether it could automatically take out the duplicated variables, but all I came across was a function that removed duplicated rows instead of columns
 
 # clean the master dataset so that duplicated and unwanted columns/variables are removed
