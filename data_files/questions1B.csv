@@ -1,0 +1,48 @@
+qid,qname,question,force_resp
+QID2,Q1,"Thank you so much for your volunteering your time in this investigation, your help is truly appreciated!<div><br></div><div>This survey is for Study 1B. Please complete this survey if you have selected a <i>Psychological Science</i> article that was published between July 2019 and December 2020. </div><div><br></div><div>If you have selected an article that was published between January 2014 and May 2015, please close the tab for this survey and click on the corresponding link for the survey for Study 1A. </div>",FALSE
+QID3,Q2,What is your name? (Please provide your first and last name),TRUE
+QID4,Q3,What is your UNSW email address?,TRUE
+QID5,Q4,"What is the Article ID Number? (As you start typing, options should appear with corresponding Article Titles. Please select one.)",TRUE
+QID51,Q51,How many experiments were conducted in this study?,FALSE
+QID52,Q52,What type of article is this article?,FALSE
+QID7,Q5,What type of participants were used in this study?,FALSE
+QID8,Q6,How old were the participants used in this study?,FALSE
+QID9,Q7,What variable was being measured in the study?,FALSE
+QID10,Q8,What area of research did this study investigate?,FALSE
+QID30,Q9,Did the article receive a badge for open data?,FALSE
+QID31,Q10,Does the article state whether or not the data are available?,FALSE
+QID32,Q11,Statement indicates that data are:,FALSE
+QID33,Q12,Quote of statement:,FALSE
+QID34,Q13,Page number of statement:,FALSE
+QID35,Q14,How are the data accessible?,FALSE
+QID36,Q15,URL to dataset:,FALSE
+QID37,Q16,Data URL links to:,FALSE
+QID38,Q17,Which repository?,FALSE
+QID39,Q18,Does the Data URL go to a working page?,FALSE
+QID40,Q19,Are the data located at the working page?,FALSE
+QID41,Q20,Can the data be downloaded?,FALSE
+QID42,Q21,Does the data correspond to what is reported in the article?,FALSE
+QID43,Q22,Are the data complete?,FALSE
+QID44,Q23,Does the article state what software was used to carry out the analysis?,FALSE
+QID45,Q24,What type of software was used?,FALSE
+QID46,Q25,Is a codebook included with the data (or other means of understanding the variables)?,FALSE
+QID47,Q26,Are analysis scripts included with the data?,FALSE
+QID48,Q27,Is anything else included with the data?,FALSE
+QID11,Q28,Did the article receive a badge for open materials?,FALSE
+QID12,Q29,Does the article state whether or not the materials are available?,FALSE
+QID13,Q30,Statement indicates that materials are:,FALSE
+QID14,Q31,Quote of statement:,FALSE
+QID15,Q32,Page number of statement:,FALSE
+QID16,Q33,How are the materials accessible?,FALSE
+QID17,Q34,URL to materials:,FALSE
+QID18,Q35,Materials URL links to:,FALSE
+QID19,Q36,Which repository?,FALSE
+QID20,Q37,Does the Materials URL go to a working page?,FALSE
+QID21,Q38,Are the materials located at the working page?,FALSE
+QID22,Q39,Can the materials be downloaded?,FALSE
+QID23,Q40,Do the materials correspond to what is reported in the article?,FALSE
+QID24,Q41,Are the materials complete?,FALSE
+QID28,Q42,Has information been provided at the working page explaining how the materials function?,FALSE
+QID29,Q43,Is anything else included with the materials?,FALSE
+QID49,Q49,Does the article state whether there is supplemental information available?,FALSE
+QID50,Q50,URL to supplemental information,FALSE
