@@ -93,6 +93,36 @@ exp_check <- master_1A_dataset %>%
   filter(exp_check == FALSE) %>%
   relocate(num_of_experiments, .after = no_of_experiments)
 
+# Christina investigating why the number of observations is different for 'master_1A_dataset' and 'relevant_kidwell_clean'
+
+# let's check whether there are duplicates in article_id_number column
+duplicates <- get_dupes(master_1A_dataset, article_id_number)
+
+# so there are 28 duplicated observations in the article_id_number column, which means there are 14 articles that have been coded twice
+
+# is there a way we can identify whether there are article id numbers present in the 'relevant_kidwell_clean' dataset that aren't present in the 'data1A_sep' dataset?
+  # YES by using %in%
+
+# which values are in article_id_number of 'relevant_kidwell_clean' that are in 'data1A_sep'
+relevant_kidwell_clean$article_id_number %in% data1A_sep$article_id_number
+
+# articles that are in relevant_kidwell_clean that aren't in data1A_sep
+relevant_kidwell_clean$article_id_number[!relevant_kidwell_clean$article_id_number %in% data1A_sep$article_id_number]
+  # Ok so 9-3-2015, 4-3-2014, 13-12-2014, 18-2-2014 were coded for by Kidwell but not us
+
+# let's try doing it the other way
+data1A_sep$article_id_number[!data1A_sep$article_id_number %in% relevant_kidwell_clean$article_id_number]
+  # there are no articles in our dataset that weren't coded for by Kidwell
+
+# OK this might actually make sense now 
+  # there are 10 extra observations in our dataset (data1A_sep) compared to Kidwell 
+  # there are 14 article ID duplicates in the master dataset
+  # we've just figured out that there are 4 uncoded for articles in our dataset (data1A_sep)
+  # CR is confused whether this makes sense or not ??
+
+# Next steps
+  # code 4 articles which haven't been coded
+  # figure out why there 14 duplicates and delete the versions which are most inaccurate
 
 ##### JENNY AND CHRISTINA UP TO HERE
 
