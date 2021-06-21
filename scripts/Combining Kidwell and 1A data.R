@@ -98,6 +98,9 @@ exp_check <- master_1A_dataset %>%
 # let's check whether there are duplicates in article_id_number column
 duplicates <- get_dupes(master_1A_dataset, article_id_number)
 
+duplicates %>%
+  write_csv(here("data_files", "2021-06-21_duplicates1A.csv"))
+
 # so there are 28 duplicated observations in the article_id_number column, which means there are 14 articles that have been coded twice
 
 # is there a way we can identify whether there are article id numbers present in the 'relevant_kidwell_clean' dataset that aren't present in the 'data1A_sep' dataset?
@@ -108,11 +111,27 @@ relevant_kidwell_clean$article_id_number %in% data1A_sep$article_id_number
 
 # articles that are in relevant_kidwell_clean that aren't in data1A_sep
 relevant_kidwell_clean$article_id_number[!relevant_kidwell_clean$article_id_number %in% data1A_sep$article_id_number]
-  # Ok so 9-3-2015, 4-3-2014, 13-12-2014, 18-2-2014 were coded for by Kidwell but not us
+  
+# Ok so 9-3-2015, 4-3-2014, 13-12-2014, 18-2-2014 were coded for by Kidwell but not us
 
 # let's try doing it the other way
 data1A_sep$article_id_number[!data1A_sep$article_id_number %in% relevant_kidwell_clean$article_id_number]
   # there are no articles in our dataset that weren't coded for by Kidwell
+
+# LETS check it another way - anti_join, first lets make the problem smaller by select just the article IDs from each dataset
+
+kidwell_IDs <- relevant_kidwell_clean %>%
+  select(article_id_number)
+
+data1A_IDs <- data1A_sep %>%
+  select(article_id_number)
+
+# antijoin, give me all the IDs that are in kidwell but not in data1A
+mismatch1 <- anti_join(kidwell_IDs, data1A_IDs, by = "article_id_number")
+
+# antijoin, give me all the IDs that are in data1A but not in kidwell 
+mismatch2 <- anti_join(data1A_IDs, kidwell_IDs, by = "article_id_number")
+
 
 # OK this might actually make sense now 
   # there are 10 extra observations in our dataset (data1A_sep) compared to Kidwell 
@@ -124,17 +143,26 @@ data1A_sep$article_id_number[!data1A_sep$article_id_number %in% relevant_kidwell
   # code 4 articles which haven't been coded
   # figure out why there 14 duplicates and delete the versions which are most inaccurate
 
-##### JENNY AND CHRISTINA UP TO HERE
+
 
 # CR I researched the join function to see whether it could automatically take out the duplicated variables, but all I came across was a function that removed duplicated rows instead of columns
 
 # clean the master dataset so that duplicated and unwanted columns/variables are removed
 master_1A_dataset_clean <- master_1A_dataset %>%
-  select(coder_name:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address) 
+  select(article_id_number:type_of_software_other, number_of_experiments:corresponding_author_e_mail_address) 
 
 # let's check that we will have the same number of empirical articles as Kidwell et al. 
 master_1A_dataset_clean %>%
   count(no_of_experiments %in% c("1", "2", "3", "4", "5_or_more"))
+
+master_1A_dataset_clean %>%
+  count(number_of_experiments > 0)
+
+
+### need to fix duplicates and code extra 4 articles before running this again to check that we have hte same number of empirical articles across kidwell and 1A 
+
+# JENNY AND CHRISTINA UP TO HERE
+
 # We coded there to be 333 empirical articles and 71 non-empirical articles
 # also - not sure if I'm using the correct function to count the number of variables here?
 
