@@ -59,7 +59,7 @@ data1A_rename <- data1A_select %>%
          participants_other = q5_3_text, age = q6, brain_beh = q7, topic = q8, 
          topic_other = q8_5_text, software = q9, type_of_software = q10,       type_of_software_other = q10_8_text) 
 
-# nseparate article id number and jounral code and filter OUT the articles that were reliablity checking 
+# separate article id number and journal code and filter OUT the articles that were reliability checking 
 data1A_sep <- data1A_rename %>%
   separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
   filter(!str_detect(q4_1,'Check'))
@@ -103,22 +103,9 @@ duplicates %>%
 
 # so there are 28 duplicated observations in the article_id_number column, which means there are 14 articles that have been coded twice
 
-# is there a way we can identify whether there are article id numbers present in the 'relevant_kidwell_clean' dataset that aren't present in the 'data1A_sep' dataset?
-  # YES by using %in%
+# let's try and figure out which articles are present in our data1A_sep dataset that AREN'T present in relevant_kidwell_clean and vice versa
 
-# which values are in article_id_number of 'relevant_kidwell_clean' that are in 'data1A_sep'
-relevant_kidwell_clean$article_id_number %in% data1A_sep$article_id_number
-
-# articles that are in relevant_kidwell_clean that aren't in data1A_sep
-relevant_kidwell_clean$article_id_number[!relevant_kidwell_clean$article_id_number %in% data1A_sep$article_id_number]
-  
-# Ok so 9-3-2015, 4-3-2014, 13-12-2014, 18-2-2014 were coded for by Kidwell but not us
-
-# let's try doing it the other way
-data1A_sep$article_id_number[!data1A_sep$article_id_number %in% relevant_kidwell_clean$article_id_number]
-  # there are no articles in our dataset that weren't coded for by Kidwell
-
-# LETS check it another way - anti_join, first lets make the problem smaller by select just the article IDs from each dataset
+# LETS use anti_join, first lets make the problem smaller by select just the article IDs from each dataset
 
 kidwell_IDs <- relevant_kidwell_clean %>%
   select(article_id_number)
@@ -129,23 +116,31 @@ data1A_IDs <- data1A_sep %>%
 # antijoin, give me all the IDs that are in kidwell but not in data1A
 mismatch1 <- anti_join(kidwell_IDs, data1A_IDs, by = "article_id_number")
 
+# so there are 4 articles which Kidwell coded that we didn't
+
 # antijoin, give me all the IDs that are in data1A but not in kidwell 
 mismatch2 <- anti_join(data1A_IDs, kidwell_IDs, by = "article_id_number")
+
+# Kidwell coded all the articles we coded
 
 
 # OK this might actually make sense now 
   # there are 10 extra observations in our dataset (data1A_sep) compared to Kidwell 
   # there are 14 article ID duplicates in the master dataset
   # we've just figured out that there are 4 uncoded for articles in our dataset (data1A_sep)
-  # CR is confused whether this makes sense or not ??
 
 # Next steps
-  # code 4 articles which haven't been coded
-  # figure out why there 14 duplicates and delete the versions which are most inaccurate
+  # code 4 articles which haven't been coded - 21/06 Update: DONE
+  # figure out why there 14 duplicates and delete the versions which are most inaccurate - 21/06 Update: DONE
 
+# LETS remove the duplicated rows so that we keep only the most recent instance of each row
+master_1A_dataset_duplicates_removed <- master_1A_dataset %>%
+  !duplicated[("article_id_number"), fromLast=T]
 
+master_1A_dataset_duplicates_removed <- master_1A_dataset %>%
+  master_1A_dataset[!duplicated(master_1A_dataset$article_id_number, fromLast=T)]
 
-# CR I researched the join function to see whether it could automatically take out the duplicated variables, but all I came across was a function that removed duplicated rows instead of columns
+# CR needs Jenny's help here!
 
 # clean the master dataset so that duplicated and unwanted columns/variables are removed
 master_1A_dataset_clean <- master_1A_dataset %>%
