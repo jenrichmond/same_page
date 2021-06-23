@@ -29,6 +29,11 @@ psyc_subfield <- master_dataset_1A_empirical %>%
                               participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" ~ "Health_Psychology")) %>%
   relocate(psyc_subfield, .before = journal.x)
 
+# Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
+# let's assign these 'other' articles to a subfield manually
+psyc_subfield %>%
+  select(subfield != "Behavioural_Neuroscience", "Developmental_Psychology", "Cognitive_Neuroscience", "Perception", "Social_Psychology", "Cognition", "Health_Psychology")
+# finish this code once you know which articles need to be assigned manually 
 
 #Check NA values
 
@@ -37,7 +42,7 @@ na_check <- psyc_subfield %>%
 
 # let's summarise the articles by subfield
 
-subfield_summary <- psyc_subfiled %>%
+subfield_summary <- psyc_subfield %>%
   select(article_id_number, subfield)
 
 # Now let's score the articles
