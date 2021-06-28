@@ -40,7 +40,7 @@ relevant_kidwell_clean <- relevant_kidwell_clean %>%
   
 # read in 1A data from csv
 
-data1A <- read_csv(here("data_files", "data1A.csv"))
+data1A <- read_csv(here("data_files", "2021_06_28-data1A.csv"))
 
 # use names() to get the variable numbers you want to select
 
@@ -65,16 +65,18 @@ data1A_sep <- data1A_rename %>%
   filter(!str_detect(q4_1,'Check'))
 
 
-# merge data1A_rename dataset and relevant_kidwell_clean dataset
+# merge data1A_rename (400obs) dataset and relevant_kidwell_clean (367obs) dataset to get master1Adataset (400obs)
 
 master_1A_dataset <- merge(data1A_sep, relevant_kidwell_clean, by="article_id_number")
   
+# COMPARING NO and NUM of experiments----------------
 
 # change no of experiments to numeric
 
 master_1A_dataset$no_of_experiments <- as.numeric(master_1A_dataset$no_of_experiments)
 
 # make a new variable to make the 1A coding and kidwell number of experiment in consistent format (char)
+# no_of_experiments is our coding, num_of_experiences is kidwell coding in character format
 master_1A_dataset <- master_1A_dataset %>%
   mutate(num_of_experiments = case_when(number_of_experiments >= 5 ~ "5 or more", 
                                      number_of_experiments == 4 ~  "4", 
@@ -93,13 +95,40 @@ exp_check <- master_1A_dataset %>%
   filter(exp_check == FALSE) %>%
   relocate(num_of_experiments, .after = no_of_experiments)
 
+
+# working out obs difference-----------------
+
 # Christina investigating why the number of observations is different for 'master_1A_dataset' and 'relevant_kidwell_clean'
 
 # let's check whether there are duplicates in article_id_number column
-duplicates <- get_dupes(master_1A_dataset, article_id_number)
+
+duplicates <- get_dupes(master_1A_dataset, article_id_number) 
 
 duplicates %>%
   write_csv(here("data_files", "2021-06-21_duplicates1A.csv"))
+
+# to solve duplicate problem, CR recoded all the duplicates, here filtering for her 18 recoded observations
+
+dup_recoded <- duplicates %>%
+  filter(coder_name == "Christina Rochios") %>%
+  filter(no_of_experiments != 0) %>% # filter out the one that CR coded twice
+  select(-dupe_count)
+
+# now rbind dup_recoded onto the master1A and then use distinct() to keep the most recent obs of duplicated articleid_numbers, problem with the distinct function is that it picks 1 of the dups to keep (but not the right one!)
+
+# master + dups = 418 observations
+master_dups <- rbind(master_1A_dataset, dup_recoded) 
+
+distinct_master <- master_dups %>% 
+  distinct(article_id_number, .keep_all= TRUE)
+
+dups <- distinct_master %>%
+  get_dupes(article_id_number)
+
+# we want to filter OUT obs that are in this dup_list so that we can add them back in
+dup_list <- dup_recoded$article_id_number
+
+
 
 # so there are 28 duplicated observations in the article_id_number column, which means there are 14 articles that have been coded twice
 

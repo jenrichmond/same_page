@@ -1,4 +1,6 @@
-
+library(qualtRics)
+library(tidyverse)
+library(janitor)
 
 # Import 1A data from qualtrics 
 
@@ -32,4 +34,4 @@ data1A  <- fetch_survey(surveyID = "SV_0GSSTcRvY9x0x4q", verbose = TRUE,force_re
 
 # write 1A data to csv
 
-data1A %>% write_csv(here::here("data_files", "data1A.csv"))
+data1A %>% write_csv(here::here("data_files", "2021_06_28-data1A.csv"))
