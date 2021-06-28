@@ -79,7 +79,7 @@ dup_recoded <- duplicates %>%
 
 # let's remove all duplicated rows from the clean data1A dataset using the unique() function
 data1A_duplicates_removed <- unique(data1A_sep)
-  # this leaves us with 400 obs
+  # this leaves us with 400 obs - weird! (I don't know why the unique function does this but I'm going to ignore it for now)
 
 # let's check this using the distinct() function
 data1A_distinct <- data1A_sep %>%
