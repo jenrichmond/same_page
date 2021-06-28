@@ -9,6 +9,8 @@ library(httr)
 library(extrafont)
 library(here)
 
+# Read and clean Kidwell data-----
+
 # First let's read the Kidwell data
 kidwell <- read_csv(here("data_files", "master_dataset.csv")) %>%
   clean_names()
@@ -37,6 +39,8 @@ relevant_kidwell_clean <- kidwell_clean %>%
 # separate article_id_number variable into ID and journal
 relevant_kidwell_clean <- relevant_kidwell_clean %>%
   separate(article_id_number, into = c("article_id_number", "journal_code"), sep = "\\s", remove = TRUE)
+
+# Read and clean Qualtrics 1A data------
   
 # read in 1A data from csv
 
@@ -49,11 +53,9 @@ names(data1A)
 #filter data1A to only include survey responses not survey previews and select just variables of interest
 data1A_select <- data1A %>%
   filter(status == "IP Address") %>%
-  select(q2:q10_8_text)
-
+  select(start_date, q2:q10_8_text)
 
 # let's rename the variables
-
 data1A_rename <- data1A_select %>%
   rename(coder_name = q2, coder_email = q3, no_of_experiments = q31, type_of_article = q33,         type_of_article_other = q33_7_text, participants = q5, 
          participants_other = q5_3_text, age = q6, brain_beh = q7, topic = q8, 
@@ -63,6 +65,44 @@ data1A_rename <- data1A_select %>%
 data1A_sep <- data1A_rename %>%
   separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
   filter(!str_detect(q4_1,'Check'))
+
+# Remove duplicated rows from Qualtrics data----
+
+# let's create a dataframe with all the duplicated rows, according to article id number
+duplicates <- get_dupes(data1A_sep, article_id_number) 
+
+# to solve duplicate problem, CR recoded all the duplicates, here filtering for her 18 recoded observations
+dup_recoded <- duplicates %>%
+  filter(coder_name == "Christina Rochios") %>%
+  filter(no_of_experiments != 0) %>% # filter out the one that CR coded twice
+  select(-dupe_count)
+
+# let's remove all duplicated rows from the clean data1A dataset using the unique() function
+data1A_duplicates_removed <- unique(data1A_sep)
+  # this leaves us with 400 obs
+
+# let's check this using the distinct() function
+data1A_distinct <- data1A_sep %>%
+  distinct(article_id_number, .keep_all = TRUE) 
+  # this leaves us with 367 obs - so it seems like the distinct() function leaves the first version of each duplicate in the dataframe
+  # BUT we want to deleted ALL versions of the duplicates
+
+# so let's filter out the rows we know are duplicates
+data1A_distinct %>%
+  filter(data1A_distinct, article_id_number != "1-5-2014", "10-2-2014", "11-2-2014", "12-12-2014", "12-8-2014", "13-4-2014", "18-12-2014", "19-12-2014", "19-2-2014", "2-1-2015", "24-3-2014", "24-4-2015", "24-7-2014", "3-3-2014", "4-6-2014", "6-3-2015", "7-8-2014", "8-3-2015", "9-2-2014")
+  # I don't know why but this isn't working - need Jenny's help here
+
+# now let's add back the versions of the duplicates we want (i.e. those in dup_recoded)
+master_dups <- rbind(data1A_distinct, dup_recoded) 
+# if this has worked properly we should end up with 367 obs again
+
+# OK now we're ready to merge our data with Kidwell's
+
+# Combining Kidwell and 1A data----
+
+# Where Christina is up to
+
+
 
 
 # merge data1A_rename (400obs) dataset and relevant_kidwell_clean (367obs) dataset to get master1Adataset (400obs)
