@@ -15,7 +15,7 @@ library(here)
 kidwell <- read_csv(here("data_files", "master_dataset.csv")) %>%
   clean_names()
 
-# Now lets clean the names of articles and dates
+# Now lets pull journal names and year out of the article ID number 
 kidwell_clean <- kidwell %>%
   mutate(journal = case_when(
     str_detect(article_id_number,'CPS') ~ "Clinical Psychological Science",
@@ -29,14 +29,14 @@ kidwell_clean <- kidwell %>%
                           str_detect(article_id_number,'2015') ~ "2015",
                           TRUE ~ "other")) %>%
   relocate(journal, .after = article_id_number) %>%
-  relocate(year, .before = article_id_number)
+  relocate(year, .before = article_id_number)  # moves new journal and year columns
 
-# Filter the relevant data (i.e. only articles published in 2014 and 2015)
+# Filter the relevant data (i.e. only PsychSci articles published in 2014 and 2015)
 relevant_kidwell_clean <- kidwell_clean %>%
   filter(year %in% c("2014", "2015")) %>%
   filter(journal %in% c("Psychological Science"))
 
-# separate article_id_number variable into ID and journal
+# separate article_id_number variable into ID and journal code
 relevant_kidwell_clean <- relevant_kidwell_clean %>%
   separate(article_id_number, into = c("article_id_number", "journal_code"), sep = "\\s", remove = TRUE)
 
@@ -61,7 +61,7 @@ data1A_rename <- data1A_select %>%
          participants_other = q5_3_text, age = q6, brain_beh = q7, topic = q8, 
          topic_other = q8_5_text, software = q9, type_of_software = q10,       type_of_software_other = q10_8_text) 
 
-# separate article id number and journal code and filter OUT the articles that were reliability checking 
+# separate article id number and journal code and filter OUT the observations that were reliability checking 
 data1A_sep <- data1A_rename %>%
   separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
   filter(!str_detect(q4_1,'Check'))
@@ -75,11 +75,13 @@ duplicates <- get_dupes(data1A_sep, article_id_number)
 dup_recoded <- duplicates %>%
   filter(coder_name == "Christina Rochios") %>%
   filter(no_of_experiments != 0) %>% # filter out the one that CR coded twice
-  select(-dupe_count)
+  select(-dupe_count) 
 
 # let's remove all duplicated rows from the clean data1A dataset using the unique() function
+
 data1A_duplicates_removed <- unique(data1A_sep)
   # this leaves us with 400 obs - weird! (I don't know why the unique function does this but I'm going to ignore it for now)
+## JR- this is weird because the data1Asep had 400 obs, so it is saying that their are no duplicates? it may be because it is matching on the data in the whole row? rather than just article_id??
 
 # let's check this using the distinct() function
 data1A_distinct <- data1A_sep %>%
@@ -88,12 +90,22 @@ data1A_distinct <- data1A_sep %>%
   # BUT we want to deleted ALL versions of the duplicates
 
 # so let's filter out the rows we know are duplicates
-data1A_distinct %>%
-  filter(data1A_distinct, article_id_number != "1-5-2014", "10-2-2014", "11-2-2014", "12-12-2014", "12-8-2014", "13-4-2014", "18-12-2014", "19-12-2014", "19-2-2014", "2-1-2015", "24-3-2014", "24-4-2015", "24-7-2014", "3-3-2014", "4-6-2014", "6-3-2015", "7-8-2014", "8-3-2015", "9-2-2014")
-  # I don't know why but this isn't working - need Jenny's help here
+
+dups <- c("1-5-2014", "10-2-2014", "11-2-2014", "12-12-2014", "12-8-2014", "13-4-2014", "18-12-2014", "19-12-2014", "19-2-2014", "2-1-2015", "24-3-2014", "24-4-2015", "24-7-2014", "3-3-2014", "4-6-2014", "6-3-2015", "7-8-2014", "8-3-2015", "9-2-2014")
+
+# looking for the opp of %in% 
+# https://stackoverflow.com/questions/38351820/negation-of-in-in-r
+# apparently HMisc pakcage as a %nin% operator
+
+library(Hmisc) # move this up to your packages if it works for you
+
+data1A_nodups <- data1A_distinct %>%
+  filter(article_id_number %nin% dups) # yes goes from 367 to 348 - removed 19 duplicates 
+
+
 
 # now let's add back the versions of the duplicates we want (i.e. those in dup_recoded)
-master_dups <- rbind(data1A_distinct, dup_recoded) 
+master_dups <- rbind(data1A_nodups, dup_recoded) 
 # if this has worked properly we should end up with 367 obs again
 
 # OK now we're ready to merge our data with Kidwell's
