@@ -22,7 +22,6 @@ data1B_select <- data1B %>%
   filter(status == "IP Address") %>%
   select(q2:q50)
 
-
 # let's rename the variables
 
 data1B_rename <- data1B_select %>%
@@ -41,15 +40,23 @@ data1B_rename <- data1B_select %>%
 
 # separate article id number and journal code and filter OUT the articles that were reliability checking 
 data1B_sep <- data1B_rename %>%
-  separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
+  separate(q4_1, into = c("article_id_number"), sep = "\\s", remove = FALSE) %>%
   filter(!str_detect(q4_1,'Check'))
 
+# let's check whether there are any articles which have been coded more than once
+duplicates <- get_dupes(data1B_sep, article_id_number) 
+
+# ok so there are 5 articles which have been coded more than once 
+  # Christina recoded 4 of the articles (one of the articles was already coded by her, so she didn't need to recode it)
+# there is also 1 article which hasn't been coded altogether (because we should have a total of 242 articles) - is there a way we can find this 1 article (I have a list of the article IDs)
+  # once we code this last article, we will need to re-export the data from Qualtrics
+
 # remove non-empirical articles 
-master_dataset_1A_empirical <- master_dataset_1A %>%
+data1B_empirical <- data1B_sep %>%
   filter(no_of_experiments != "0")
 
 # Let's assign each article to a subfield
-psyc_subfield <- master_dataset_1A_empirical %>%
+psyc_subfield <- data1B_empirical %>%
   mutate(subfield = case_when(participants == "Animals" ~ "Behavioural_Neuroscience", 
                               participants == "Humans" & age == "0-18 years or 65 years+" ~ "Developmental_Psychology", 
                               participants == "Humans" & brain_beh == "Brain"  ~ "Cognitive_Neuroscience",
