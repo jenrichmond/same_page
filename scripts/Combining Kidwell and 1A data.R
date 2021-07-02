@@ -8,6 +8,7 @@ library(cowplot)
 library(httr)
 library(extrafont)
 library(here)
+library(Hmisc)
 
 # Read and clean Kidwell data-----
 
@@ -46,14 +47,10 @@ relevant_kidwell_clean <- relevant_kidwell_clean %>%
 
 data1A <- read_csv(here("data_files", "2021_06_28-data1A.csv"))
 
-# use names() to get the variable numbers you want to select
-
-names(data1A)
-
 #filter data1A to only include survey responses not survey previews and select just variables of interest
 data1A_select <- data1A %>%
   filter(status == "IP Address") %>%
-  select(start_date, q2:q10_8_text)
+  select(q2:q10_8_text)
 
 # let's rename the variables
 data1A_rename <- data1A_select %>%
@@ -71,19 +68,13 @@ data1A_sep <- data1A_rename %>%
 # let's create a dataframe with all the duplicated rows, according to article id number
 duplicates <- get_dupes(data1A_sep, article_id_number) 
 
-# to solve duplicate problem, CR recoded all the duplicates, here filtering for her 18 recoded observations
+# to solve the duplicate problem, CR recoded all the duplicates, here filtering for her 19 recoded observations
 dup_recoded <- duplicates %>%
   filter(coder_name == "Christina Rochios") %>%
   filter(no_of_experiments != 0) %>% # filter out the one that CR coded twice
   select(-dupe_count) 
 
-# let's remove all duplicated rows from the clean data1A dataset using the unique() function
-
-data1A_duplicates_removed <- unique(data1A_sep)
-  # this leaves us with 400 obs - weird! (I don't know why the unique function does this but I'm going to ignore it for now)
-## JR- this is weird because the data1Asep had 400 obs, so it is saying that their are no duplicates? it may be because it is matching on the data in the whole row? rather than just article_id??
-
-# let's check this using the distinct() function
+# let's remove all duplicated rows from the clean data1A dataset using the distinct() function
 data1A_distinct <- data1A_sep %>%
   distinct(article_id_number, .keep_all = TRUE) 
   # this leaves us with 367 obs - so it seems like the distinct() function leaves the first version of each duplicate in the dataframe
@@ -91,41 +82,33 @@ data1A_distinct <- data1A_sep %>%
 
 # so let's filter out the rows we know are duplicates
 
+# first let's create a dataframe with all the article ids we know are duplicates
 dups <- c("1-5-2014", "10-2-2014", "11-2-2014", "12-12-2014", "12-8-2014", "13-4-2014", "18-12-2014", "19-12-2014", "19-2-2014", "2-1-2015", "24-3-2014", "24-4-2015", "24-7-2014", "3-3-2014", "4-6-2014", "6-3-2015", "7-8-2014", "8-3-2015", "9-2-2014")
 
-# looking for the opp of %in% 
-# https://stackoverflow.com/questions/38351820/negation-of-in-in-r
-# apparently HMisc pakcage as a %nin% operator
-
-library(Hmisc) # move this up to your packages if it works for you
-
+# then let's delete these known duplicates using the %nin% operator from the Hmisc pacakge
 data1A_nodups <- data1A_distinct %>%
   filter(article_id_number %nin% dups) # yes goes from 367 to 348 - removed 19 duplicates 
 
-
-
 # now let's add back the versions of the duplicates we want (i.e. those in dup_recoded)
 master_dups <- rbind(data1A_nodups, dup_recoded) 
-# if this has worked properly we should end up with 367 obs again
+# Awesome - we've ended up with 367 obs again!
 
 # OK now we're ready to merge our data with Kidwell's
 
-# Combining Kidwell and 1A data----
+# Combining Kidwell and 1A data to create Master 1A dataset----
 
-# Where Christina is up to
+# merge master_dups dataset and relevant_kidwell_clean dataset to get master1Adataset 
+master_1A_dataset <- merge(master_dups, relevant_kidwell_clean, by="article_id_number")
 
-
-
-
-# merge data1A_rename (400obs) dataset and relevant_kidwell_clean (367obs) dataset to get master1Adataset (400obs)
-
-master_1A_dataset <- merge(data1A_sep, relevant_kidwell_clean, by="article_id_number")
+# let's make sure there are no duplicates in this master dataset
+duplicates_master <- get_dupes(master_1A_dataset, article_id_number) 
+  # Great, there are no duplicates!
   
 # COMPARING NO and NUM of experiments----------------
 
 # change no of experiments to numeric
 
-master_1A_dataset$no_of_experiments <- as.numeric(master_1A_dataset$no_of_experiments)
+master_1A_dataset$no_of_experiments <- as.character(master_1A_dataset$no_of_experiments)
 
 # make a new variable to make the 1A coding and kidwell number of experiment in consistent format (char)
 # no_of_experiments is our coding, num_of_experiences is kidwell coding in character format
@@ -136,7 +119,7 @@ master_1A_dataset <- master_1A_dataset %>%
                                      number_of_experiments == 2 ~  "2",
                                      number_of_experiments == 1 ~  "1",
                                      number_of_experiments == 0 ~  "0"))
-                                     
+                                 
  # mutate new variable that checks whether no (1A) and num (kidwell) of experiments is the same                                       
 master_1A_dataset <- master_1A_dataset %>%
   mutate(exp_check = case_when(no_of_experiments == num_of_experiments ~ "TRUE", 
@@ -147,109 +130,38 @@ exp_check <- master_1A_dataset %>%
   filter(exp_check == FALSE) %>%
   relocate(num_of_experiments, .after = no_of_experiments)
 
+# so there are 42 cases where our coding of the no. of experiments doesn't align with Kidwell
+# In 4 of these cases, we coded more than 1 experiment, whilst Kidwell coded 0 
+  # Depsite coding these articles as having 0 experiments, Kidwell went on to assess data and material transparency
+# In none of these cases, we coded 0, whilst Kidwell coded more than 1
+# So, there are no issues here - we are good to continue
 
-# working out obs difference-----------------
-
-# Christina investigating why the number of observations is different for 'master_1A_dataset' and 'relevant_kidwell_clean'
-
-# let's check whether there are duplicates in article_id_number column
-
-duplicates <- get_dupes(master_1A_dataset, article_id_number) 
-
-duplicates %>%
-  write_csv(here("data_files", "2021-06-21_duplicates1A.csv"))
-
-# to solve duplicate problem, CR recoded all the duplicates, here filtering for her 18 recoded observations
-
-dup_recoded <- duplicates %>%
-  filter(coder_name == "Christina Rochios") %>%
-  filter(no_of_experiments != 0) %>% # filter out the one that CR coded twice
-  select(-dupe_count)
-
-# now rbind dup_recoded onto the master1A and then use distinct() to keep the most recent obs of duplicated articleid_numbers, problem with the distinct function is that it picks 1 of the dups to keep (but not the right one!)
-
-# master + dups = 418 observations
-master_dups <- rbind(master_1A_dataset, dup_recoded) 
-
-distinct_master <- master_dups %>% 
-  distinct(article_id_number, .keep_all= TRUE)
-
-dups <- distinct_master %>%
-  get_dupes(article_id_number)
-
-# we want to filter OUT obs that are in this dup_list so that we can add them back in
-dup_list <- dup_recoded$article_id_number
-
-
-
-# so there are 28 duplicated observations in the article_id_number column, which means there are 14 articles that have been coded twice
-
-# let's try and figure out which articles are present in our data1A_sep dataset that AREN'T present in relevant_kidwell_clean and vice versa
-
-# LETS use anti_join, first lets make the problem smaller by select just the article IDs from each dataset
-
-kidwell_IDs <- relevant_kidwell_clean %>%
-  select(article_id_number)
-
-data1A_IDs <- data1A_sep %>%
-  select(article_id_number)
-
-# antijoin, give me all the IDs that are in kidwell but not in data1A
-mismatch1 <- anti_join(kidwell_IDs, data1A_IDs, by = "article_id_number")
-
-# so there are 4 articles which Kidwell coded that we didn't
-
-# antijoin, give me all the IDs that are in data1A but not in kidwell 
-mismatch2 <- anti_join(data1A_IDs, kidwell_IDs, by = "article_id_number")
-
-# Kidwell coded all the articles we coded
-
-
-# OK this might actually make sense now 
-  # there are 10 extra observations in our dataset (data1A_sep) compared to Kidwell 
-  # there are 14 article ID duplicates in the master dataset
-  # we've just figured out that there are 4 uncoded for articles in our dataset (data1A_sep)
-
-# Next steps
-  # code 4 articles which haven't been coded - 21/06 Update: DONE
-  # figure out why there 14 duplicates and delete the versions which are most inaccurate - 21/06 Update: DONE
-
-# LETS remove the duplicated rows so that we keep only the most recent instance of each row
-master_1A_dataset_duplicates_removed <- master_1A_dataset %>%
-  !duplicated[("article_id_number"), fromLast=T]
-
-master_1A_dataset_duplicates_removed <- master_1A_dataset %>%
-  master_1A_dataset[!duplicated(master_1A_dataset$article_id_number, fromLast=T)]
-
-# CR needs Jenny's help here!
-
-# clean the master dataset so that duplicated and unwanted columns/variables are removed
-master_1A_dataset_clean <- master_1A_dataset %>%
-  select(article_id_number:type_of_software_other, number_of_experiments:corresponding_author_e_mail_address) 
+# Comparing our coding of empiricsm to Kidwell's coding of empiricism-----
 
 # let's check that we will have the same number of empirical articles as Kidwell et al. 
-master_1A_dataset_clean %>%
-  count(no_of_experiments %in% c("1", "2", "3", "4", "5_or_more"))
+master_1A_dataset %>%
+  count(no_of_experiments %in% c("1", "2", "3", "4", "5 or more"))
 
-master_1A_dataset_clean %>%
-  count(number_of_experiments > 0)
+master_1A_dataset %>%
+  count(no_of_experiments)
 
+# Is no_of_experiments a numeric variable? Or a character variable?
+# Also, are the outputs from these two scripts not lining up?
 
-### need to fix duplicates and code extra 4 articles before running this again to check that we have hte same number of empirical articles across kidwell and 1A 
+master_1A_dataset %>%
+  count(num_of_experiments %in% c("1", "2", "3", "4", "5 or more"))
 
-# JENNY AND CHRISTINA UP TO HERE
+master_1A_dataset %>%
+  count(num_of_experiments)
 
-# We coded there to be 333 empirical articles and 71 non-empirical articles
-# also - not sure if I'm using the correct function to count the number of variables here?
+# Again, the outputs from these two scripts appear to not be lining up?
 
-# To check the empirical vs. non-empirical count for Kidwell, let's delete our no_of_experiments variable rather than the no_of_experiments variable from the Kidwell study
-master_1A_dataset_clean_check <- master_1A_dataset %>%
-  select(coder_name:journal.x, type_of_article:type_of_software_other, number_of_experiments:corresponding_author_e_mail_address) %>%
-  count(number_of_experiments > 0)
-# Kidwell coded there to be 334 empirical articles, 47 non-empirical articles and 23 NA articles
+# Hmmm so we coded 323  articles to be empirical, whilst Kidwell coded 320 articles to be empirical
+# But from the script above, we know there should be 4 discrepancies not 3 - confused!!
 
-# I don't know what the 23 NA articles from Kidwell are but there appears to be only 1 discrepancy between our data and their data (woohoo!!)
-# Question for Jenny: is there a function we can use to locate where this discrepancy is?
+# CHRISTINA UP TO HERE
+
+# Write and export Master csv-----
 
 # write master_1A_dataset_clean to csv
 
