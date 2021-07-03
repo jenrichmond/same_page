@@ -10,9 +10,11 @@ library(extrafont)
 library(here)
 library(Hmisc)
 
+# Read and clean data from Qualtrics-----
+
 # read in 1B data from csv
 
-data1B <- read_csv(here("data_files", "data1B.csv"))
+data1B <- read_csv(here("data_files", "2021_07_03-data1B.csv"))
 
 # use names() to get the variable numbers you want to select
 
@@ -22,6 +24,8 @@ names(data1B)
 data1B_select <- data1B %>%
   filter(status == "IP Address") %>%
   select(q2:q50)
+
+# Rename data variables-----
 
 # let's rename the variables
 
@@ -44,53 +48,60 @@ data1B_sep <- data1B_rename %>%
   separate(q4_1, into = c("article_id_number"), sep = "\\s", remove = FALSE) %>%
   filter(!str_detect(q4_1,'Check'))
 
+# Filter out unwanted duplicates----
+
 # let's check whether there are any articles which have been coded more than once
 duplicates <- get_dupes(data1B_sep, article_id_number) 
 
-# ok so there are 5 articles which have been coded more than once 
-  # Christina recoded 4 of the articles (one of the articles was already coded by her, so she didn't need to recode it)
-# there is also 1 article which hasn't been coded altogether (because we should have a total of 242 articles) 
+# to solve the duplicate problem, CR recoded all the duplicates (except for one, which she had coded originally), here filtering for her 4 recoded observations
+dup_recoded <- duplicates %>%
+  filter(coder_name == "Christina Rochios") %>%
+  select(-dupe_count) 
 
-# let's figure out which article we haven't coded
+# let's remove all duplicated rows from the clean data1A dataset using the distinct() function
+data1B_distinct <- data1B_sep %>%
+  distinct(article_id_number, .keep_all = TRUE) 
+# this leaves us with 242 obs - so it seems like the distinct() function leaves the first version of each duplicate in the dataframe
+# BUT we want to deleted ALL versions of the duplicates
 
-# let's read in all the article IDs from the metadata dataset
+# so let's filter out the rows we know are duplicates
 
-metadata_data1B <- read_csv(here("data_files", "metadata_1B.csv"))
+# first let's create a dataframe with all the article ids we know are duplicates
+dups <- c("2019-30-10-1424", "2019-30-7-989", "2020-31-2-214", "2020-31-3-243", "2020-31-9-1084")
 
-# let's create separate dataframes for metadata and data1B, just including article ID
+# then let's delete these known duplicates using the %nin% operator from the Hmisc pacakge
+data1B_nodups <- data1B_distinct %>%
+  filter(article_id_number %nin% dups) # yes goes from 242 to 237 - removed 5 duplicates 
 
-data1B_IDs <- data1B_sep %>%
-  select(article_id_number)
+# now let's add back the versions of the duplicates we want (i.e. those in dup_recoded)
+master_dups <- rbind(data1B_nodups, dup_recoded) 
+# Awesome - we've ended up with 242 obs again!
 
-metadata1B_IDs <- metadata_data1B %>%
-  rename(article_id_number = `Article ID`) %>%
-  select(article_id_number)
-
-# antijoin, give me all the IDs that are in metdata1B but not in data1B
-mismatch1 <- anti_join(metadata1B_IDs, data1B_IDs, by = "article_id_number")
-
-# antijoin, given me all the IDs that are in data1B but not in metadata1B
-mismatch2 <- anti_join(data1B_IDs, metadata1B_IDs, by = "article_id_number")
-
-# Ok so, there is 1 article we haven't coded for 2020-31-4-460
-# Christina will need to recode this article, then we will redownload the Qualtrics data
-
-
+# Removing non-empirical articles-----
 
 # remove non-empirical articles 
-data1B_empirical <- data1B_sep %>%
+data1B_empirical <- master_dups %>%
   filter(no_of_experiments != "0")
 
+glimpse(data1B_empirical)
+
+# Assigning articles to a subfield----
+
+install.packages("tibble")
+library(tibble)
+
 # Let's assign each article to a subfield
-psyc_subfield <- data1B_empirical %>%
-  mutate(subfield = case_when(participants == "Animals" ~ "Behavioural_Neuroscience", 
-                              participants == "Humans" & age == "0-18 years or 65 years+" ~ "Developmental_Psychology", 
-                              participants == "Humans" & brain_beh == "Brain"  ~ "Cognitive_Neuroscience",
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Sensation" ~ "Perception", 
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Emotion, personality, social behaviour" ~ "Social_Psychology",
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" ~ "Cognition",
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" ~ "Health_Psychology")) %>%
+(psyc_subfield) <- data1B_empirical %>%
+  mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
+                              "Humans" == participants & "0-18 years or 65 years+" == age ~ "Developmental Psychology", 
+                              "Humans" == participants & "Brain" == brain_beh  ~ "Cognitive Neuroscience",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Sensation" == topic ~ "Perception",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Emotion, personality, social behaviour" == topic ~ "Social Psychology",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" == topic ~ "Cognition",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
   relocate(psyc_subfield, .before = journal.x)
+
+# Christina stuck here - I'm getting an error message that says "Error: Must subset columns with a valid subscript vector.x Subscript has the wrong type `tbl_df<"
 
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
 # let's assign these 'other' articles to a subfield manually
@@ -121,19 +132,25 @@ data_long <- psyc_subfield %>%
 
 # Now let's assign scores for openness of data
 data_scored_for_data <- data_long %>%
-  mutate(data_score = case_when(question == "software" & response == "No" ~ 0, question == "software" & response == "Yes" ~ 1,
-                                question == "data_statement_present" & response == "No" ~ 0, question == "data_statement_present" & response == "Yes" ~ 1, 
-                                question == "data_statement_indicates" & response %in% c("No_statement", "Unavailable") ~ 0, question == "data_statement_indicates" & response == "Available" ~ 1,
+  mutate(data_score = case_when("software" == question & "No" == response ~ 0, "software" == question & "Yes" == response ~ 1,
+                                "data_statement_present" == question & "No" == response ~ 0, question == "data_statement_present" == question & "Yes" == response ~ 1, 
+                                "data_statement_indicates" == question & response %in% c("No_statement", "Unavailable") ~ 0, "data_statement_indicates" == question & "Available" == response  ~ 1,
+
+                                "data_accessible" == question & "Not_clear" == response ~ 0, "data_accessible" == question & response %in% c("Public_dataset_generated_by_authors", "Public_dataset_generated_by_others", "Other") ~ 2, 
+                                "dataset_URL_working" == question & "No" == response ~ 0, question == "dataset_URL_working" == question & "Yes" == response ~ 2,
+                                "data_locatable" == question & response %in% c("Requires_permission", "No") ~ 0, "data_locatable" == question & "Yes" == response ~ 2,
+                                "data_downloadable" == question & response %in% c("Requires_permission", "No") ~ 0, "data_downloadable" == question & "Yes" == response ~ 2,
+                                "data_correspond" == question & response %in% c("Unclear", "No") ~ 0, "data_correspond" == question & "Yes" == response ~ 2,
+                                "data_complete" == question & response %in% c("Unclear_whether_or_not_all_of_the_data_are_available", "No,_not_all_of_the_data_are_available") ~ 0, "data_complete" == question & "Yes,_but_only_some_of_the_data_are_available" == response ~ 1, "data_complete" == question & "Yes,_all_of_the_data_appear_to_be_available" == response ~ 2,
                                 
-                                question == "data_accessible" & response == "Not_clear" ~ 0, question == "data_accessible" & response %in% ("Public_dataset_generated_by_authors", "Public_dataset_generated_by_others", "Other") ~ 2, 
-                                question == "dataset_URL_working" & response == "No" ~ 0, question == "ddataset_URL_working" & response == "Yes" ~ 2,
-                                question == "data_locatable" & response %in% c("Requires_permission", "No") ~ 0, question == "data_locatable" & response == "Yes" ~ 2,
-                                question == "data_downloadable" & response %in% c("Requires_permission", "No") ~ 0, question == "data_downloadable" & response == "Yes" ~ 2,
-                                question == "data_correspond" & response %in% c("Unclear", "No") ~ 0, question == "data_correspond" & response == "Yes" ~ 2,
-                                question == "data_complete" & response %in% c("Unclear_whether_or_not_all_of_the_data_are_available", "No,_not_all_of_the_data_are_available") ~ 0, question == "data_complete" & response == "Yes,_but_only_some_of_the_data_are_available" ~ 1, question == "data_complete" & response == "Yes,_all_of_the_data_appear_to_be_available" ~ 2,
-                                
-                                question == "data_codebook" & response == "No" ~ 0, question == "data_codebook" & response == "Yes" ~ 5,
-                                question == "data_scripts" & response == "No" ~ 0, question == "data_scripts" & response == "Yes" ~ 5))
+                                "data_codebook" == question & "No" == response ~ 0, "data_codebook" == question & "Yes" == response ~ 5,
+                                "data_scripts" == question & "No" == response ~ 0, "data_scripts" == question & "Yes" == response ~ 5))
+
+# Christina trying another way - doesn't look like it's working 
+data_scored <- data_long %>%
+  mutate(data_score = case_when("No" == "software" ~ 0, "Yes" == "software" ~ 1, 
+                                "No" == "data_statement_present" ~ 0, "Yes" == "data_statement_present" ~ 1,
+                                "data_statement_indicates" %in% c("No_statement", "Unavailable") ~ 0, "Available" = "data_statement_indicates" ~ 1))
 
 # Let's create a single open data score for each article
 
