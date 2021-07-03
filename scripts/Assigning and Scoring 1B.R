@@ -8,6 +8,7 @@ library(cowplot)
 library(httr)
 library(extrafont)
 library(here)
+library(Hmisc)
 
 # read in 1B data from csv
 
@@ -48,8 +49,33 @@ duplicates <- get_dupes(data1B_sep, article_id_number)
 
 # ok so there are 5 articles which have been coded more than once 
   # Christina recoded 4 of the articles (one of the articles was already coded by her, so she didn't need to recode it)
-# there is also 1 article which hasn't been coded altogether (because we should have a total of 242 articles) - is there a way we can find this 1 article (I have a list of the article IDs)
-  # once we code this last article, we will need to re-export the data from Qualtrics
+# there is also 1 article which hasn't been coded altogether (because we should have a total of 242 articles) 
+
+# let's figure out which article we haven't coded
+
+# let's read in all the article IDs from the metadata dataset
+
+metadata_data1B <- read_csv(here("data_files", "metadata_1B.csv"))
+
+# let's create separate dataframes for metadata and data1B, just including article ID
+
+data1B_IDs <- data1B_sep %>%
+  select(article_id_number)
+
+metadata1B_IDs <- metadata_data1B %>%
+  rename(article_id_number = `Article ID`) %>%
+  select(article_id_number)
+
+# antijoin, give me all the IDs that are in metdata1B but not in data1B
+mismatch1 <- anti_join(metadata1B_IDs, data1B_IDs, by = "article_id_number")
+
+# antijoin, given me all the IDs that are in data1B but not in metadata1B
+mismatch2 <- anti_join(data1B_IDs, metadata1B_IDs, by = "article_id_number")
+
+# Ok so, there is 1 article we haven't coded for 2020-31-4-460
+# Christina will need to recode this article, then we will redownload the Qualtrics data
+
+
 
 # remove non-empirical articles 
 data1B_empirical <- data1B_sep %>%
