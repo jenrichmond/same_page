@@ -46,7 +46,8 @@ data1B_rename <- data1B_select %>%
 # separate article id number and journal code and filter OUT the articles that were reliability checking 
 data1B_sep <- data1B_rename %>%
   separate(q4_1, into = c("article_id_number"), sep = "\\s", remove = FALSE) %>%
-  filter(!str_detect(q4_1,'Check'))
+  filter(!str_detect(q4_1,'Check')) %>%
+  rename(article_id_number_and_title = q4_1)
 
 # Filter out unwanted duplicates----
 
