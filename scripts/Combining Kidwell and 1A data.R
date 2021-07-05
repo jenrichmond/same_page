@@ -104,7 +104,7 @@ master_1A_dataset <- merge(master_dups, relevant_kidwell_clean, by="article_id_n
 duplicates_master <- get_dupes(master_1A_dataset, article_id_number) 
   # Great, there are no duplicates!
   
-# COMPARING NO and NUM of experiments----------------
+# Checking our judgements of empiricism to Kidwell's----------------
 
 # change no of experiments to numeric
 
@@ -133,14 +133,26 @@ exp_check <- master_1A_dataset %>%
                                  num_of_experiments != 0 & no_of_experiments == 0 ~ "them_more")) %>%
   relocate(kid_us_diff, .after = num_of_experiments)
 
+# filtering only cases where our judgements of empiricism don't match Kidwell's (i.e. we coded 0, they coded >= 1 or vice versa)
 exp_check_followup <- exp_check %>%
   filter(kid_us_diff %in% c("us_more", "them_more"))
 
-# so there are 42 cases where our coding of the no. of experiments doesn't align with Kidwell
-# In 4 of these cases, we coded more than 1 experiment, whilst Kidwell coded 0 
-  # Depsite coding these articles as having 0 experiments, Kidwell went on to assess data and material transparency
-# In none of these cases, we coded 0, whilst Kidwell coded more than 1
-# So, there are no issues here - we are good to continue
+# Summary
+  # There are 43 cases where our coding of the no. of experiments doesn't align with Kidwell's
+  # In 4 of these cases, we coded more than 1 experiment, whilst Kidwell coded 0 
+  # In 1 of these cases, we coded 0, whilst Kidwell coded more than 1
+  # Christina has checked these 5 cases, and in all the cases our judgement of empiricism is correct, NOT Kidwell's
+  # So going forward, we will use our no_of_experiments NOT num_of_experiments
+
+# Since we're using our judgement of empiricism, we can delete Kidwell's coding of num_of_experiments
+# We can also delete number_of_experiments and exp_check as these variables are no longer required
+master_1A_dataset %>%
+  select(-number_of_experiments)
+master_1A_dataset %>%
+  subset(master_1A_dataset, select = -c(number_of_experiments, num_of_experiments, exp_check, exp_check_followup))
+master_1A_dataset %>%
+  filter(number_of_experiments, num_of_experiments, exp_check)
+# struggling!
 
 # Comparing our coding of empiricsm to Kidwell's coding of empiricism-----
 
