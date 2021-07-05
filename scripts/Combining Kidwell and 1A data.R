@@ -13,7 +13,7 @@ library(Hmisc)
 # Read and clean Kidwell data-----
 
 # First let's read the Kidwell data
-kidwell <- read_csv(here("data_files", "master_dataset.csv")) %>%
+kidwell <- read_csv(here("data_files", "kidwell_et_al._(2016)_master_dataset.csv")) %>%
   clean_names()
 
 # Now lets pull journal names and year out of the article ID number 

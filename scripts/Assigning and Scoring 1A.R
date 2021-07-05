@@ -10,24 +10,33 @@ library(extrafont)
 library(here)
 
 # First let's read in the master 1A dataset
-kidwell <- read_csv(here("data_files", "master_dataset_1A.csv")) %>%
+master_dataset_1A <- read_csv(here("data_files", "master_dataset_1A.csv")) %>%
   clean_names()
 
 # remove non-empirical articles 
 master_dataset_1A_empirical <- master_dataset_1A %>%
   filter(no_of_experiments != "0")
-# CR before we do this, we might want to investigate the 1 case where we said the article was non-empirical but Kidwell said it was
 
 # Let's assign each article to a subfield
 psyc_subfield <- master_dataset_1A_empirical %>%
-  mutate(subfield = case_when(participants == "Animals" ~ "Behavioural_Neuroscience", 
-                              participants == "Humans" & age == "0-18 years or 65 years+" ~ "Developmental_Psychology", 
-                              participants == "Humans" & brain_beh == "Brain"  ~ "Cognitive_Neuroscience",
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Sensation" ~ "Perception", 
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Emotion, personality, social behaviour" ~ "Social_Psychology",
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" ~ "Cognition",
-                              participants == "Humans" & brain_beh == "Both"|"Behaviour" & topic == "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" ~ "Health_Psychology")) %>%
-  relocate(psyc_subfield, .before = journal.x)
+  mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
+                              "Humans" == participants & "0-18 years or 65 years+" == age ~ "Developmental Psychology", 
+                              "Humans" == participants & "Brain" == brain_beh  ~ "Cognitive Neuroscience",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Sensation" == topic ~ "Perception",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Emotion, personality, social behaviour" == topic ~ "Social Psychology",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" == topic ~ "Cognition",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
+  relocate(subfield, .after = no_of_experiments)
+
+count_subfield <- psyc_subfield %>%
+  tabyl(subfield)
+
+count_subfield %>%
+  ggplot(aes(x = reorder(subfield, n), y = n)) +
+  geom_col() +
+  coord_flip()
+
+
 
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
 # let's assign these 'other' articles to a subfield manually
