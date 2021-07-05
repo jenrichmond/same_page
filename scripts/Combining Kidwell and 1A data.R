@@ -61,7 +61,8 @@ data1A_rename <- data1A_select %>%
 # separate article id number and journal code and filter OUT the observations that were reliability checking 
 data1A_sep <- data1A_rename %>%
   separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
-  filter(!str_detect(q4_1,'Check'))
+  filter(!str_detect(q4_1,'Check')) %>%
+  rename(article_id_number_and_title = q4_1)
 
 # Remove duplicated rows from Qualtrics data----
 
@@ -100,7 +101,12 @@ master_dups <- rbind(data1A_nodups, dup_recoded)
 # merge master_dups dataset and relevant_kidwell_clean dataset to get master1Adataset 
 master_1A_dataset <- merge(master_dups, relevant_kidwell_clean, by="article_id_number")
 
-# let's make sure there are no duplicates in this master dataset
+# we can delete irrelevant/duplicated information between the Kidwell dataset and the 1A dataset
+master_1A_dataset <- master_1A_dataset %>%
+  select(-c(timestamp:journal)) %>%
+  rename(journal = journal_code.x) # renaming 'journal_code.x" since the code above deletes the duplicate variable
+
+# let's make sure there are no duplicate article IDs in this master dataset
 duplicates_master <- get_dupes(master_1A_dataset, article_id_number) 
   # Great, there are no duplicates!
   
@@ -146,41 +152,12 @@ exp_check_followup <- exp_check %>%
 
 # Since we're using our judgement of empiricism, we can delete Kidwell's coding of num_of_experiments
 # We can also delete number_of_experiments and exp_check as these variables are no longer required
-master_1A_dataset %>%
-  select(-number_of_experiments)
-master_1A_dataset %>%
-  subset(master_1A_dataset, select = -c(number_of_experiments, num_of_experiments, exp_check, exp_check_followup))
-master_1A_dataset %>%
-  filter(number_of_experiments, num_of_experiments, exp_check)
-# struggling!
-
-# Comparing our coding of empiricsm to Kidwell's coding of empiricism-----
-
-# let's check that we will have the same number of empirical articles as Kidwell et al. 
-master_1A_dataset %>%
-  count(no_of_experiments %in% c("1", "2", "3", "4", "5 or more"))
-
-master_1A_dataset %>%
-  count(no_of_experiments)
-
-# Is no_of_experiments a numeric variable? Or a character variable?
-# Also, are the outputs from these two scripts not lining up?
-
-master_1A_dataset %>%
-  count(num_of_experiments %in% c("1", "2", "3", "4", "5 or more"))
-
-master_1A_dataset %>%
-  count(num_of_experiments)
-
-# Again, the outputs from these two scripts appear to not be lining up?
-
-# Hmmm so we coded 323  articles to be empirical, whilst Kidwell coded 320 articles to be empirical
-# But from the script above, we know there should be 4 discrepancies not 3 - confused!!
-
-# CHRISTINA UP TO HERE
+# Let's use the select function to keep the variables we want and to remove those we don't
+master_1A_dataset <- master_1A_dataset %>%
+  select(article_id_number:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address)
 
 # Write and export Master csv-----
 
 # write master_1A_dataset_clean to csv
 
-master_1A_dataset_clean %>% write_csv(here::here("data_files", "master_dataset_1A"))
+master_1A_dataset %>% write_csv(here::here("data_files", "master_dataset_1A.csv"))
