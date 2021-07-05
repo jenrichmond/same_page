@@ -91,7 +91,8 @@ install.packages("tibble")
 library(tibble)
 
 # Let's assign each article to a subfield
-(psyc_subfield) <- data1B_empirical %>%
+
+subfield_test <- data1B_empirical %>%
   mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
                               "Humans" == participants & "0-18 years or 65 years+" == age ~ "Developmental Psychology", 
                               "Humans" == participants & "Brain" == brain_beh  ~ "Cognitive Neuroscience",
@@ -99,9 +100,18 @@ library(tibble)
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Emotion, personality, social behaviour" == topic ~ "Social Psychology",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" == topic ~ "Cognition",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
-  relocate(psyc_subfield, .before = journal.x)
+  relocate(subfield, .after = no_of_experiments)
 
-# Christina stuck here - I'm getting an error message that says "Error: Must subset columns with a valid subscript vector.x Subscript has the wrong type `tbl_df<"
+
+count_subfield <- subfield_test %>%
+  tabyl(subfield)
+
+count_subfield %>%
+  ggplot(aes(x = reorder(subfield, n), y = n)) +
+  geom_col() +
+  coord_flip()
+
+
 
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
 # let's assign these 'other' articles to a subfield manually

@@ -128,7 +128,13 @@ master_1A_dataset <- master_1A_dataset %>%
 # filter only cases where it is NOT the same 
 exp_check <- master_1A_dataset %>%
   filter(exp_check == FALSE) %>%
-  relocate(num_of_experiments, .after = no_of_experiments)
+  relocate(num_of_experiments, .after = no_of_experiments) %>%
+  mutate(kid_us_diff = case_when(num_of_experiments == 0 & no_of_experiments != 0 ~ "us_more", 
+                                 num_of_experiments != 0 & no_of_experiments == 0 ~ "them_more")) %>%
+  relocate(kid_us_diff, .after = num_of_experiments)
+
+exp_check_followup <- exp_check %>%
+  filter(kid_us_diff %in% c("us_more", "them_more"))
 
 # so there are 42 cases where our coding of the no. of experiments doesn't align with Kidwell
 # In 4 of these cases, we coded more than 1 experiment, whilst Kidwell coded 0 
