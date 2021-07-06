@@ -39,19 +39,46 @@ count_subfield %>%
   geom_col() +
   coord_flip()
 
-
-
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
 # let's assign these 'other' articles to a subfield manually
-psyc_subfield %>%
-  select(subfield != "Behavioural_Neuroscience", "Developmental_Psychology", "Cognitive_Neuroscience", "Perception", "Social_Psychology", "Cognition", "Health_Psychology")
-# finish this code once you know which articles need to be assigned manually 
+na_articles <- subfield_test %>%
+  filter(is.na(subfield)) %>%
+  select(coder_name:subfield, topic_other)
 
-#Check NA values
+# Christina assessed all 19 NA cases, and decided upon a subfield for each case
+psyc_subfield <- subfield_test %>%
+  mutate(subfield = case_when("2020-31-1-65" == article_id_number ~ "Cognition",
+                              "2019-30-8-1123" == article_id_number ~ "Cognition",
+                              "2019-30-9-1259" == article_id_number ~ "Cognition",
+                              "2019-30-8-1174" == article_id_number ~ "Cognition",
+                              "2019-30-8-1186" == article_id_number ~ "Social Psychology", 
+                              "2019-30-8-1195" == article_id_number ~ "Cognition",
+                              "2020-31-11-1386" == article_id_number ~ "Cognition",
+                              "2019-30-9-1362" == article_id_number ~ "Cognition",
+                              "2020-31-5-582" == article_id_number ~ "Social Psychology",
+                              "2020-31-6-623" == article_id_number ~ "Social Psychology",
+                              "2020-31-6-729" == article_id_number ~ "Behavioural Neuroscience",
+                              "2020-31-7-781" == article_id_number ~ "Developmental Psychology",
+                              "2020-31-7-865" == article_id_number ~ "Social Psychology",
+                              "2020-31-5-505" == article_id_number ~ "Perception",
+                              "2020-31-4-449" == article_id_number ~ "Health Psychology",
+                              "2020-31-7-873" == article_id_number ~ "Developmental Psychology",
+                              "2020-31-8-1013" == article_id_number ~ "Social Psychology",
+                              "2020-31-10-1245" == article_id_number ~ "Cognition",
+                              "2020-31-10-1222" == article_id_number ~ "Social Psychology"))
 
-na_check <- psyc_subfield %>%
+# let's check that all articles have been assigned to a subfield
+na_articles_1 <- psyc_subfield %>%
+  filter(subfield == NA)
+
+# let's check it another way
+na_articles_2 <- psyc_subfield %>%
   filter(is.na(subfield))
 
+# Why aren't na_articles_1 and na_articles_2 lining up? 
+
+# CHRISTINA UP TO HERE
+  
 # let's summarise the articles by subfield
 
 subfield_summary <- psyc_subfield %>%
