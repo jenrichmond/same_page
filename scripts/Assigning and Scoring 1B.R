@@ -45,7 +45,7 @@ na_articles <- subfield_test %>%
   filter(is.na(subfield)) %>%
   select(coder_name:subfield, topic_other)
 
-# Christina assessed all 19 NA cases, and decided upon a subfield for each case
+# Christina assessed all 19 NA cases, and decided upon a subfield for each case, add TRUE ~ as.character(subfield) to keep the value of subfield (rather than replace with NA) if case_when conditions don't apply
 psyc_subfield <- subfield_test %>%
   mutate(subfield = case_when("2020-31-1-65" == article_id_number ~ "Cognition",
                               "2019-30-8-1123" == article_id_number ~ "Cognition",
@@ -65,7 +65,8 @@ psyc_subfield <- subfield_test %>%
                               "2020-31-7-873" == article_id_number ~ "Developmental Psychology",
                               "2020-31-8-1013" == article_id_number ~ "Social Psychology",
                               "2020-31-10-1245" == article_id_number ~ "Cognition",
-                              "2020-31-10-1222" == article_id_number ~ "Social Psychology"))
+                              "2020-31-10-1222" == article_id_number ~ "Social Psychology", 
+                              TRUE ~ as.character(subfield)))  
 
 # let's check that all articles have been assigned to a subfield
 na_articles_1 <- psyc_subfield %>%
