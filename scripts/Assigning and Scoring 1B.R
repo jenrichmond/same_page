@@ -76,8 +76,6 @@ count_subfield %>%
 subfield_summary <- psyc_subfield %>%
   select(article_id_number, subfield)
 
-# CHRISTINA UP TO HERE
-
 # Now let's score the articles
 
 # scoring
@@ -85,18 +83,23 @@ subfield_summary <- psyc_subfield %>%
 # med items = 2
 # high items = 5
 
-#First we need to make the data long
+glimpse(psyc_subfield)
+
+#First we need to change data_page_no to a character variable (from a numeric variable)
+psyc_subfield <- transform(psyc_subfield, "data_page_no" = as.character(data_page_no))
+
+# Next we need to make the data long
 data_long <- psyc_subfield %>%
-  pivot_longer(names_to = "question", values_to = "response", data_badge:URL_supplemental_info)
+  pivot_longer(everything(), names_to = "question", values_to = "response")
 
 # Now let's assign scores for openness of data
 data_scored_for_data <- data_long %>%
   mutate(data_score = case_when("software" == question & "No" == response ~ 0, "software" == question & "Yes" == response ~ 1,
-                                "data_statement_present" == question & "No" == response ~ 0, question == "data_statement_present" == question & "Yes" == response ~ 1, 
+                                "data_statement_present" == question & "No" == response ~ 0, "data_statement_present" == question & "Yes" == response ~ 1,
                                 "data_statement_indicates" == question & response %in% c("No_statement", "Unavailable") ~ 0, "data_statement_indicates" == question & "Available" == response  ~ 1,
 
                                 "data_accessible" == question & "Not_clear" == response ~ 0, "data_accessible" == question & response %in% c("Public_dataset_generated_by_authors", "Public_dataset_generated_by_others", "Other") ~ 2, 
-                                "dataset_URL_working" == question & "No" == response ~ 0, question == "dataset_URL_working" == question & "Yes" == response ~ 2,
+                                "dataset_URL_working" == question & "No" == response ~ 0, "dataset_URL_working" == question & "Yes" == response ~ 2,
                                 "data_locatable" == question & response %in% c("Requires_permission", "No") ~ 0, "data_locatable" == question & "Yes" == response ~ 2,
                                 "data_downloadable" == question & response %in% c("Requires_permission", "No") ~ 0, "data_downloadable" == question & "Yes" == response ~ 2,
                                 "data_correspond" == question & response %in% c("Unclear", "No") ~ 0, "data_correspond" == question & "Yes" == response ~ 2,
@@ -105,17 +108,15 @@ data_scored_for_data <- data_long %>%
                                 "data_codebook" == question & "No" == response ~ 0, "data_codebook" == question & "Yes" == response ~ 5,
                                 "data_scripts" == question & "No" == response ~ 0, "data_scripts" == question & "Yes" == response ~ 5))
 
-# Christina trying another way - doesn't look like it's working 
-data_scored <- data_long %>%
-  mutate(data_score = case_when("No" == "software" ~ 0, "Yes" == "software" ~ 1, 
-                                "No" == "data_statement_present" ~ 0, "Yes" == "data_statement_present" ~ 1,
-                                "data_statement_indicates" %in% c("No_statement", "Unavailable") ~ 0, "Available" = "data_statement_indicates" ~ 1))
-
-# Let's create a single open data score for each article
+# Let's create a single open data score for each article - CR struggling here
 
 open_data_score_summary <- data_scored_for_data %>%
-  group_by(article_id_number) %>% 
+  group_by(question == "article_id_number") %>% 
   summarise(totalscore = sum(data_score))
+
+open_data_score_summary <- data_scored_for_data %>%
+  filter(question == "article_id_number") %>% 
+  mutate(totalscore = sum(data_score))
 
 # And let's assign scores for openness of materials 
 data_scored_for_materials < data_long %>%
@@ -132,7 +133,22 @@ data_scored_for_materials < data_long %>%
                                      
                                      question == "materials_explanation" & response == "No" ~ 0, question == "materials_explanation" & response == "Yes" ~ 5,))
 
-# Let's create a single open materials score for each article
+data_scored_for_materials <- data_long %>%
+  mutate(materials_score = case_when("materials_statement_present" == question & "No" == response ~ 0, "materials_statement_present" == question & "Yes" == response ~ 1,
+                                     "materials_statement_indicates" == question & response %in% c("No_statement", "Unavailable") ~ 0, "materials_statement_indicates" == question & "Available" == response  ~ 1,
+                                     
+                                     "materials_accessible" == question & "Not_clear" == response ~ 0, "materials_accessible" == question & response %in% c("Public_aset_generated_by_authors", "Public_set_generated_by_others", "Other") ~ 2, 
+                                     "materials_URL_working" == question & "No" == response ~ 0, "materials_URL_working" == question & "Yes" == response ~ 2,
+                                     "materials_locatable" == question & response %in% c("Requires_permission", "No") ~ 0, "materials_locatable" == question & "Yes" == response ~ 2,
+                                     "materials_downloadable" == question & response %in% c("Requires_permission", "No") ~ 0, "materials_downloadable" == question & "Yes" == response ~ 2,
+                                     "materials_correspond" == question & response %in% c("Unclear", "No") ~ 0, "materials_correspond" == question & "Yes" == response ~ 2,
+                                     "materials_complete" == question & response %in% c("Unclear_whether_or_not_all_of_the_materials_are_available", "No,_not_all_of_the_materials_are_available") ~ 0, "materials_complete" == question & "Yes,_but_only_some_of_the_materials_are_available" == response ~ 1, "materials_complete" == question & "Yes,_all_of_the_materials_appear_to_be_available" == response ~ 2,
+                                     "supplemental_info" == question & response %in% c("Yes,_but_it_is_not_freely_accessible", "No") ~ 0, "supplemental_info" == question & "Yes,_and_it_is_freely_accessible" == response ~ 2,
+                                     
+                                     "materials_explanation" == question & "No" == response ~ 0, "materials_explanation" == question & "Yes" == response ~ 5))
+
+
+# Let's create a single open materials score for each article - struggling here
 
 open_materials_score_summary <- data_scored_for_materials %>%
   group_by(article_id_number) %>% 

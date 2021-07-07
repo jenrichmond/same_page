@@ -18,7 +18,7 @@ master_dataset_1A_empirical <- master_dataset_1A %>%
   filter(no_of_experiments != "0")
 
 # Let's assign each article to a subfield
-psyc_subfield <- master_dataset_1A_empirical %>%
+subfield_test <- master_dataset_1A_empirical %>%
   mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
                               "Humans" == participants & "0-18 years or 65 years+" == age ~ "Developmental Psychology", 
                               "Humans" == participants & "Brain" == brain_beh  ~ "Cognitive Neuroscience",
@@ -28,6 +28,54 @@ psyc_subfield <- master_dataset_1A_empirical %>%
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
   relocate(subfield, .after = no_of_experiments)
 
+# Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
+# let's assign these 'other' articles to a subfield manually
+na_articles <- subfield_test %>%
+  filter(is.na(subfield)) %>%
+  select(coder_name:subfield, topic_other)
+
+# Christina assessed all 36 NA cases, and decided upon a subfield for each case
+psyc_subfield <- subfield_test %>%
+  mutate(subfield = case_when("1-5-2015" == article_id_number ~ , # check with Jenny
+                              "10-1-2015" == article_id_number ~ "Cognition", # maybe change after you check with Jenny about the first one
+                              "10-3-2014" == article_id_number ~ "Percpetion",
+                              "10-4-2015" == article_id_number ~ "Perception",
+                              "10-5-2015" == article_id_number ~ "Perception",
+                              "11-5-2015" == article_id_number ~ "Cognition",
+                              "12-10-2014" == article_id_number ~ "Social Psychology",
+                              "12-4-2014" == article_id_number ~ "Social Psychology",
+                              "12-7-2014" == article_id_number ~ "Cognition", 
+                              "13-10-2014" == article_id_number ~ "Social Psychology",
+                              "13-6-2014" == article_id_number ~ "Cognition",
+                              "15-6-2014" == article_id_number ~ "Cognition",
+                              "16-12-2014" == article_id_number ~ "Cognition",
+                              "16-2-2015" == article_id_number ~ "Social Psychology",
+                              "16-6-2014" == article_id_number ~ "Social Psychology",
+                              "17-1-2014" == article_id_number ~ 'Cognition',
+                              "17-2-2015" == article_id_number ~ "Social Psychology",
+                              "19-4-2014" == article_id_number ~ "Cognition",
+                              "19-4-2015" == article_id_number ~ "Social Psychology",
+                              "2-4-2014" == article_id_number ~ "Cognition",
+                              "2-5-2014" == article_id_number ~ "Perception",
+                              "2-5-2015" == article_id_number ~ "Cognition",
+                              "2-7-2014" == article_id_number ~ "Social Psychology",
+                              "23-4-2014" == article_id_number ~ "Health Psychology",
+                              "24-4-2014" == article_id_number ~ "Social Psychology",
+                              "3-5-2014" == article_id_number ~ "Social Psychology",
+                              "3-8-2014" == article_id_number ~ , # check with Jenny
+                              "34-2-2014" == article_id_number ~ "Social Psychology",
+                              "4-1-2015" == article_id_number ~ "Social Psychology",
+                              "4-12-2014" == article_id_number , # don't know if it's social or BN
+                              "4-7-2014" == article_id_number ~ "Cognition",
+                              "5-2-2015" == article_id_number ~ "Health Psychology",
+                              "5-8-2014" == article_id_number ~ "Perception",
+                              "6-2-2015" == article_id_number ~ "Social Psychology",
+                              "6-5-2015" == article_id_number ~ "Social Psychology",
+                              "8-8-2014" == article_id_number ~ "Social Psychology",
+                              TRUE ~ as.character(subfield)))
+
+# let's summarise the articles by subfield
+
 count_subfield <- psyc_subfield %>%
   tabyl(subfield)
 
@@ -35,21 +83,6 @@ count_subfield %>%
   ggplot(aes(x = reorder(subfield, n), y = n)) +
   geom_col() +
   coord_flip()
-
-
-
-# Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
-# let's assign these 'other' articles to a subfield manually
-psyc_subfield %>%
-  select(subfield != "Behavioural_Neuroscience", "Developmental_Psychology", "Cognitive_Neuroscience", "Perception", "Social_Psychology", "Cognition", "Health_Psychology")
-# finish this code once you know which articles need to be assigned manually 
-
-#Check NA values
-
-na_check <- psyc_subfield %>%
-  filter(is.na(subfield))
-
-# let's summarise the articles by subfield
 
 subfield_summary <- psyc_subfield %>%
   select(article_id_number, subfield)
@@ -63,7 +96,7 @@ subfield_summary <- psyc_subfield %>%
 
 #First we need to make the data long
 data_long <- psyc_subfield %>%
-  pivot_longer(names_to = "question", values_to = "response", software:if_materials_url_links_to_an_independent_archive_repository_which_repository)
+  pivot_longer(names_to = "question", values_to = "response", software:corresponding_author_e_mail_address)
 
 # Now let's assign scores for openness of data
 data_scored_for_data <- data_long %>%
