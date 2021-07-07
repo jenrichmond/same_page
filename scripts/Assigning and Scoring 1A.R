@@ -95,24 +95,29 @@ subfield_summary <- psyc_subfield %>%
   # high items = 5
 
 #First we need to make the data long
-data_long <- psyc_subfield %>%
-  pivot_longer(names_to = "question", values_to = "response", software:corresponding_author_e_mail_address)
+data_long <- subfield_test %>%
+  pivot_longer(everything(), names_to = "question", values_to = "response")
 
 # Now let's assign scores for openness of data
 data_scored_for_data <- data_long %>%
-  mutate(data_score = case_when(question == "software" & response == "No" ~ 0, question == "software" & response == "Yes" ~ 1,
-                           question == "does_the_article_state_whether_or_not_the_data_are_available" & response == "No" ~ 0, question == "does_the_article_state_whether_or_not_the_data_are_available" & response == "Yes" ~ 1, 
-                           question == "data_statement_indicates_that_data_are" & response %in% c("No_statement", "Unavailable") ~ 0, question == "data_statement_indicates_that_data_are" & response == "Available" ~ 1,
-                           
-                           question == "how_are_data_accessible" & response %in% c("Email_authors", "Not_clear") ~ 0, question == "how_are_data_accessible" & response %in% ("Public_dataset_generated_by_authors", "Public_dataset_generated_by_others", "PS_Supplemental_Materials", "Other") ~ 2, 
-                           question == "does_the_data_url_go_to_a_working_page" & response == "No" ~ 0, question == "does_the_data_url_go_to_a_working_page" & response == "Yes" ~ 2,
-                           question == "are_the_data_located_at_the_working_page" & response %in% c("Requires_permission", "No") ~ 0, question == "are_the_data_located_at_the_working_page" & response == "Yes" ~ 2,
-                           question == "can_the_data_be_downloaded" & response %in% c("Requires_permission", "No") ~ 0, question == "can_the_data_be_downloaded" & response == "Yes" ~ 2,
-                           question == "does_the_data_correspond_to_what_is_reported_in_the_article" & response %in% c("Unclear", "No") ~ 0, question == "does_the_data_correspond_to_what_is_reported_in_the_article" & response == "Yes" ~ 2,
-                           question == "are_the_data_complete" & response %in% c("Unclear_whether_or_not_all_of_the_data_are_available", "No,_not_all_of_the_data_are_available") ~ 0, question == "are_the_data_complete" & response == "Yes,_but_only_some_of_the_data_are_available" ~ 1, question == "are_the_data_complete" & response == "Yes,_all_of_the_data_appear_to_be_available" ~ 2,
-                           
-                           question == "is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables" & response == "No" ~ 0, question == "is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables" & response == "Yes" ~ 5,
-                           question == "are_analysis_scripts_included_with_the_data" & response == "No" ~ 0, question == "are_analysis_scripts_included_with_the_data" & response == "Yes" ~ 5))
+  mutate(data_score = case_when("software" == question & "No" == response ~ 0, "software" == question & "Yes" == response ~ 1,
+                                "does_the_article_state_whether_or_not_the_data_are_available" == question & "No" == response ~ 0, "does_the_article_state_whether_or_not_the_data_are_available" == question & "Yes" == response ~ 1, 
+                                "data_statement_indicates_that_data_are" == question & response %in% c("No_statement", "Unavailable") ~ 0, "data_statement_indicates_that_data_are" == question & "Available" == response ~ 1,
+                                
+                                "how_are_data_accessible" == question & response %in% c("Email_authors", "Not_clear") ~ 0, "how_are_data_accessible" == question & response %in% c("Public_dataset_generated_by_authors", "Public_dataset_generated_by_others", "PS_Supplemental_Materials", "Other") ~ 2, 
+                                "does_the_data_url_go_to_a_working_page" == question & "No" == response ~ 0, "does_the_data_url_go_to_a_working_page" == question & "Yes" == response ~ 2,
+                                "are_the_data_located_at_the_working_page" == question & response %in% c("Requires_permission", "No") ~ 0, "are_the_data_located_at_the_working_page" == question & "Yes" == response ~ 2,
+                                "can_the_data_be_downloaded" == question & response %in% c("Requires_permission", "No") ~ 0, "can_the_data_be_downloaded" == question & "Yes" == response ~ 2,
+                                "does_the_data_correspond_to_what_is_reported_in_the_article" == question & response %in% c("Unclear", "No") ~ 0, "does_the_data_correspond_to_what_is_reported_in_the_article" == question & "Yes" == response ~ 2,
+                                "are_the_data_complete" == question & response %in% c("Unclear_whether_or_not_all_of_the_data_are_available", "No,_not_all_of_the_data_are_available") ~ 0, "are_the_data_complete" == question & "Yes,_but_only_some_of_the_data_are_available" == response ~ 1, "are_the_data_complete" == question & "Yes,_all_of_the_data_appear_to_be_available" == response ~ 2,
+                                
+                                "is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables" == question & "No" == response ~ 0, "is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables" == question & "Yes" == response ~ 5,
+                                "are_analysis_scripts_included_with_the_data" == question & "No" == response ~ 0, "are_analysis_scripts_included_with_the_data" == question & "Yes" == response ~ 5))
+
+
+# for some reason it's not scoring the responses to "how_are_data_accessible", "are_the_data_complete" 
+  # for "are_the_data_complete" there are commas in the responses - does that matter? 
+
 
 # Let's create a single open data score for each article
 
@@ -121,19 +126,19 @@ open_data_score_summary <- data_scored_for_data %>%
   summarise(totalscore = sum(data_score))
 
 # And let's assign scores for openness of materials 
-data_scored_for_materials < data_long %>%
-  mutate(materials_score = case_when(question == "does_the_article_state_whether_or_not_the_materials_are_available" & response == "No" ~ 0, question == "does_the_article_state_whether_or_not_the_materials_are_available" & response == "Yes" ~ 1, 
-                                     question == "statement_indicates_that_materials_are" & response %in% c("No_statement", "Unavailable") ~ 0, question == "statement_indicates_that_materials_are" & response == "Available" ~ 1,
+data_scored_for_materials <- data_long %>%
+  mutate(materials_score = case_when("does_the_article_state_whether_or_not_any_research_materials_are_available" == question & "No" == response ~ 0, "does_the_article_state_whether_or_not_any_research_materials_are_available" == question & "Yes" == response ~ 1, 
+                                     "statement_indicates_that_materials_are" == question & response %in% c("No statement", "Unavailable") ~ 0, "statement_indicates_that_materials_are" == question & "Available" == response ~ 1,
                                      
-                                     question == "how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_materials_are_available" & response %in% c("Email_authors", "Not_clear") ~ 0, question == "how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_materials_are_available" & response %in% ("Public_set_generated_by_authors", "Public_set_generated_by_others", "PS_Supplemental_Materials", "Other") ~ 2, 
-                                     question == "does_the_materials_url_go_to_a_working_page" & response == "No" ~ 0, question == "does_the_materials_url_go_to_a_working_page" & response == "Yes" ~ 2,
-                                     question == "are_the_materials_located_at_the_working_page" & response %in% c("Requires_permission", "No") ~ 0, question == "are_the_materials_located_at_the_working_page" & response == "Yes" ~ 2,
-                                     question == "can_the_materials_be_downloaded" & response %in% c("Requires_permission", "No") ~ 0, question == "can_the_materials_be_downloaded" & response == "Yes" ~ 2,
-                                     question == "do_the_materials_correspond_to_what_is_reported_in_the_article" & response %in% c("Unclear", "No") ~ 0, question == "do_the_materials_correspond_to_what_is_reported_in_the_article" & response == "Yes" ~ 2,
-                                     question == "are_the_materials_complete" & response %in% c("Unclear_whether_or_not_all_of_the_materials_are_available", "No,_not_all_of_the_materials_are_available") ~ 0, question == "are_the_materials_complete" & response == "Yes,_but_only_some_of_the_materials_are_available" ~ 1, question == "are_the_materials_complete" & response == "Yes,_all_of_the_materials_appear_to_be_available" ~ 2,
-                                     question == "does_the_article_state_whether_supplemental_information_available" & response %in% c("Yes,_but_it_is_not_freely_accessible", "No") ~ 0,question == "does_the_article_state_whether_supplemental_information_available" & response == "Yes,_and_it_is_freely_accessible" ~ 2
+                                     "how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_the_materials_are_available" == question & response %in% c("Email authors", "Not clear") ~ 0, "how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_the_materials_are_available" == question & response %in% c("Public set of materials generated by the authors", "Public set of materials generated by others", "PS Supplemental Materials", "Other") ~ 2, 
+                                     "does_the_materials_url_go_to_a_working_page" == question & "No" == response ~ 0, "does_the_materials_url_go_to_a_working_page" == question & "Yes" == response ~ 2,
+                                     "are_the_materials_located_at_the_working_page" == question & response %in% c("Requires_permission", "No") ~ 0, "are_the_materials_located_at_the_working_page" == question & "Yes" == response ~ 2,
+                                     "can_the_materials_be_downloaded" == question & response %in% c("Requires permission", "No") ~ 0, "can_the_materials_be_downloaded" == question & "Yes" == response ~ 2,
+                                     "do_the_materials_correspond_to_what_is_reported_in_the_article" == question & response %in% c("Unclear", "No") ~ 0, "do_the_materials_correspond_to_what_is_reported_in_the_article" == question & "Yes" == response ~ 2,
+                                     "are_the_materials_complete" == question & response %in% c("Unclear whether or not all of the materials are available", "No, not all of the materials are available") ~ 0, "are_the_materials_complete" == question & "Yes, but only some of the materials are available" == response ~ 1, "are_the_materials_complete" == question & "Yes, all of the materials appear to be available" == response ~ 2,
+                                     "does_the_article_state_whether_there_is_supplemental_information_available" == question & response %in% c("Yes, but it is not freely accessible", "No") ~ 0, "does_the_article_state_whether_there_is_supplemental_information_available" == question & "Yes, and it is freely accessible" == response ~ 2,
                                      
-                                     question == "are_analysis_scripts_included_with_the_data" & response == "No" ~ 0, question == "are_analysis_scripts_included_with_the_data" & response == "Yes" ~ 5,))
+                                     "are_analysis_scripts_included_with_the_data" == question & "No" == response ~ 0, "are_analysis_scripts_included_with_the_data" == question & "Yes" == response ~ 5))
 
 # Let's create a single open materials score for each article
 
