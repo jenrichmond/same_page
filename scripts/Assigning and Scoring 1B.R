@@ -30,22 +30,13 @@ subfield_test <- data1B %>%
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
   relocate(subfield, .after = no_of_experiments)
 
-
-count_subfield <- subfield_test %>%
-  tabyl(subfield)
-
-count_subfield %>%
-  ggplot(aes(x = reorder(subfield, n), y = n)) +
-  geom_col() +
-  coord_flip()
-
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
 # let's assign these 'other' articles to a subfield manually
 na_articles <- subfield_test %>%
   filter(is.na(subfield)) %>%
   select(coder_name:subfield, topic_other)
 
-# Christina assessed all 19 NA cases, and decided upon a subfield for each case, add TRUE ~ as.character(subfield) to keep the value of subfield (rather than replace with NA) if case_when conditions don't apply
+# Christina assessed all 19 NA cases, and decided upon a subfield for each case
 psyc_subfield <- subfield_test %>%
   mutate(subfield = case_when("2020-31-1-65" == article_id_number ~ "Cognition",
                               "2019-30-8-1123" == article_id_number ~ "Cognition",
@@ -66,24 +57,26 @@ psyc_subfield <- subfield_test %>%
                               "2020-31-8-1013" == article_id_number ~ "Social Psychology",
                               "2020-31-10-1245" == article_id_number ~ "Cognition",
                               "2020-31-10-1222" == article_id_number ~ "Social Psychology", 
-                              TRUE ~ as.character(subfield)))  
+                              TRUE ~ as.character(subfield))) # this line of code keeps the existing subfield values (that didn't need to be assigned manually), rather than replacing them with NAs  
 
 # let's check that all articles have been assigned to a subfield
-na_articles_1 <- psyc_subfield %>%
-  filter(subfield == NA)
-
-# let's check it another way
-na_articles_2 <- psyc_subfield %>%
+na_articles_check <- psyc_subfield %>%
   filter(is.na(subfield))
-
-# Why aren't na_articles_1 and na_articles_2 lining up? 
-
-# CHRISTINA UP TO HERE
   
 # let's summarise the articles by subfield
 
+count_subfield <- psyc_subfield %>%
+  tabyl(subfield)
+
+count_subfield %>%
+  ggplot(aes(x = reorder(subfield, n), y = n)) +
+  geom_col() +
+  coord_flip()
+
 subfield_summary <- psyc_subfield %>%
   select(article_id_number, subfield)
+
+# CHRISTINA UP TO HERE
 
 # Now let's score the articles
 

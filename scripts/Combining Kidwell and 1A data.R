@@ -154,7 +154,8 @@ exp_check_followup <- exp_check %>%
 # We can also delete number_of_experiments and exp_check as these variables are no longer required
 # Let's use the select function to keep the variables we want and to remove those we don't
 master_1A_dataset <- master_1A_dataset %>%
-  select(article_id_number:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address)
+  select(article_id_number:type_of_software_other, did_the_article_receive_a_badge_for_open_data:corresponding_author_e_mail_address) %>%
+  relocate(article_id_number, .after = article_id_number_and_title)
 
 # Write and export Master csv-----
 
