@@ -78,11 +78,5 @@ data1B_nodups <- data1B_distinct %>%
 master_dups <- rbind(data1B_nodups, dup_recoded) 
 # Awesome - we've ended up with 242 obs again!
 
-# Removing non-empirical articles-----
-
-# remove non-empirical articles 
-data1B_empirical <- master_dups %>%
-  filter(no_of_experiments != "0")
-
-# let's write this clean dataset into a .csv file
-data1B_empirical %>% write_csv(here::here("data_files", "master_dataset_1B.csv"))
+# let's write this dataset into a .csv file
+master_dups %>% write_csv(here::here("data_files", "master_dataset_1B.csv"))
