@@ -141,6 +141,8 @@ data_scored_for_materials <- data_long %>%
 
 # There is one case which I'm not sure how to code for
   # 2019-30-8-1123 Helen coded "Other (please specify)" for materials_accessible, but then went on to code "Upon Request" for materials_accessible_other --> this article should receive 0
+# would it work if I entered this code: "materials_accessible_other" == question & "Upon Request" == response ~ -2
+# would that cancel it out?
 
 
 # Let's create a single open materials score for each article - struggling here
