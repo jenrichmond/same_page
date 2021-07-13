@@ -191,7 +191,9 @@ open_materials_score_summary <- data_scored_for_materials %>%
 
 open_materials_score_summary %>%
   ggplot(aes(x = total_materials_score)) +
-  geom_histogram() +
+  geom_histogram() 
+
++
   facet_wrap(~ badge)
 
 summary(open_materials_score_summary)
@@ -206,7 +208,21 @@ subfield_data_summary <- full_join(psyc_subfield_clean, open_data_score_summary,
 overall_summary <- full_join(subfield_data_summary, open_materials_score_summary, by = "article_id_number")%>%
   select(article_id_number, subfield, total_data_score, total_materials_score)
 
+overall_summary %>% ## CR struggling - trying to produce a line graph, where each line represents a different subfield
+  ggplot(aes(x = article_id_number, y = total_data_score)) +
+  geom_line(aes(colour = subfield, linetype = subfield)) 
 
+# Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
+  # Option 1
+    # Dev: 65
+    # Social: 91
+    # Cognition: 91
+    # Other: 75
+  # Option 2
+    # Dev: 65
+    # Social + Health: 102
+    # Cognition + Perception: 119
+    # BN + CN: 36
 
 
 
