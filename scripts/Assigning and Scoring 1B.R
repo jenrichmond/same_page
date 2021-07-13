@@ -127,7 +127,7 @@ data_scored_for_data <- data_scoring %>%
                                 question == "data_scripts" & response == "Yes" ~ 5)) %>%
   mutate(data_score = coalesce(data_score, 0))
 
-# Let's create a single open data score for each article - CR struggling here
+# Let's create a single open data score for each article 
 
 open_data_score_summary <- data_scored_for_data %>%
   group_by(article_id_number) %>% 
