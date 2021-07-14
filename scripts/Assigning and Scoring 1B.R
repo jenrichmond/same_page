@@ -210,3 +210,15 @@ subfield_data_summary <- full_join(psyc_subfield, open_data_score_summary, by ="
 overall_summary <- full_join(subfield_data_summary, open_materials_score_summary, by = "article_id_number")%>%
   select(article_id_number, subfield, total_data_score, total_materials_score)
 
+# Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
+  # Option 1
+    # Dev: 33
+    # Social: 54
+    # Cognition: 57
+    # Other: 41
+  # Option 2
+    # Dev: 33
+    # Social + Health: 61
+    # Cognition + Perception: 77
+    # BN + CN: 14
+
