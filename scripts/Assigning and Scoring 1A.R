@@ -110,7 +110,6 @@ subfield_summary <- psyc_subfield_clean %>%
 
 # Next we need to make the relevant data long
 
-### Jenny added did_the_article_receive_a_badge_for_open_data here so it stays in the dataset
 data_scoring <- psyc_subfield_clean %>%
   select(article_id_number, subfield, did_the_article_receive_a_badge_for_open_data, software, does_the_article_state_whether_or_not_the_data_are_available, data_statement_indicates_that_data_are, how_are_data_accessible, does_the_data_url_go_to_a_working_page, are_the_data_located_at_the_working_page, can_the_data_be_downloaded, does_the_data_correspond_to_what_is_reported_in_the_article, are_the_data_complete, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data) %>%
   pivot_longer(names_to = "question", values_to = "response", software:are_analysis_scripts_included_with_the_data)
@@ -176,8 +175,6 @@ open_data_score_summary %>%
 # MATERIALS SCORING ----------------
 # Let's make the relevant data long 
 
-#JENNY adding subfield and badge to the select here to keep them in the dataframe
-
 materials_scoring <- psyc_subfield_clean %>%
   select(article_id_number, subfield, did_the_article_receive_a_badge_for_open_materials, does_the_article_state_whether_or_not_any_research_materials_are_available, statement_indicates_that_materials_are, how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_the_materials_are_available, does_the_materials_url_go_to_a_working_page, are_the_materials_located_at_the_working_page, can_the_materials_be_downloaded, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_data) %>%
   pivot_longer(names_to = "question", values_to = "response", does_the_article_state_whether_or_not_any_research_materials_are_available:are_analysis_scripts_included_with_the_data)
@@ -231,13 +228,9 @@ open_materials_score_summary %>%
 
 # Now let's create a new dataframe that combines subfield, open data score and open material score based on article ID
 
-## JENNY - I think it might be easier if you don't get rid of the subfield data before you add the data and materials scoring-- Ive added it (and badge) in your select variable,  then you just need to join the open materials and open data. You can use left_join (which I think of as tack variables from one df to theside of one df_ rather than full_joing 
+overall_summary <- left_join(open_materials_score_summary, open_data_score_summary, by ="article_id_number") 
 
-subfield_data_summary <- full_join(open_materials_score_summary, open_data_score_summary, by ="article_id_number") 
-
-# JENNY - ive just learned that you can rename things within a select()- which is pretty cool. The subfield data summary has 2 x subfield variables and we can probably name things more simply. Selecting just the variabels we need and renaming them at the same time. 
-
-overall_summary <- subfield_data_summary %>%
+overall_summary <- overall_summary %>%
   select(article_id_number, 
          subfield = subfield.x, 
          materials_badge = did_the_article_receive_a_badge_for_open_materials, 
@@ -249,7 +242,7 @@ overall_summary <- subfield_data_summary %>%
 ## JENNY I generally start with geom_point- get those in the right place and then join them by adding a geom_line. Not sure what you are trying to plot here, x = articleids will put the 322 IDs on the x axis?? Are you thinking about plotting the mean score by subfield-- you will need to calculate some descritpives first
 
 overall_summary %>% 
-  ggplot(aes(x = article_id_number, y = data_score)) +
+  ggplot(aes(y = data_score)) +
   geom_line(aes(colour = subfield, linetype = subfield)) 
 
 # Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny

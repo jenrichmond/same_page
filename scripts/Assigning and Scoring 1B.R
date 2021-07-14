@@ -74,11 +74,15 @@ count_subfield <- psyc_subfield %>%
   tabyl(subfield)
 
 count_subfield %>%
-  ggplot(aes(x = reorder(subfield, n), y = n)) +
+  ggplot(aes(x = reorder(subfield, n), y = n, fill = subfield)) +
   geom_col() +
-  coord_flip()
+  coord_flip() +
+  theme_classic() +
+  labs(x = "subfield", y = "count of articles") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) + # makes bars sit on the axis
+  easy_remove_legend() 
 
-subfield_summary <- psyc_subfield %>%
+subfield_summary <- psyc_subfield_clean %>%
   select(article_id_number, subfield)
 
 # Now let's score the articles
@@ -93,7 +97,7 @@ psyc_subfield <- transform(psyc_subfield, "data_page_no" = as.character(data_pag
 
 # Next we need to make the relevant data long
 data_scoring <- psyc_subfield %>%
-  select(article_id_number, software, data_statement_present, data_statement_indicates, data_accessible, dataset_URL_working, data_locatable, data_downloadable, data_correspond, data_complete, data_codebook, data_scripts) %>%
+  select(article_id_number, subfield, data_badge, software, data_statement_present, data_statement_indicates, data_accessible, dataset_URL_working, data_locatable, data_downloadable, data_correspond, data_complete, data_codebook, data_scripts) %>%
   pivot_longer(names_to = "question", values_to = "response", software:data_scripts)
 
 # Now let's assign scores for openness of data
@@ -130,14 +134,21 @@ data_scored_for_data <- data_scoring %>%
 # Let's create a single open data score for each article 
 
 open_data_score_summary <- data_scored_for_data %>%
-  group_by(article_id_number) %>% 
+  group_by(article_id_number, data_badge, subfield) %>% 
   summarise(total_data_score = sum(data_score))
 
+# plot distribution across all articles
 
 open_data_score_summary %>%
   ggplot(aes(x = total_data_score)) +
-  geom_histogram()+
-  facet_wrap(~ badge)
+  geom_histogram() 
+
+# plot distribution separately for badge vs not
+
+open_data_score_summary %>%
+  ggplot(aes(x = total_data_score)) +
+  geom_histogram()  +
+  facet_wrap(~ data_badge)
 
 summary(open_data_score_summary)
 
@@ -148,7 +159,7 @@ open_data_score_summary %>%
 
 # Let's make the relevant data long
 materials_scoring <- psyc_subfield %>%
-  select(article_id_number, materials_statement_present, materials_statement_indicates, materials_accessible, materials_URL_working, materials_locatable, materials_downloadable, materials_correspond, materials_complete, materials_explanation) %>%
+  select(article_id_number, subfield, materials_badge, materials_statement_present, materials_statement_indicates, materials_accessible, materials_URL_working, materials_locatable, materials_downloadable, materials_correspond, materials_complete, materials_explanation) %>%
   pivot_longer(names_to = "question", values_to = "response", materials_statement_present:materials_explanation)
 
 # And let's score the data
@@ -178,8 +189,7 @@ data_scored_for_materials <- materials_scoring %>%
                                      question == "materials_explanation" & response == "Yes" ~ 5))  %>%
   mutate(materials_score = coalesce(materials_score, 0))
 
-
-# this code edits the materials accessible score from 2 to 1 for articleID 2019-30-8-1123, this case was requiring permission
+# This code edits the materials accessible score from 2 to 1 for articleID 2019-30-8-1123, this case was requiring permission
 
 data_scored_for_materials <- data_scored_for_materials %>%
   mutate(materials_score = case_when(article_id_number == "2019-30-8-1123" & question == "materials_accessible" & response == "Other (please specify):" ~ 1, 
@@ -188,14 +198,21 @@ data_scored_for_materials <- data_scored_for_materials %>%
 # Let's create a single open materials score for each article 
 
 open_materials_score_summary <- data_scored_for_materials %>%
-  group_by(article_id_number) %>% 
+  group_by(article_id_number, materials_badge, subfield) %>% 
   summarise(total_materials_score = sum(materials_score))
 
+# plot distribution across all articles
 
 open_materials_score_summary %>%
   ggplot(aes(x = total_materials_score)) +
-  geom_histogram() +
-  facet_wrap(~ badge)
+  geom_histogram() 
+
+# plot distribution separately for badge vs not
+
+open_materials_score_summary %>%
+  ggplot(aes(x = total_materials_score)) +
+  geom_histogram()  +
+  facet_wrap(~ materials_badge)
 
 summary(open_materials_score_summary)
 
@@ -203,12 +220,16 @@ open_materials_score_summary %>%
   tabyl(total_materials_score)
 
 # Now let's create a new dataframe that combines subfield, open data score and open material score based on article ID
-# the join() function only allows us to join two dataframes at a time, so let's join subfield and open_data first and then add open_materials
 
-subfield_data_summary <- full_join(psyc_subfield, open_data_score_summary, by ="article_id_number") 
+overall_summary <- left_join(open_materials_score_summary, open_data_score_summary, by ="article_id_number") 
 
-overall_summary <- full_join(subfield_data_summary, open_materials_score_summary, by = "article_id_number")%>%
-  select(article_id_number, subfield, total_data_score, total_materials_score)
+overall_summary <- overall_summary %>%
+  select(article_id_number, 
+         subfield = subfield.x,
+         materials_badge,
+         materials_score = total_materials_score, 
+         data_badge,
+         data_score = total_data_score)
 
 # Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
   # Option 1
