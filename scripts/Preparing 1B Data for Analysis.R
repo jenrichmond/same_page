@@ -49,6 +49,14 @@ data1B_sep <- data1B_rename %>%
   filter(!str_detect(q4_1,'Check')) %>%
   rename(article_id_number_and_title = q4_1)
 
+# writing a csv. file containing ONLY reliability check articles
+data1B_reliability_checking <- data1B_rename %>%
+  separate(q4_1, into = c("article_id_number"), sep = "\\s", remove = FALSE) %>%
+  filter(str_detect(q4_1,'Check')) %>%
+  rename(article_id_number_and_title = q4_1)
+
+data1B_reliability_checking %>% write_csv(here::here("data_files", "data1B_reliability_checking"))
+
 # Filter out unwanted duplicates----
 
 # let's check whether there are any articles which have been coded more than once

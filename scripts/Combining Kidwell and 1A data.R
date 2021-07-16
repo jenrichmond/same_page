@@ -64,6 +64,14 @@ data1A_sep <- data1A_rename %>%
   filter(!str_detect(q4_1,'Check')) %>%
   rename(article_id_number_and_title = q4_1)
 
+# writing a csv. file containing ONLY reliability check articles
+data1A_reliability_checking <- data1A_rename %>%
+  separate(q4_1, into = c("article_id_number", "journal_code"), sep = "\\s", remove = FALSE) %>%
+  filter(str_detect(q4_1,'Check')) %>%
+  rename(article_id_number_and_title = q4_1)
+
+data1A_reliability_checking %>% write_csv(here::here("data_files", "data1A_reliability_checking"))
+
 # Remove duplicated rows from Qualtrics data----
 
 # let's create a dataframe with all the duplicated rows, according to article id number
