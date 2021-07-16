@@ -14,6 +14,8 @@ library(Hmisc)
 
 data <- read_csv(here("data_files", "data1B_reliability_checking"))
 
+#### Subfield
+
 # Let's assign the articles to a subfield
 
 psyc_subfield <- data %>%
@@ -25,6 +27,8 @@ psyc_subfield <- data %>%
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" == topic ~ "Cognition",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
   relocate(subfield, .after = no_of_experiments)
+
+##### Data Scoring
 
 # Now let's score the articles
 
@@ -81,6 +85,8 @@ open_data_score_summary <- data_scored_for_data %>%
 open_data_score_summary %>%
   tabyl(total_data_score)
 
+#### Material Scoring
+
 # And let's assign scores for openness of materials 
 
 # Let's make the relevant data long
@@ -123,3 +129,30 @@ open_materials_score_summary <- data_scored_for_materials %>%
 
 open_materials_score_summary %>%
   tabyl(total_materials_score)
+
+#### Checking reliability
+
+# let's put the data in an appropriate format
+Christina = c(Checker 1B score, Checker 2B score, Checker 3B score, Checker 4B score, Checker 5B score)
+Georgia = c(Checker 1B score, Checker 2B score, Checker 3B score)
+Jenn = c(Checker 1B score, Checker 2B score, Checker 3B score)
+Helen = c(Checker 1B score, Checker 2B score, Checker 3B score)
+Will = c(Checker 1B score, Checker 2B score, Checker 3B score)
+Patrick = c(Checker 1B score, Checker 2B score, Checker 3B score)
+
+# I was the only coder who coded all 5 checker articles (some coders coded 1, others coded 2, and other coded 3) - does this matter?
+
+# join coders data together
+reliability_data_scored <- cbind(rater1,rater2)
+
+# make it a data frame
+reliability_data_scored <- as.data.frame(reliability_data_scored) 
+# will this dataframe contain an article_id_number column?
+
+# calc kappa
+cohen.kappa(reliability_data_scored)
+
+
+
+
+
