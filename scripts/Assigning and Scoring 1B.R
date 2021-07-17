@@ -155,6 +155,23 @@ summary(open_data_score_summary)
 open_data_score_summary %>%
   tabyl(total_data_score)
 
+# Christina checking why a few articles received a data badge, but a score of 0, 1 or 2 
+data_investigation <- open_data_score_summary %>%
+  filter(data_badge == "Yes" & total_data_score %in% c("0", "1", "2"))
+
+# 2019-30-7-1001 - incorrectly coded (data are available)
+# 2019-30-9-1362 - incorrectly coded (data are available)
+# 2020-31-2-193 - not sure (the data is only available upon request, but the analysis scripts are publicly available)
+# 2020-31-7-881 - not sure (the data is only available to qualified researchers, but the R code is available in the supplementary materials)
+# 2020-31-8-927 - incorrectly coded (data are available)
+
+# Christina checking why a few articles didn't receive a badge, but received a score of 24  
+data_investigation_1 <- open_data_score_summary %>%
+  filter(data_badge == "No" & total_data_score == "24")
+
+# 2019-30-7-1016
+# 2020-31-6-634
+
 # And let's assign scores for openness of materials 
 
 # Let's make the relevant data long
@@ -218,6 +235,20 @@ summary(open_materials_score_summary)
 
 open_materials_score_summary %>%
   tabyl(total_materials_score)
+
+# Christina checking why 9 articles received a materials badge, but a score of 0
+materials_investigation <- open_materials_score_summary %>%
+  filter(materials_badge == "Yes" & total_materials_score == 0)
+
+# 2019-30-11-1561 - incorrectly coded (materials are available)
+# 2019-30-7-1001 - incorrectly coded (materials are available)
+# 2019-30-7-1016 - incorrectly coded (materials are available)
+# 2020-31-10-1236 - incorrectly coded (materials are available)
+# 2020-31-3-306 - incorrectly coded (materials are available)
+# 2020-31-5-488 - incorrectly coded (materials are available)
+# 2020-31-8-1013 - incorrectly coded (materials statement available, not sure whether actual materials are available)
+# 2020-31-8-1025 - incorrectly coded (materials are available)
+# 2020-31-9-1129 - incorrectly coded (materials are available)
 
 # Now let's create a new dataframe that combines subfield, open data score and open material score based on article ID
 
