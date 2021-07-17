@@ -169,8 +169,8 @@ data_investigation <- open_data_score_summary %>%
 data_investigation_1 <- open_data_score_summary %>%
   filter(data_badge == "No" & total_data_score == "24")
 
-# 2019-30-7-1016
-# 2020-31-6-634
+# 2019-30-7-1016 - correctly coded (perhaps the authors didn't want to receive a badge?)
+# 2020-31-6-634 - correctly coded (perhaps the authors didn't want to receive a badge?)
 
 # And let's assign scores for openness of materials 
 

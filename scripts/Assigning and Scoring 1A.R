@@ -172,6 +172,12 @@ summary(open_data_score_summary)
 open_data_score_summary %>%
   tabyl(total_data_score)
 
+# Christina checking why one article didn't receive a badge, but received a score of 24  
+data_investigation <- open_data_score_summary %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "No" & total_data_score == "24")
+
+# 23-2-2014 - correctly coded (perhaps the didn't want to receive a badge?)
+
 # MATERIALS SCORING ----------------
 # Let's make the relevant data long 
 
@@ -225,6 +231,12 @@ summary(open_materials_score_summary)
 
 open_materials_score_summary %>%
   tabyl(total_materials_score)
+
+# Christina checking why one article didn't receive a badge, but received a score of 17 
+materials_investigation <- open_materials_score_summary %>%
+  filter(did_the_article_receive_a_badge_for_open_materials == "No" & total_materials_score == "17")
+
+# 23-2-2014 - SAME ARTICLE AS ABOVE correctly coded (perhaps they didn't want to receive a badge?)
 
 # Now let's create a new dataframe that combines subfield, open data score and open material score based on article ID
 
