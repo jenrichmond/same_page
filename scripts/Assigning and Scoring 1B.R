@@ -157,13 +157,14 @@ open_data_score_summary %>%
 
 # Christina checking why a few articles received a data badge, but a score of 0, 1 or 2 
 data_investigation <- open_data_score_summary %>%
-  filter(data_badge == "Yes" & total_data_score %in% c("0", "1", "2"))
+  filter(data_badge == "Yes" & total_data_score %in% c("0", "1", "2", "4"))
 
 # 2019-30-7-1001 - incorrectly coded (data are available)
 # 2019-30-9-1362 - incorrectly coded (data are available)
 # 2020-31-2-193 - not sure (the data is only available upon request, but the analysis scripts are publicly available)
 # 2020-31-7-881 - not sure (the data is only available to qualified researchers, but the R code is available in the supplementary materials)
 # 2020-31-8-927 - incorrectly coded (data are available)
+# 2019-30-8-1218 - correctly coded (data is not locatable)
 
 # Christina checking why a few articles didn't receive a badge, but received a score of 24  
 data_investigation_1 <- open_data_score_summary %>%
