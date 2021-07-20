@@ -17,6 +17,37 @@ library(psych)
 ```
 
 
+This example comes from here...
+
+https://www.datanovia.com/en/lessons/cohens-kappa-in-r-for-two-categorical-variables/
+
+```{r}
+
+diagnoses <- as.table(rbind(
+  c(7, 1, 2, 3, 0), c(0, 8, 1, 1, 0),
+  c(0, 0, 2, 0, 0), c(0, 0, 0, 1, 0),
+  c(0, 0, 0, 0, 4)
+  ))
+
+
+categories <- c("Depression", "Personality Disorder",
+                "Schizophrenia", "Neurosis", "Other")
+
+dimnames(diagnoses) <- list(Doctor1 = categories, Doctor2 = categories)
+
+diagnoses
+
+# install.packages("vcd")
+library("vcd")
+
+# Compute kapa
+res.k <- Kappa(diagnoses)
+res.k
+
+
+
+```
+
 https://cran.rstudio.com/web/packages/psych/psych.pdf
 
 
