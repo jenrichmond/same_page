@@ -15,7 +15,7 @@ library(dplyr)
 
 # read in 1B data from csv
 
-data1B <- read_csv(here("data_files", "master_dataset_1B.csv"))
+data1B <- read_csv(here("data_files", "recoded_master_dataset_1B.csv"))
 
 # remove non-empirical articles 
 data1B_empirical <- data1B %>%
@@ -41,7 +41,7 @@ na_articles <- subfield_test %>%
   filter(is.na(subfield)) %>%
   select(coder_name:subfield, topic_other)
 
-# Christina assessed all 19 NA cases, and decided upon a subfield for each case
+# Christina assessed all 17 NA cases, and decided upon a subfield for each case
 psyc_subfield <- subfield_test %>%
   mutate(subfield = case_when("2020-31-1-65" == article_id_number ~ "Cognition",
                               "2019-30-8-1123" == article_id_number ~ "Cognition",
@@ -50,7 +50,6 @@ psyc_subfield <- subfield_test %>%
                               "2019-30-8-1186" == article_id_number ~ "Social Psychology", 
                               "2019-30-8-1195" == article_id_number ~ "Cognition",
                               "2020-31-11-1386" == article_id_number ~ "Cognition",
-                              "2019-30-9-1362" == article_id_number ~ "Cognition",
                               "2020-31-5-582" == article_id_number ~ "Social Psychology",
                               "2020-31-6-623" == article_id_number ~ "Social Psychology",
                               "2020-31-6-729" == article_id_number ~ "Behavioural Neuroscience",
@@ -59,7 +58,6 @@ psyc_subfield <- subfield_test %>%
                               "2020-31-5-505" == article_id_number ~ "Perception",
                               "2020-31-4-449" == article_id_number ~ "Health Psychology",
                               "2020-31-7-873" == article_id_number ~ "Developmental Psychology",
-                              "2020-31-8-1013" == article_id_number ~ "Social Psychology",
                               "2020-31-10-1245" == article_id_number ~ "Cognition",
                               "2020-31-10-1222" == article_id_number ~ "Social Psychology", 
                               TRUE ~ as.character(subfield))) # this line of code keeps the existing subfield values (that didn't need to be assigned manually), rather than replacing them with NAs  
@@ -159,21 +157,18 @@ open_data_score_summary %>%
 data_investigation <- open_data_score_summary %>%
   filter(data_badge == "Yes" & total_data_score %in% c("0", "1", "2", "4"))
 
-# 2019-30-7-1001 - incorrectly coded (data are available)
-# 2019-30-9-1362 - incorrectly coded (data are available)
-# 2020-31-2-193 - not sure (the data is only available upon request, but the analysis scripts are publicly available)
-# 2020-31-7-881 - not sure (the data is only available to qualified researchers, but the R code is available in the supplementary materials)
-# 2020-31-8-927 - incorrectly coded (data are available)
-# 2019-30-8-1218 - correctly coded (data is not locatable)
+# 2020-31-2-193 
+# 2020-31-7-881
+# 2019-30-8-1218 
 
 # Christina checking why a few articles didn't receive a badge, but received a score of 24  
 data_investigation_1 <- open_data_score_summary %>%
   filter(data_badge == "No" & total_data_score == "24")
 
-# 2019-30-7-1016 - correctly coded (perhaps the authors didn't want to receive a badge?)
-# 2020-31-6-634 - correctly coded (perhaps the authors didn't want to receive a badge?)
+# 2019-30-7-1016 - correctly coded 
+# 2020-31-6-634 - correctly coded 
 
-
+# ALL 5 of these articles have been correctly coded, ok to proceed
 
 # And let's assign scores for openness of materials 
 
@@ -238,20 +233,6 @@ summary(open_materials_score_summary)
 
 open_materials_score_summary %>%
   tabyl(total_materials_score)
-
-# Christina checking why 9 articles received a materials badge, but a score of 0
-materials_investigation <- open_materials_score_summary %>%
-  filter(materials_badge == "Yes" & total_materials_score == 0)
-
-# 2019-30-11-1561 - incorrectly coded (materials are available)
-# 2019-30-7-1001 - incorrectly coded (materials are available)
-# 2019-30-7-1016 - incorrectly coded (materials are available)
-# 2020-31-10-1236 - incorrectly coded (materials are available)
-# 2020-31-3-306 - incorrectly coded (materials are available)
-# 2020-31-5-488 - incorrectly coded (materials are available)
-# 2020-31-8-1013 - incorrectly coded (materials statement available, not sure whether actual materials are available)
-# 2020-31-8-1025 - incorrectly coded (materials are available)
-# 2020-31-9-1129 - incorrectly coded (materials are available)
 
 # Now let's create a new dataframe that combines subfield, open data score and open material score based on article ID
 

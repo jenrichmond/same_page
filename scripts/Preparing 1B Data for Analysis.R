@@ -67,7 +67,7 @@ dup_recoded <- duplicates %>%
   filter(coder_name == "Christina Rochios") %>%
   select(-dupe_count) 
 
-# let's remove all duplicated rows from the clean data1A dataset using the distinct() function
+# let's remove all duplicated rows from the clean data1B dataset using the distinct() function
 data1B_distinct <- data1B_sep %>%
   distinct(article_id_number, .keep_all = TRUE) 
 # this leaves us with 242 obs - so it seems like the distinct() function leaves the first version of each duplicate in the dataframe
