@@ -9,11 +9,13 @@ library(httr)
 library(extrafont)
 library(here)
 library(Hmisc)
+library("vcd")
+library(irr)
 
 # Read in Reliability Checking data
 
 data <- read_csv(here("data_files", "data1A_reliability_checking")) %>%
-  select(coder_name, article_id_number_and_title, id_number = journal_code, participants:topic_other)
+  select(coder_name, article_id_number_and_title, id_number = check_id, participants:topic_other)
 
 # Let's assign the articles to a subfield
 
@@ -27,19 +29,102 @@ psyc_subfield <- data %>%
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
   relocate(subfield, .after = id_number)
 
-psyc_subfield <- psyc_subfield %>%
-  distinct()  # removing dup 1 x Jenn 1A5 coded twice
-
+# let's make the data long
 
 subfield_long <- psyc_subfield %>%
   select(coder_name, id_number, subfield) %>%
   pivot_wider(names_from = coder_name, values_from = subfield) 
 
-psyc_subfield %>%
-  get_dupes(coder_name, id_number) 
+# let's run the kappa reliability analysis 
 
-jenn <- psyc_subfield %>%
-  filter(coder_name == "Jenn Lee" & id_number == "1A5") 
+# ATTEMPT 1
 
-# CR realised that coders weren't required to code for data and materials --> we can't use this information to measure reliability
-# perhaps we can use their subfield coding to assess reliability?
+subfield_clean <- subfield_long %>%
+  select("Helen Gu":"Will Osmand")
+
+kappam.fleiss(subfield_clean)
+
+# so it looks like the number of raters is correct, but the subjects isn't
+
+# ATTEMPT 2
+
+# let's assign each subfield a number
+  # Behavioural Neuroscience = 1
+  # Developmental Psychology = 2
+  # Cognitive Neuroscience = 3
+  # Perception = 4
+  # Social Psychology = 5
+  # Cognition = 6
+  # Health Psychology = 7
+
+Christina = c(6, 5, 6, 2, 7)
+Helen = c(6, 5, 6, 2)
+Georgia = c(6, 5, 6, 2)
+Patrick = c(6, 5, 3, 2)
+Jenn = c(6, 6, 6, 2, 7)
+Will = c(6, 5)
+
+subfield_relaibility <- as.table(rbind(Christina, Helen, Georgia, Patrick, Jenn, Will))
+
+subfield_reliability <- as.data.frame("subfield_relaibility")
+
+categories <- c("Behavioural Neuroscience", "Developmental Psychology", "Cognitive Neuroscience", "Perception", "Social Psychology", "Cognition", "Health Psychology")
+
+dimnames(subfield_relaibility) <- list
+
+# ATTEMPT 3
+
+1A1 = c(0, 0, 0, 0, 0, 6, 0)
+1A2 = c(0, 0, 0, 0, 5, 1, 0)
+1A3 = c(0, 0, 1, 0, 0, 4, 0)
+1A4 = c(0, 5, 0, 0, 0, 0, 0)
+1A5 = c(0, 0, 0, 0, 0, 0, 2)
+
+subfield <- as.table(rbind(
+  c(0, 0, 0, 0, 0, 6, 0), c(0, 0, 0, 0, 5, 1, 0),
+  c(0, 0, 1, 0, 0, 4, 0), c(0, 5, 0, 0, 0, 0, 0),
+  c(0, 0, 0, 0, 0, 0, 2)))
+
+categories <- c("Behavioural Neuroscience", "Developmental Psychology", "Cognitive Neuroscience", "Perception", "Social Psychology", "Cognition", "Health Psychology")
+
+subfield <- as.data.frame(rbind(
+  c(0, 0, 0, 0, 0, 6, 0), c(0, 0, 0, 0, 5, 1, 0),
+  c(0, 0, 1, 0, 0, 4, 0), c(0, 5, 0, 0, 0, 0, 0),
+  c(0, 0, 0, 0, 0, 0, 2))) 
+
+%>%
+  rename(V1 == "BN", V2 == "Developmental", V3 == "CN", V4 == "Perception", V5 == "Social", V6 == "Cognition", V7 == "Health")
+
+kappam.fleiss(subfield)
+
+# the number of subjects is correct, but the number of raters isn't (one extra)
+
+# ATTEMPT 4
+
+subfield_coding <- as.data.frame(rbind(Christina = c(6, 5, 6, 2, 7), Helen = c(6, 5, 6, 2), Georgia = c(6, 5, 6, 2), Patrick = c(6, 5, 3, 2), Jenn = c(6, 6, 6, 2, 7), Will = c(6, 5)))
+
+# Nope, this is still the wrong format
+
+# ATTEMPT 5
+
+# let's assign each subfield a number
+# Behavioural Neuroscience = 1
+# Developmental Psychology = 2
+# Cognitive Neuroscience = 3
+# Perception = 4
+# Social Psychology = 5
+# Cognition = 6
+# Health Psychology = 7
+
+subfield_long_recoded <- subfield_long %>%
+  recode('Behavioural Neuroscience' = "1")
+  select(case_when("Helen Gu" == "Behavioural Neuroscience" ~ 1, "Helen Gu" == "Developmental Psychology" ~ 2, "Helen Gu"" == "Cognitive Neuroscience"" ~ 3, "Helen Gu" == "Perception" ~ 4, "Helen Gu"" == "Social Psychology" ~ 5, "Helen Gu" == "Cognition" ~ 6, "Helen Gu"" == "Health Psychology"))
+  
+  # trying to recode the subfields as numbers so that I can put in this format
+    # each row is a Check article
+    # each column is a coder
+  
+
+
+
+
