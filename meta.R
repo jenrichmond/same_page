@@ -11,6 +11,8 @@ library(here)
 #using cr_works() to get data on articles, searching by DOI
 #https://ciakovx.github.io/rcrossref.html#Using_cr_works()_to_get_data_on_articles
 
+usethis::edit_r_environ()
+
 
 # example from vignette------------
 # Get metadata for a single article by DOI
