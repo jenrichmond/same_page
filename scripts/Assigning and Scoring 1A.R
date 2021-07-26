@@ -250,12 +250,17 @@ overall_summary <- overall_summary %>%
          data_badge =  did_the_article_receive_a_badge_for_open_data, 
          data_score = total_data_score)
 
-## CR struggling - trying to produce a line graph, where each line represents a different subfield
-## JENNY I generally start with geom_point- get those in the right place and then join them by adding a geom_line. Not sure what you are trying to plot here, x = articleids will put the 322 IDs on the x axis?? Are you thinking about plotting the mean score by subfield-- you will need to calculate some descritpives first
+# And let's create another dataframe that combines ALL data: collected data + subfield + data score + material score
 
-overall_summary %>% 
-  ggplot(aes(y = data_score)) +
-  geom_line(aes(colour = subfield, linetype = subfield)) 
+scores <- overall_summary %>%
+  select(article_id_number, total_data_score, total_materials_score)
+
+total_summary <- left_join(psyc_subfield_clean, scores, by = "article_id_number") %>%
+  select(-did_the_article_receive_a_badge_for_open_materials.y) 
+
+# let's write this as a csv. 
+
+total_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1A.csv"))
 
 # Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
   # Option 1
