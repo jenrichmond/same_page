@@ -36,57 +36,67 @@ dois_clean <- dois %>%
 meta_ids <- merge(dois_clean, meta_done, by="DOI")
 
 # let's reorder the columns 
-meta_ids <- meta_ids %>%
-  relocate("Article ID", .before = DOI) %>%
-  relocate ("Authors", .after = `Article ID`) %>%
-  relocate("Year", .after = Authors) %>%
-  relocate("Month", .after = Year) %>%
-  relocate("Title", .after = Month) %>%
-  relocate("Journal", .after = DOI) %>%
-  relocate("Volume", .after = Journal) %>%
-  relocate("Issue", .after = Volume) %>%
-  relocate("Page_Number", .after = Issue)
+meta_ids <- meta_ids %>% 
+  janitor::clean_names() %>%
+  select(doi, article_id, authors, year, month, title, journal, volume, issue, page_number)
 
 # let's convert the month column into words instead of numbers
+
+data <- data %>% mutate(gender = 
+                          factor(gender, 
+                                 levels = c(1, 2),  
+                                 labels = c("female", "male")))
+
+
 meta_ids <- meta_ids %>%
-  mutate(Month = case_when(`01` == "Jan", `02` == "Feb", `03` == "Mar", `04` == "Apr", `05` == "May", `06` == "Jun", `07` == "Jul", `08` == "Aug", `09` == "Sep", `10` == "Oct", `11` == "Nov", `12` == "Dec"))    
-# there has to be an easier way to do this?
+  mutate(month = factor(month, 
+                        levels = c("01", 
+                                   "02", 
+                                   "03", 
+                                   "04", 
+                                   "05", 
+                                   "06", 
+                                   "07", 
+                                   "08", 
+                                   "09", 
+                                   "10", 
+                                   "11", 
+                                   "12"), 
+         labels = c("Jan", 
+                    "Feb",
+                    "Mar", 
+                    "Apr", 
+                    "May", 
+                    "Jun",
+                    "Jul", 
+                    "Aug", 
+                    "Sep", 
+                    "Oct", 
+                    "Nov", 
+                    "Dec")))
+
 
 # Code to combine all authors of an article in one cell
 
 # let's unnest the authors names
 authors <- meta_ids %>%
-  tidyr::unnest(Authors, .drop = TRUE)
+  tidyr::unnest(authors, .drop = TRUE)
 
 # let's combine first and last names AND drop the unnecessary columns
 authors_clean <- authors %>%
-  unite("Authors", given:family) %>%
-  select(`Article ID`, Authors, Year:Page_Number)
+  unite("authors", given:family) %>%
+  select(doi, article_id, authors, year:page_number)
 
 # now let's merge all the rows that have a common Article ID, so that all the authors names appear in the same cell
-combined_authors <- authors_clean %>%
-  group_by("Article ID") %>%
+
+
+authors_string <- authors_clean %>%
+  group_by(doi, article_id, year, month, title, journal, volume, issue, page_number) %>%
   summarise_all(funs(toString(na.omit(.))))
 
-combined_authors_2 <- authors_clean %>%
-  group_by("Article ID") %>%
-  summarise_all(funs(toString("Article ID")))
 
-combined_authors_1 <- authors_clean %>%
-  group_by("DOI") %>%
-  summarise_all(funs(paste(., collapse = ".")))
-  
-combined_authors_3 <- authors_clean %>%
-  group_by("DOI") %>%
-  summarise_all(paste, collapse = '')
+obs_test <- anti_join(meta_ids, authors_string, by = "article_id")
 
-combined_authors_4 <- authors_clean %>%
-  group_by("Article ID") %>%
-  summarise_all(funs(paste(., collapse = ",")))
-
-combined_authors_5 <- authors_clean %>%
-  group_by("Article ID") %>%
-  summarise_all(funs(paste(., sep = '', collapse = NULL)))
 
 # Stuck here 
 # https://stackoverflow.com/questions/51523082/how-to-combine-rows-with-the-same-identifier-r 
