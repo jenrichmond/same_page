@@ -42,39 +42,18 @@ meta_ids <- meta_ids %>%
 
 # let's convert the month column into words instead of numbers
 
-data <- data %>% mutate(gender = 
-                          factor(gender, 
-                                 levels = c(1, 2),  
-                                 labels = c("female", "male")))
-
-
 meta_ids <- meta_ids %>%
   mutate(month = factor(month, 
-                        levels = c("01", 
-                                   "02", 
-                                   "03", 
-                                   "04", 
-                                   "05", 
-                                   "06", 
-                                   "07", 
-                                   "08", 
-                                   "09", 
-                                   "10", 
-                                   "11", 
-                                   "12"), 
-         labels = c("Jan", 
-                    "Feb",
-                    "Mar", 
-                    "Apr", 
-                    "May", 
-                    "Jun",
-                    "Jul", 
-                    "Aug", 
-                    "Sep", 
-                    "Oct", 
-                    "Nov", 
-                    "Dec")))
+                        levels = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"), 
+         labels = c("Jan", "Feb","Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
 
+# The authors of some articles (namely, corrigenda and errata) have not been correctly coded
+  # instead of the authors names, NULL is used instead
+  # for now, let's replace NULL with blank
+
+NULL_authors <- meta_ids %>%
+  filter(authors == "NULL") %>%
+  mutate(authors = case_when("NULL" == authors ~ " "))
 
 # Code to combine all authors of an article in one cell
 
@@ -89,20 +68,17 @@ authors_clean <- authors %>%
 
 # now let's merge all the rows that have a common Article ID, so that all the authors names appear in the same cell
 
-
 authors_string <- authors_clean %>%
   group_by(doi, article_id, year, month, title, journal, volume, issue, page_number) %>%
   summarise_all(funs(toString(na.omit(.))))
 
+# let's combine the authors_string dataset with the NULL_authors dataset to get a complete dataset
 
-obs_test <- anti_join(meta_ids, authors_string, by = "article_id")
-
-
-# Stuck here 
-# https://stackoverflow.com/questions/51523082/how-to-combine-rows-with-the-same-identifier-r 
+complete <- rbind(authors_string, NULL_authors) %>%
+  select(article_id, authors, year, month, title, doi, journal, volume, issue, page_number)
 
 # write the dataframe as a csv. 
-combined_authors %>%
+complete %>%
   write_csv(here("data_files", "complete_1B_metadata.csv"))
 
 
