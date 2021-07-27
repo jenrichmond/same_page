@@ -19,6 +19,8 @@ library(afex)
 
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
 
+glimpse(data1A)
+
 # First factor: Subfield ------
 
 # first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
@@ -39,23 +41,50 @@ subfield_groups <- subfield_groups %>%
 # we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
 
 dates <- subfield_groups %>%
-  mutate(dates = case_when(
+  mutate(time_period = case_when(
     str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
     str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
     str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
-  relocate(dates, .after = article_id_number)
+  relocate(time_period, .after = article_id_number)
          
+glimpse(dates)
+
+# select just the variables you need to analysis
+
+final1A <- dates %>%
+  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+
+# check data types
+
+glimpse(final1A)
+
+# make sure subfield and timeperiod are factors 
+
+final1A$subfield_groups <- as.factor(final1A$subfield_groups)
+final1A$time_period <- as.factor(final1A$time_period)
+
+
 # now let's run an ANOVA for data scores using the jmv package
 
-data_ANOVA <- ANOVA(formula = total_data_score ~ subfield_groups * dates, data = dates) 
-data_ANOVA <- as.data.frame(data_ANOVA)
+data_ANOVA <- ANOVA(formula = total_data_score ~ subfield_groups * time_period, data = final1A) 
+
+print(data_ANOVA)
+
+# I think anova from jmv can't be turned into a dataframe, there are ways to turn output into a dataframe so you can easily refer to parts of it... broom package or rstatix package might be helpful
+
+data_ANOVA <- as.data.frame(data_ANOVA$main)
 
 # and for materials 
 
-materials_ANOVA <- ANOVA(formula = total_materials_score ~ subfield_groups * dates, data = dates) 
-ANOVA(formula = total_materials_score ~ subfield_groups * dates, data = dates) 
+materials_ANOVA <- ANOVA(formula = total_materials_score ~ subfield_groups * time_period, data = dates) 
 
-as.data.frame(materials_ANOVA$main)
+print(materials_ANOVA)
+
+materialsANOVA <- as.data.frame(materials_ANOVA$main)
+
+
+## JENNY UP TO HERE--- LOOKS GOOD TO ME... MAIN EFFECTS OF SUBFIELD AND TIMEPOINT, BUT NO INTERACTIONS
+## WHAT DOES THAT MEAN... YOU NEED SOME PLOTS :)
 
 
 # Christina having a go at some exploratory analyses 
