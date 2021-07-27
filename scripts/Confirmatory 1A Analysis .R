@@ -45,52 +45,17 @@ dates <- subfield_groups %>%
     str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
   relocate(dates, .after = article_id_number)
          
-# now let's run an ANOVA for data scores
+# now let's run an ANOVA for data scores using the jmv package
 
-# using jmv pacakage - repeated measured ANOVA
-  # need Jenny's help here - https://rdrr.io/cran/jmv/man/anovaRM.html 
+data_ANOVA <- ANOVA(formula = total_data_score ~ subfield_groups * dates, data = dates) 
+data_ANOVA <- as.data.frame(data_ANOVA)
 
-anovaRM <- dates %>%
-  anovaRM(data = dates,
-        rm = list(list(label = 'subfield_groups',
-                       levels = c('Developmental Psychology', 'Cognition', 'Social Psychology', 'Other'))),
-        rmCells = list(list(measure = 'dates',
-                            cell = '1st half 2014', '2nd half 2014', '1st half 2015')),
-        depLabel = 'total_data_score')
+# and for materials 
 
+materials_ANOVA <- ANOVA(formula = total_materials_score ~ subfield_groups * dates, data = dates) 
+ANOVA(formula = total_materials_score ~ subfield_groups * dates, data = dates) 
 
-#using afex package - factorial analysis 
-  # https://cran.r-project.org/web/packages/afex/afex.pdf - page 27
-  # https://www.rdocumentation.org/packages/afex/versions/1.0-1 
-
-afex_data_1 <- data %>%
-  aov_ez(id = "article_id_number", dv = "total_data_score", within = c("subfield_groups", "dates"), data = dates)
-# I get this error: 'Error in if (make.names(name) != name) { : argument is of length zero'
-
-summary(afex_data_1)
-
-# I tried using the code below but I don't think I was on the right track
-
-# apparently the data needs to be a long format
-
-# first let's make the data and material scores character variables
-
-character_variables <- transform(dates, "total_data_score" = as.character(total_data_score)) %>%
-  transform(dates, "total_materials_score" = as.character(total_materials_score))
-
-# now we can make the data long
-
-longer_data <- character_variables %>%
-  select(article_id_number, subfield_groups, dates, total_data_score) %>%
-  pivot_longer(names_to = "factor", values_to = "output", subfield_groups:total_data_score)
-
-# and now we can run the factorial analysis 
-
-afex_data <- longer_data %>%
-  aov_ez("article_id_number", "total_data_score", longer_data, between = NULL, within = c("dates", "subfield_groups"), observered = c("dates", "subfield_groups"))
-
-
-
+as.data.frame(materials_ANOVA$main)
 
 
 # Christina having a go at some exploratory analyses 
