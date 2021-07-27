@@ -13,12 +13,13 @@ library(here)
 library(ggeasy)
 library(jmv)
 library(psych)
+library(afex)
 
 # let's read in the data
 
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
 
-# First main effect: Subfield ------
+# First factor: Subfield ------
 
 # first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
 subfield_groups <- data1A %>%
@@ -33,7 +34,7 @@ subfield_groups <- data1A %>%
 subfield_groups <- subfield_groups %>%
   select(-subfield)
 
-# Second main effect: Time -----
+# Second factor: Time -----
 
 # we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
 
@@ -45,16 +46,55 @@ dates <- subfield_groups %>%
   relocate(dates, .after = article_id_number)
          
 # now let's run an ANOVA for data scores
+
+# using jmv pacakage - repeated measured ANOVA
   # need Jenny's help here - https://rdrr.io/cran/jmv/man/anovaRM.html 
 
-anovaRM(data = dates,
+anovaRM <- dates %>%
+  anovaRM(data = dates,
         rm = list(list(label = 'subfield_groups',
                        levels = c('Developmental Psychology', 'Cognition', 'Social Psychology', 'Other'))),
         rmCells = list(list(measure = 'dates',
                             cell = '1st half 2014', '2nd half 2014', '1st half 2015')),
         depLabel = 'total_data_score')
 
+
+#using afex package - factorial analysis 
+  # https://cran.r-project.org/web/packages/afex/afex.pdf - page 27
+  # https://www.rdocumentation.org/packages/afex/versions/1.0-1 
+
+afex_data_1 <- data %>%
+  aov_ez(id = "article_id_number", dv = "total_data_score", within = c("subfield_groups", "dates"), data = dates)
+# I get this error: 'Error in if (make.names(name) != name) { : argument is of length zero'
+
+summary(afex_data_1)
+
+# I tried using the code below but I don't think I was on the right track
+
+# apparently the data needs to be a long format
+
+# first let's make the data and material scores character variables
+
+character_variables <- transform(dates, "total_data_score" = as.character(total_data_score)) %>%
+  transform(dates, "total_materials_score" = as.character(total_materials_score))
+
+# now we can make the data long
+
+longer_data <- character_variables %>%
+  select(article_id_number, subfield_groups, dates, total_data_score) %>%
+  pivot_longer(names_to = "factor", values_to = "output", subfield_groups:total_data_score)
+
+# and now we can run the factorial analysis 
+
+afex_data <- longer_data %>%
+  aov_ez("article_id_number", "total_data_score", longer_data, between = NULL, within = c("dates", "subfield_groups"), observered = c("dates", "subfield_groups"))
+
+
+
+
+
 # Christina having a go at some exploratory analyses 
+  # for now, I've just used percentages - I'm not sure if there's a more technical method we want to use
 
 # Subfield vs. badges
 
@@ -62,11 +102,6 @@ anovaRM(data = dates,
 subfield_databadges <- dates %>%
   tabyl(subfield_groups, did_the_article_receive_a_badge_for_open_data) %>%
   mutate(percent = Yes/sum(Yes + No)*100)
-
-# I didn't know whether chi-square or percentages would be the best method to use?
-
-subfield_badges_chisq <- subfield_badges %>%
-  print(chisq.test(x = subfield_groups, p = did_the_article_receive_a_badge_for_open_data))
 
 # Materials
 subfield_materialsbadges <- dates %>%
