@@ -35,14 +35,38 @@ subfield_long <- psyc_subfield %>%
   select(coder_name, id_number, subfield) %>%
   pivot_wider(names_from = coder_name, values_from = subfield) 
 
-# let's run the kappa reliability analysis 
-
-# ATTEMPT 1
-
+# let's take out the id column so R doesn't think "ID" is a rater
 subfield_clean <- subfield_long %>%
   select("Helen Gu":"Will Osmand")
 
-kappam.fleiss(subfield_clean)
+# let's replace the NAs with blanks (I think this was the root of the problems I was facing)
+
+subfield_clean_NA <- subfield_clean %>%
+  mutate(`Helen Gu` = coalesce(`Helen Gu`, "")) %>%
+  mutate(`Georgia Saddler` = coalesce(`Georgia Saddler`, "")) %>%
+  mutate(`patrick mccraw` = coalesce(`patrick mccraw`, "")) %>%
+  mutate(`Jenn Lee` = coalesce(`Jenn Lee`, "")) %>%
+  mutate(`Will Osmand` = coalesce(`Will Osmand`, "")) 
+
+# now we can run the reliability analysis
+
+# not sure which kappa is the right one to use
+
+# fleiss - used for multiple categorical variables
+  # https://www.datanovia.com/en/lessons/fleiss-kappa-in-r-for-multiple-categorical-variables/#interpretation-magnitude-of-the-agreement 
+kappam.fleiss(subfield_clean_NA)
+  # If I'm understanding correctly, according to this website, we have fair to good agreement, above chance
+
+# light - average of all possible two-raters kappa
+  # https://www.datanovia.com/en/lessons/cohens-kappa-in-r-for-two-categorical-variables/#kappa-for-more-than-two-raters  
+kappam.light(subfield_clean_NA)
+  # again, fair to good agreement
+
+# YAY this seems to work, ignore rest of code
+
+
+
+
 
 # so it looks like the number of raters is correct, but the subjects isn't
 
