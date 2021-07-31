@@ -211,30 +211,30 @@ materials_timeperiod_descriptives %>%
 # Data
 subfield_databadges <- dates %>%
   tabyl(subfield_groups, did_the_article_receive_a_badge_for_open_data) %>%
-  mutate(percent = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/sum(Yes + No)*100)
 
 # Materials
 subfield_materialsbadges <- dates %>%
   tabyl(subfield_groups, did_the_article_receive_a_badge_for_open_materials.x) %>%
-  mutate(percent = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/sum(Yes + No)*100)
 
 # Subfield vs. codebook/scripts/understanding variables
 
 # Data
 subfield_codebook <- dates %>%
   tabyl(subfield_groups, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
-  mutate(percent = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/sum("data_statement_indicates_that_data_are" == "Available")*100) # this code isn't working
   # percentage here is of the articles which have data available
 
 subfield_scripts <- dates %>%
   tabyl(subfield_groups, are_analysis_scripts_included_with_the_data) %>%
-  mutate(percent = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/sum("data_statement_indicates_that_data_are" == "Available")*100)
   # percentage here is of the articles which have data available
 
 # Materials
 subfield_materials_usable <- dates %>%
   tabyl(subfield_groups, are_analysis_scripts_included_with_the_materials) %>%
-  mutate(percent = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/sum("statement_indicates_that_materials_are" == "Available")*100)
 # percentage here is of the articles which have data available
 
 # Badge vs. data/materials accessible
@@ -242,29 +242,31 @@ subfield_materials_usable <- dates %>%
 # Data
 data_accessible <- dates %>%
   tabyl(did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are) %>%
-  mutate(percent = Available/sum(Available + Unavailable )*100)
-# percentage here is of the articles that had an availability statement
+  mutate(percent_reported_available = Available/sum(Available + Unavailable )*100)
+# percentage here is of the articles that had an availability statement - this doesn't look right
 
 # Materials
 materials_accessible <- dates %>%
   tabyl(did_the_article_receive_a_badge_for_open_materials.x, statement_indicates_that_materials_are) %>%
-  mutate(percent = Available/sum(Available)*100)
+  mutate(percent_reported_available = Available/sum(Available)*100)
 # percentage here is of the articles that had an availability statement
-# VERY interesting finding
+# again, this doesn't look right
 
 # Badge vs. data/materials locatable 
 
 # Data
 data_locatable <- dates %>%
   tabyl(did_the_article_receive_a_badge_for_open_data, are_the_data_located_at_the_working_page) %>%
-  mutate(percent = Yes/sum(Yes + No + `Requires permission`)*100)
+  mutate(percent_locatable = Yes/sum(Yes + No + `Requires permission`)*100)
+# doesn't look right
 
 materials_locatable <- dates %>%
   tabyl(did_the_article_receive_a_badge_for_open_materials.x, are_the_materials_located_at_the_working_page) %>%
-  mutate(percent = Yes/sum(Yes + No + `Requires permission`)*100)
+  mutate(percent_locatable = Yes/sum(Yes + No + `Requires permission`)*100)
 # a little confused with the 'Yes' percentage here
 
-# Badge vs. codebook/scripts/understanding variables
+# Badge vs. codebook/scripts/understanding variables 
+  # change the denominators once you know what they should be
 
 # Data
 databadge_codebook <- dates %>%
