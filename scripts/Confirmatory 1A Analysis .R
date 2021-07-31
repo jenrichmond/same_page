@@ -14,6 +14,7 @@ library(ggeasy)
 library(jmv)
 library(psych)
 library(afex)
+library(rstatix)
 
 # let's read in the data
 
@@ -49,7 +50,7 @@ dates <- subfield_groups %>%
          
 glimpse(dates)
 
-# select just the variables you need to analysis
+# select just the variables you need to analyse
 
 final1A <- dates %>%
   select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
@@ -70,11 +71,21 @@ data_ANOVA <- ANOVA(formula = total_data_score ~ subfield_groups * time_period, 
 
 print(data_ANOVA)
 
-# I think anova from jmv can't be turned into a dataframe, there are ways to turn output into a dataframe so you can easily refer to parts of it... broom package or rstatix package might be helpful
+# JR I think anova from jmv can't be turned into a dataframe, there are ways to turn output into a dataframe so you can easily refer to parts of it... broom package or rstatix package might be helpful
 
 data_ANOVA <- as.data.frame(data_ANOVA$main)
 
-# and for materials 
+# CR let's try using the rstatix package
+
+rstatix_output_data <- final1A %>%
+  anova_test(total_data_score ~ subfield_groups * time_period)
+
+rstatix_output_data
+
+# huh, that's weird, according to rstatix, the only significant effect is the time period effect - why are they different?
+
+
+# ANOVA for materials
 
 materials_ANOVA <- ANOVA(formula = total_materials_score ~ subfield_groups * time_period, data = dates) 
 
@@ -82,9 +93,114 @@ print(materials_ANOVA)
 
 materialsANOVA <- as.data.frame(materials_ANOVA$main)
 
+# let's try using the rstatix package
+
+rstatix_output_materials <- final1A %>%
+  anova_test(total_materials_score ~ subfield_groups * time_period)
+
+# again, the stats are different
+
 
 ## JENNY UP TO HERE--- LOOKS GOOD TO ME... MAIN EFFECTS OF SUBFIELD AND TIMEPOINT, BUT NO INTERACTIONS
 ## WHAT DOES THAT MEAN... YOU NEED SOME PLOTS :)
+
+# Christina attempting to plot
+
+# SUBFIELD X DATA SCORE - according to rstatix, insignificant
+
+data_subfield_descriptives <- final1A %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
+            SD = sd(total_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+# let's plot this
+
+data_subfield_descriptives %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,6), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+
+# TIME PERIOD X DATA SCORE - according to rstatix, significant 
+
+data_timeperiod_descriptives <- final1A %>%
+  group_by(time_period) %>%
+  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
+            SD = sd(total_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+# let's plot this
+
+data_timeperiod_descriptives %>%
+  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,8), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+
+# SUBFIELD X MATERIALS SCORE - according to rstatix, significant
+
+materials_subfield_descriptives <- final1A %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
+            SD = sd(total_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+# let's plot this
+
+materials_subfield_descriptives %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,6), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+
+# TIME PERIOD X MATERIALS SCORE - according to rstatix, significant 
+
+materials_timeperiod_descriptives <- final1A %>%
+  group_by(time_period) %>%
+  summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
+            SD = sd(total_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+# let's plot this
+
+materials_timeperiod_descriptives %>%
+  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,6), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
 
 # Christina having a go at some exploratory analyses 
