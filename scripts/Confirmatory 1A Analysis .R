@@ -77,12 +77,16 @@ data_ANOVA <- as.data.frame(data_ANOVA$main)
 
 # CR let's try using the rstatix package
 
+options(scipen=999) # remove scientific notation
+
 rstatix_output_data <- final1A %>%
   anova_test(total_data_score ~ subfield_groups * time_period)
 
 rstatix_output_data
 
 # huh, that's weird, according to rstatix, the only significant effect is the time period effect - why are they different?
+
+# Simple main effects analysis showed that time_period significantly impacted Open Data Scores (p = 0.000) but subfield didn't (p = 0.085). There was no evidence of a significant interaction between the two main effects (p = 0.157). 
 
 
 # ANOVA for materials
@@ -99,6 +103,8 @@ rstatix_output_materials <- final1A %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
 # again, the stats are different
+
+# Simple main effects analysis showed that both time_period (p = 0.008) and subfield (p = 0.009) significantly impacted Open Material Scores. There was no evidence of a significant interaction between the two main effects (p = 0.530). 
 
 
 ## JENNY UP TO HERE--- LOOKS GOOD TO ME... MAIN EFFECTS OF SUBFIELD AND TIMEPOINT, BUT NO INTERACTIONS
@@ -130,6 +136,9 @@ data_subfield_descriptives %>%
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
+## so it looks like there might be significant difference between development and cog + social or dev + other and cog + social
+## is the next logical step to run factorial analyses? or pairwise t-tests?
+
 # TIME PERIOD X DATA SCORE - according to rstatix, significant 
 
 data_timeperiod_descriptives <- final1A %>%
@@ -153,6 +162,8 @@ data_timeperiod_descriptives %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+
+## so it looks like as time increases, the scores get bigger
 
 # SUBFIELD X MATERIALS SCORE - according to rstatix, significant
 
@@ -178,6 +189,8 @@ materials_subfield_descriptives %>%
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
+## similar results to data scores - looks like there is a significant difference between dev + other and cog + social
+
 # TIME PERIOD X MATERIALS SCORE - according to rstatix, significant 
 
 materials_timeperiod_descriptives <- final1A %>%
@@ -201,6 +214,8 @@ materials_timeperiod_descriptives %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+
+## again, it looks like scores increase with time 
 
 
 # Christina having a go at some exploratory analyses 
