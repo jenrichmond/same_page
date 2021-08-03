@@ -54,8 +54,10 @@ subfield_clean_NA <- subfield_clean %>%
 
 # fleiss - used for multiple categorical variables
   # https://www.datanovia.com/en/lessons/fleiss-kappa-in-r-for-multiple-categorical-variables/#interpretation-magnitude-of-the-agreement 
+
 kappam.fleiss(subfield_clean_NA)
-  # If I'm understanding correctly, according to this website, we have fair to good agreement, above chance
+
+# If I'm understanding correctly, according to this website, we have fair to good agreement, above chance
 
 # light - average of all possible two-raters kappa
   # https://www.datanovia.com/en/lessons/cohens-kappa-in-r-for-two-categorical-variables/#kappa-for-more-than-two-raters  

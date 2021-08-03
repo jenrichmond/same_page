@@ -16,6 +16,8 @@ library(psych)
 library(afex)
 library(rstatix)
 
+options(scipen=999) # remove scientific notation
+
 # let's read in the data
 
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
@@ -77,7 +79,6 @@ data_ANOVA <- as.data.frame(data_ANOVA$main)
 
 # CR let's try using the rstatix package
 
-options(scipen=999) # remove scientific notation
 
 rstatix_output_data <- final1A %>%
   anova_test(total_data_score ~ subfield_groups * time_period)
@@ -102,6 +103,8 @@ materialsANOVA <- as.data.frame(materials_ANOVA$main)
 rstatix_output_materials <- final1A %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
+rstatix_output_materials 
+
 # again, the stats are different
 
 # Simple main effects analysis showed that both time_period (p = 0.008) and subfield (p = 0.009) significantly impacted Open Material Scores. There was no evidence of a significant interaction between the two main effects (p = 0.530). 
@@ -124,18 +127,19 @@ data_subfield_descriptives <- final1A %>%
 # let's plot this
 
 data_subfield_descriptives %>%
-  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
+  ggplot(aes(x = reorder(subfield_groups, mean_data_score), y = mean_data_score, fill = subfield_groups)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
   theme_classic() + # white background
-  scale_y_continuous(limits = c(0,6), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,10), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
+  
 ## so it looks like there might be significant difference between development and cog + social or dev + other and cog + social
 ## is the next logical step to run factorial analyses? or pairwise t-tests?
 
@@ -147,6 +151,10 @@ data_timeperiod_descriptives <- final1A %>%
             SD = sd(total_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
+
+data_timeperiod_descriptives$time_period <- fct_relevel(data_timeperiod_descriptives$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+levels(data_timeperiod_descriptives$time_period)
 
 # let's plot this
 
@@ -164,6 +172,32 @@ data_timeperiod_descriptives %>%
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
 ## so it looks like as time increases, the scores get bigger
+
+data_subfieldtime_descriptives <- final1A %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
+            SD = sd(total_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfieldtime_descriptives $time_period <- fct_relevel(data_subfieldtime_descriptives $time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+data_subfieldtime_descriptives  %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
+  geom_col(position = "dodge") 
+# need to CONNECT this back up
++
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,8), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
+
+
 
 # SUBFIELD X MATERIALS SCORE - according to rstatix, significant
 
@@ -217,6 +251,7 @@ materials_timeperiod_descriptives %>%
 
 ## again, it looks like scores increase with time 
 
+# EXPLORATORY-------------
 
 # Christina having a go at some exploratory analyses 
   # for now, I've just used percentages - I'm not sure if there's a more technical method we want to use
@@ -226,21 +261,23 @@ materials_timeperiod_descriptives %>%
 # Data
 subfield_databadges <- dates %>%
   tabyl(subfield_groups, did_the_article_receive_a_badge_for_open_data) %>%
-  mutate(percent_yes = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/(Yes + No)*100)
 
 # Materials
 subfield_materialsbadges <- dates %>%
   tabyl(subfield_groups, did_the_article_receive_a_badge_for_open_materials.x) %>%
-  mutate(percent_yes = Yes/sum(Yes + No)*100)
+  mutate(percent_yes = Yes/(Yes + No)*100)
 
 # Subfield vs. codebook/scripts/understanding variables
 
 # Data
 subfield_codebook <- dates %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
-  mutate(percent_yes = Yes/sum("data_statement_indicates_that_data_are" == "Available")*100) # this code isn't working
+  mutate(percent_yes = Yes/(Yes + No)*100) # this code isn't working
   # percentage here is of the articles which have data available
 
+#JENNY AND CHRISTINA UP TO HERE 
 subfield_scripts <- dates %>%
   tabyl(subfield_groups, are_analysis_scripts_included_with_the_data) %>%
   mutate(percent_yes = Yes/sum("data_statement_indicates_that_data_are" == "Available")*100)
