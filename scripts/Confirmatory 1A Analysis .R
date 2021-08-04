@@ -66,6 +66,31 @@ glimpse(final1A)
 final1A$subfield_groups <- as.factor(final1A$subfield_groups)
 final1A$time_period <- as.factor(final1A$time_period)
 
+# Type I - ANOVA analysis (aov or anova functions) -----
+  # in Type I the order matters - https://stats.stackexchange.com/questions/60362/choice-between-type-i-type-ii-or-type-iii-anova 
+I_data <- anova(lm(total_data_score ~ subfield_groups * time_period, data = final1A))
+
+# let's check whether this is balance by changing the order of the main effects
+
+I_data_balanced <- anova(lm(total_data_score ~ time_period * subfield_groups, data = final1A))
+
+# because the results are different, we can conclude that the data is unbalanced 
+
+anova_test(final1A, total_data_score ~ subfield_groups * time_period, type = 1)
+  # significant time effect only 
+
+# Type II
+
+II_data <- anova_test(final1A, total_data_score ~ subfield_groups * time_period, type = 2)
+  # same results as rstatix package 
+  # generates the same results for time period and interaction as I_data
+  # significant time effect only 
+
+# Type III
+
+III_data <- anova_test(final1A, total_data_score ~ subfield_groups * time_period, type = 3)
+  # generates the same interaction effect as I and II
+  # significant main effects, insignificant interaction effect
 
 # now let's run an ANOVA for data scores using the jmv package
 
@@ -110,10 +135,11 @@ rstatix_output_materials
 # Simple main effects analysis showed that both time_period (p = 0.008) and subfield (p = 0.009) significantly impacted Open Material Scores. There was no evidence of a significant interaction between the two main effects (p = 0.530). 
 
 
-## JENNY UP TO HERE--- LOOKS GOOD TO ME... MAIN EFFECTS OF SUBFIELD AND TIMEPOINT, BUT NO INTERACTIONS
-## WHAT DOES THAT MEAN... YOU NEED SOME PLOTS :)
+# PLOTS -----
 
-# Christina attempting to plot
+final1A <- final1A %>%
+  mutate(subfield_groups = case_when(subfield_groups == "Developmental Psychology" ~ "Development", subfield_groups == "Social Psychology" ~ "Social", 
+                                     TRUE ~ as.character(subfield_groups)))
 
 # SUBFIELD X DATA SCORE - according to rstatix, insignificant
 
@@ -138,10 +164,6 @@ data_subfield_descriptives %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
-
-  
-## so it looks like there might be significant difference between development and cog + social or dev + other and cog + social
-## is the next logical step to run factorial analyses? or pairwise t-tests?
 
 # TIME PERIOD X DATA SCORE - according to rstatix, significant 
 
@@ -171,7 +193,8 @@ data_timeperiod_descriptives %>%
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
-## so it looks like as time increases, the scores get bigger
+
+# INTERACTION between time and subfield
 
 data_subfieldtime_descriptives <- final1A %>%
   group_by(subfield_groups, time_period) %>%
@@ -184,17 +207,15 @@ data_subfieldtime_descriptives $time_period <- fct_relevel(data_subfieldtime_des
 
 data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
-  geom_col(position = "dodge") 
-# need to CONNECT this back up
-+
+  geom_col(position = "dodge") +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
-                width=.2) + # narrower bars
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
   theme_classic() + # white background
-  scale_y_continuous(limits = c(0,8), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
+  scale_y_continuous(limits = c(0,10), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
 
 
@@ -211,7 +232,7 @@ materials_subfield_descriptives <- final1A %>%
 # let's plot this
 
 materials_subfield_descriptives %>%
-  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
+  ggplot(aes(x = reorder(subfield_groups, mean_materials_score), y = mean_materials_score, fill = subfield_groups)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
@@ -223,7 +244,9 @@ materials_subfield_descriptives %>%
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
-## similar results to data scores - looks like there is a significant difference between dev + other and cog + social
+materials_timeperiod_descriptives$time_period <- fct_relevel(materials_timeperiod_descriptives$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+levels(materials_timeperiod_descriptives$time_period)
 
 # TIME PERIOD X MATERIALS SCORE - according to rstatix, significant 
 
@@ -249,7 +272,82 @@ materials_timeperiod_descriptives %>%
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
-## again, it looks like scores increase with time 
+# INTERACTION between time and subfield
+
+materials_subfieldtime_descriptives <- final1A %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
+            SD = sd(total_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfieldtime_descriptives $time_period <- fct_relevel(materials_subfieldtime_descriptives $time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+materials_subfieldtime_descriptives  %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,10), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
+
+
+# t-tests for subfields -------
+
+# Data scores (using rstatix package)
+
+  # Development vs. Cognition
+
+devcog_data <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Cognition")) %>%
+  t_test(total_data_score ~ subfield_groups)
+# not significant 
+
+devcog_data <- data_subfield_descriptives %>%
+  filter(subfield_groups %in% c("Development", "Cognition")) %>%
+  t_test(mean_data_score ~ subfield_groups)
+
+  # Development vs. Social
+
+devsocial <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Social")) %>%
+  t_test(total_data_score ~ subfield_groups)
+# results are significant
+
+  # Development vs. Other
+
+devother <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Other")) %>%
+  t_test(total_data_score ~ subfield_groups)
+# not significant 
+
+# Material scores
+
+  # Developmental vs. Cognition
+
+devcog_materials <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Cognition")) %>%
+  t_test(total_materials_score ~ subfield_groups)
+# significant
+
+  # Developmental vs. Social
+
+devsocial_materials <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Social")) %>%
+  t_test(total_materials_score ~ subfield_groups)
+# significant
+
+  # Developmental vs. Other
+
+devother_materials <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Other")) %>%
+  t_test(total_materials_score ~ subfield_groups)
+# not significant
 
 # EXPLORATORY-------------
 
