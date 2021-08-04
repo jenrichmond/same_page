@@ -66,71 +66,24 @@ glimpse(final1A)
 final1A$subfield_groups <- as.factor(final1A$subfield_groups)
 final1A$time_period <- as.factor(final1A$time_period)
 
-# Type I - ANOVA analysis (aov or anova functions) -----
-  # in Type I the order matters - https://stats.stackexchange.com/questions/60362/choice-between-type-i-type-ii-or-type-iii-anova 
-I_data <- anova(lm(total_data_score ~ subfield_groups * time_period, data = final1A))
+# ANOVA analysis - DATA ----
 
-# let's check whether this is balance by changing the order of the main effects
+  # We decided to use Type II ANOVA tests because this appears to be the more conservative test out of Type I, II and III tests, and is most appropriate for our findings
 
-I_data_balanced <- anova(lm(total_data_score ~ time_period * subfield_groups, data = final1A))
-
-# because the results are different, we can conclude that the data is unbalanced 
-
-anova_test(final1A, total_data_score ~ subfield_groups * time_period, type = 1)
-  # significant time effect only 
-
-# Type II
-
-II_data <- anova_test(final1A, total_data_score ~ subfield_groups * time_period, type = 2)
-  # same results as rstatix package 
-  # generates the same results for time period and interaction as I_data
-  # significant time effect only 
-
-# Type III
-
-III_data <- anova_test(final1A, total_data_score ~ subfield_groups * time_period, type = 3)
-  # generates the same interaction effect as I and II
-  # significant main effects, insignificant interaction effect
-
-# now let's run an ANOVA for data scores using the jmv package
-
-data_ANOVA <- ANOVA(formula = total_data_score ~ subfield_groups * time_period, data = final1A) 
-
-print(data_ANOVA)
-
-# JR I think anova from jmv can't be turned into a dataframe, there are ways to turn output into a dataframe so you can easily refer to parts of it... broom package or rstatix package might be helpful
-
-data_ANOVA <- as.data.frame(data_ANOVA$main)
-
-# CR let's try using the rstatix package
-
-
-rstatix_output_data <- final1A %>%
+data_ANOVA <- final1A %>%
   anova_test(total_data_score ~ subfield_groups * time_period)
 
-rstatix_output_data
-
-# huh, that's weird, according to rstatix, the only significant effect is the time period effect - why are they different?
+data_ANOVA
 
 # Simple main effects analysis showed that time_period significantly impacted Open Data Scores (p = 0.000) but subfield didn't (p = 0.085). There was no evidence of a significant interaction between the two main effects (p = 0.157). 
 
 
-# ANOVA for materials
+# ANOVA analysis - MATERIALS ------
 
-materials_ANOVA <- ANOVA(formula = total_materials_score ~ subfield_groups * time_period, data = dates) 
-
-print(materials_ANOVA)
-
-materialsANOVA <- as.data.frame(materials_ANOVA$main)
-
-# let's try using the rstatix package
-
-rstatix_output_materials <- final1A %>%
+ANOVA_materials <- final1A %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
-rstatix_output_materials 
-
-# again, the stats are different
+ANOVA_materials 
 
 # Simple main effects analysis showed that both time_period (p = 0.008) and subfield (p = 0.009) significantly impacted Open Material Scores. There was no evidence of a significant interaction between the two main effects (p = 0.530). 
 
@@ -165,7 +118,7 @@ data_subfield_descriptives %>%
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
 
-# TIME PERIOD X DATA SCORE - according to rstatix, significant 
+# TIME PERIOD X DATA SCORE 
 
 data_timeperiod_descriptives <- final1A %>%
   group_by(time_period) %>%
@@ -220,7 +173,7 @@ data_subfieldtime_descriptives  %>%
 
 
 
-# SUBFIELD X MATERIALS SCORE - according to rstatix, significant
+# SUBFIELD X MATERIALS SCORE 
 
 materials_subfield_descriptives <- final1A %>%
   group_by(subfield_groups) %>%
@@ -248,7 +201,7 @@ materials_timeperiod_descriptives$time_period <- fct_relevel(materials_timeperio
 
 levels(materials_timeperiod_descriptives$time_period)
 
-# TIME PERIOD X MATERIALS SCORE - according to rstatix, significant 
+# TIME PERIOD X MATERIALS SCORE 
 
 materials_timeperiod_descriptives <- final1A %>%
   group_by(time_period) %>%
