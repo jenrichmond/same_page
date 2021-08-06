@@ -1,0 +1,72 @@
+---
+title: "ANOVA-1A"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load packages
+
+```{r cars}
+library(tidyverse)
+library(here)
+library(rstatix)
+```
+
+## Read in data 
+
+```{r}
+data_1A <- read_csv(here("data_files", "clean_06-08_dataset_1A.csv"))
+
+summary <- data_1A %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(max_data = max(total_data_score),
+            min_data = min(total_data_score),
+            max_materials = max(total_materials_score),
+            min_materials = min(total_materials_score), 
+            mean_data = mean(total_data_score),
+            mean_materials = mean(total_materials_score))
+
+summary$subfield_groups <- as.factor(summary$subfield_groups)
+
+summary$time_period <- fct_relevel(summary$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+levels(summary$time_period)
+
+glimpse(summary)
+```
+
+```{r}
+summary %>%
+  ggplot(aes(x = subfield_groups, y = mean_data, fill = time_period)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(limits = c(0, 25))
+```
+
+
+# Run ANOVA for data scores 
+
+```{r}
+options(scipen=999) # remove scientific notation
+
+data_ANOVA <- data_1A %>%
+  anova_test(total_data_score ~ subfield_groups * time_period)
+
+data_ANOVA
+```
+
+There was a significant main effect of time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`.
+
+F(df) = X, p <pvalues, however, the main effect of subfield and time by subfield interaction were not statistically significant. 
+
+# Run ANOVA for material scores
+
+```{r}
+materials_ANOVA <- data_1A %>%
+  anova_test(total_materials_score ~ subfield_groups * time_period)
+
+materials_ANOVA
+```
+

@@ -247,9 +247,9 @@ overall_summary <- overall_summary %>%
   select(article_id_number, 
          subfield = subfield.x, 
          materials_badge = did_the_article_receive_a_badge_for_open_materials, 
-         materials_score = total_materials_score, 
+         total_materials_score, 
          data_badge =  did_the_article_receive_a_badge_for_open_data, 
-         data_score = total_data_score)
+         total_data_score)
 
 # And let's create another dataframe that combines ALL data: collected data + subfield + data score + material score
 
@@ -257,7 +257,7 @@ scores <- overall_summary %>%
   select(article_id_number, total_data_score, total_materials_score)
 
 total_summary <- left_join(psyc_subfield_clean, scores, by = "article_id_number") %>%
-  select(-did_the_article_receive_a_badge_for_open_materials.y) 
+  select(-materials_badge) 
 
 # Export scored dataset as a csv. -----
 

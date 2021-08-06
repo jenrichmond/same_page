@@ -1,19 +1,14 @@
 # Confirmatory 1A Analysis 
 
 # Load packages
-library(qualtRics)
 library(tidyverse)
 library(janitor)
-library(ggplot2)
 library(grid)
 library(cowplot)
 library(httr)
 library(extrafont)
 library(here)
 library(ggeasy)
-library(jmv)
-library(psych)
-library(afex)
 library(rstatix)
 
 options(scipen=999) # remove scientific notation
@@ -65,6 +60,10 @@ glimpse(final1A)
 
 final1A$subfield_groups <- as.factor(final1A$subfield_groups)
 final1A$time_period <- as.factor(final1A$time_period)
+
+# Export dataset as a csv. for 6/08 lab meeting -----
+
+final1A %>% write_csv(here::here("data_files", "clean_06-08_dataset_1A.csv"))
 
 # ANOVA analysis - DATA ----
 
@@ -250,7 +249,7 @@ materials_subfieldtime_descriptives  %>%
   theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
 
 
-# t-tests for subfields -------
+# t-tests for subfields ------- (because our main effect wasn't significant, I don't know if this is valid)
 
 # Data scores (using rstatix package)
 

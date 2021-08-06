@@ -80,7 +80,7 @@ count_subfield %>%
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) + # makes bars sit on the axis
   easy_remove_legend() 
 
-subfield_summary <- psyc_subfield_clean %>%
+subfield_summary <- psyc_subfield %>%
   select(article_id_number, subfield)
 
 # DATA SCORING -------
@@ -242,13 +242,23 @@ overall_summary <- overall_summary %>%
   select(article_id_number, 
          subfield = subfield.x,
          materials_badge,
-         materials_score = total_materials_score, 
+         total_materials_score, 
          data_badge,
-         data_score = total_data_score)
+         total_data_score)
+
+# And let's create another dataframe that combines ALL data: collected data + subfield + data score + material score
+
+scores <- overall_summary %>%
+  select(article_id_number, total_data_score, total_materials_score) %>%
+  select(-materials_badge)
+
+total_summary <- left_join(psyc_subfield, scores, by = "article_id_number") %>%
+  select(-materials_badge.y) %>%
+  select(coder_name:total_materials_score, materials_badge = materials_badge.x)
 
 # Export dataset as a csv. -----
 
-overall_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1B.csv"))
+total_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1B.csv"))
 
 # Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
   # Option 1
