@@ -21,7 +21,7 @@ data1B <- read_csv(here("data_files", "recoded_master_dataset_1B.csv"))
 data1B_empirical <- data1B %>%
   filter(no_of_experiments != "0")
 
-# Assigning articles to a subfield----
+# SUBFIELD SCORING -------
 
 # Let's assign each article to a subfield
 
@@ -83,7 +83,7 @@ count_subfield %>%
 subfield_summary <- psyc_subfield_clean %>%
   select(article_id_number, subfield)
 
-# Now let's score the articles
+# DATA SCORING -------
 
 # scoring
 # low items = 1
@@ -170,7 +170,7 @@ data_investigation_1 <- open_data_score_summary %>%
 
 # ALL 5 of these articles have been correctly coded, ok to proceed
 
-# And let's assign scores for openness of materials 
+# MATERIAL SCORING -----
 
 # Let's make the relevant data long
 materials_scoring <- psyc_subfield %>%
@@ -245,6 +245,10 @@ overall_summary <- overall_summary %>%
          materials_score = total_materials_score, 
          data_badge,
          data_score = total_data_score)
+
+# Export dataset as a csv. -----
+
+overall_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1B.csv"))
 
 # Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
   # Option 1

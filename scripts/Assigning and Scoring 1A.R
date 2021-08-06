@@ -10,7 +10,8 @@ library(extrafont)
 library(here)
 library(ggeasy)
 
-# First let's read in the master 1A dataset
+# Read and clean dataset -----
+
 master_dataset_1A <- read_csv(here("data_files", "master_dataset_1A.csv")) %>%
   clean_names()
 
@@ -258,7 +259,7 @@ scores <- overall_summary %>%
 total_summary <- left_join(psyc_subfield_clean, scores, by = "article_id_number") %>%
   select(-did_the_article_receive_a_badge_for_open_materials.y) 
 
-# let's write this as a csv. 
+# Export scored dataset as a csv. -----
 
 total_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1A.csv"))
 
