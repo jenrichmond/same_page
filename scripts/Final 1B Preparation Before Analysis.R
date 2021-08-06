@@ -1,6 +1,6 @@
 # Final 1B Preparation Before Analysis 
 
-# After we ran the 'Assigning and Scoring' script for 1B for the first time (16/07/21) we noticed that there were a few articles which had received a data/materials badge but had only received a very low score
+# After we ran the 'Assigning and Scoring' script for 1B for the first time (16/07/21) we noticed that there were a few articles which had received a data/materials badge but had received a very low score
 
 # Christina investigated these articles and found that in most cases, the articles had been coded incorrectly
 
@@ -52,16 +52,31 @@
   
     # None
 
-# This script combines the 11 recoded 1B articles with the data in the master_dataset_1B.csv
+# On 06/08/21 Christina noticed that one of the coders had incorrectly coded 8 articles as non-empirical
+
+  # 2019-30-9-1403
+  # 2020-31-7-890 
+  # 2020-31-10-1340
+  # 2020-31-8-1036
+  # 2020-31-8-1040 
+  # 2020-31-3-338
+  # 2020-31-6-748
+  # 2020-31-6-741
+
+# In all 19 cases where the article had been incorrectly coded in some way, Christina recoded the article
+
+# This script combines the 19 recoded 1B articles with the data in the master_dataset_1B.csv
 
 -------------
 
 library(qualtRics)
 library(tidyverse)
 library(janitor)
+library(here)
+library(Hmisc)
 
 # Import 1B data from qualtrics that was coded after 20/07/21-------
-  # 20/07 was when we recoded the incorrectly coded articles
+  # 20/07 onwards was when Christina recoded the incorrectly coded articles
 
 qualtrics_api_credentials(api_key = "RZNCuPM7MvUJmhi7wcSLN7NHx0WCVeIU6H7XiSeE", 
                           base_url = "unsw.syd1.qualtrics.com",
@@ -122,7 +137,7 @@ dup_recoded <- duplicates %>%
 # let's remove ALL the duplicated rows (both newly coded and previously coded) from all_data
 
 # first let's create a dataframe with all the article ids we know are duplicates
-dups <- c("2019-30-11-1561", "2019-30-7-1001", "2019-30-7-1016", "2019-30-9-1362", "2020-31-10-1236", "2020-31-3-306", "2020-31-5-488", "2020-31-8-1013", "2020-31-8-1025", "2020-31-8-927", "2020-31-9-1129")
+dups <- c("2019-30-11-1561", "2019-30-7-1001", "2019-30-7-1016", "2019-30-9-1362", "2020-31-10-1236", "2020-31-3-306", "2020-31-5-488", "2020-31-8-1013", "2020-31-8-1025", "2020-31-8-927", "2020-31-9-1129", "2019-30-9-1403", "2020-31-7-890", "2020-31-10-1340", "2020-31-8-1036", "2020-31-8-1040", "2020-31-3-338", "2020-31-6-748", "2020-31-6-741")
 
 # then let's delete these known duplicates using the %nin% operator from the Hmisc pacakge
 data1B_nodups <- all_data %>%
