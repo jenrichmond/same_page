@@ -1,0 +1,141 @@
+---
+title: "Confirmatory 1B Analysis Markdown"
+output: html_document
+---
+
+# Load Packages
+```{r}
+library(tidyverse)
+library(janitor)
+library(grid)
+library(cowplot)
+library(httr)
+library(extrafont)
+library(here)
+library(ggeasy)
+library(rstatix)
+library(apa)
+library(ez)
+library(afex)
+```
+
+# Read in data
+```{r}
+options(scipen=999) # remove scientific notation
+
+data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+```
+
+# First factor: Subfield
+```{r}
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+subfield_groups <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+subfield_groups <- subfield_groups %>%
+  select(-subfield)
+```
+
+# Second factor: Time 
+
+```{r}
+dates <- subfield_groups %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
+    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
+    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
+  relocate(time_period, .after = article_id_number)
+
+glimpse(dates)
+```
+
+# Selecting only relevant data
+
+```{r}
+final1B <- dates %>%
+  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+
+# check data types
+
+glimpse(final1B)
+
+# make sure subfield and timeperiod are factors 
+
+final1B$subfield_groups <- as.factor(final1B$subfield_groups)
+final1B$time_period <- as.factor(final1B$time_period)
+```
+
+# DATA ANOVA Analysis 
+
+```{r}
+# We decided to use Type II ANOVA tests because this appears to be the more conservative test out of Type I, II and III tests, and is most appropriate for our findings
+
+data_ANOVA <- final1B %>%
+  anova_test(total_data_score ~ subfield_groups * time_period)
+
+data_ANOVA
+```
+
+# There was a significant main effect of time period (F(df) = X, p <pvalues) and subfield (F(df) = X, p <pvalues), however the interaction between time period and subfield (F(df) = X, p <pvalues) were not statistically significant. 
+
+# For R-markdown
+  # Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]` and time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`.
+  # However, the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, was not statistically significant.
+  
+```{r}
+# Alternatively: 
+
+ez_ANOVA_data <- ezANOVA(final1B, dv = total_data_score, wid = article_id_number, between = c(time_period, subfield_groups), detailed = TRUE)
+
+anova_apa(ez_ANOVA_data)
+
+# Christina tried using the aov_ez package, however, it appears this doesn't run a Type 2 ANOVA. 
+  x <- aov_ez(id = "article_id_number", dv = "total_data_score", data = final1B, between = c("time_period", "subfield_groups"), detailed = TRUE)
+  anova_apa(x)
+  
+# The ezANOVA (above) package does run a Type 2 ANOVA
+```
+
+# apa print options from papaja
+
+#### estimate
+`r ez_ANOVA_data$estimate`
+
+### statistic
+`r ez_ANOVA_data$statistic`
+
+### full_result 
+`r ez_ANOVA_data$full_result`
+
+### table
+`r ez_ANOVA_data$table`
+
+# MATERIALS ANOVA Analysis 
+
+```{r}
+ANOVA_materials <- final1B %>%
+  anova_test(total_materials_score ~ subfield_groups * time_period)
+
+ANOVA_materials 
+```
+
+# There was a significant main effect of time period (F(df) = X, p <pvalues) and subfield (F(df) = X, p <pvalues), however the interaction between time period and subfield (F(df) = X, p <pvalues) were not statistically significant. 
+
+# For R-markdown
+  # Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r ANOVA_materials$DFn[1]`, `r ANOVA_materials$DFd[1]`) = `r ANOVA_materials$F[1]`, p = `r ANOVA_materials$p[1]`.
+  # However, the main effect of time period, F(`r ANOVA_materials$DFn[2]`, `r ANOVA_materials$DFd[2]`) = `r ANOVA_materials$F[2]`, p = `r ANOVA_materials$p[2]` and the interaction between subfield and time period, F(`r ANOVA_materials$DFn[3]`, `r ANOVA_materials$DFd[3]`) = `r ANOVA_materials$F[3]`, was not statistically significant.
+  
+```{r}
+# Alternatively: 
+
+ez_ANOVA_materials <- ezANOVA(final1B, dv = total_materials_score, wid = article_id_number, between = c(time_period, subfield_groups), detailed = TRUE)
+
+anova_apa(ez_ANOVA_materials)
+```
+
