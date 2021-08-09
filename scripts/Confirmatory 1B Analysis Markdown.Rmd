@@ -34,6 +34,8 @@ subfield_groups <- data1B %>%
                                      subfield == "Cognitive Neuroscience" ~ "Other",
                                      subfield == "Health Psychology" ~ "Other",
                                      subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
@@ -82,11 +84,8 @@ data_ANOVA <- final1B %>%
 data_ANOVA
 ```
 
-# There was a significant main effect of time period (F(df) = X, p <pvalues) and subfield (F(df) = X, p <pvalues), however the interaction between time period and subfield (F(df) = X, p <pvalues) were not statistically significant. 
 
-# For R-markdown
-  # Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]` and time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`.
-  # However, the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, was not statistically significant.
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]` and time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`. However, the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, was not statistically significant.
   
 ```{r}
 # Alternatively: 
@@ -95,14 +94,11 @@ ez_ANOVA_data <- ezANOVA(final1B, dv = total_data_score, wid = article_id_number
 
 anova_apa(ez_ANOVA_data)
 
-# Christina tried using the aov_ez package, however, it appears this doesn't run a Type 2 ANOVA. 
-  x <- aov_ez(id = "article_id_number", dv = "total_data_score", data = final1B, between = c("time_period", "subfield_groups"), detailed = TRUE)
-  anova_apa(x)
-  
-# The ezANOVA (above) package does run a Type 2 ANOVA
+papaja::apa_table(ez_ANOVA_data, caption = "Between-subjects ANOVA for Open Data Scores")
+results='asis' # to include table in final doc
 ```
 
-# apa print options from papaja
+# apa print options from papaja - Christina confused here
 
 #### estimate
 `r ez_ANOVA_data$estimate`
@@ -119,17 +115,13 @@ anova_apa(ez_ANOVA_data)
 # MATERIALS ANOVA Analysis 
 
 ```{r}
-ANOVA_materials <- final1B %>%
+materials_ANOVA <- final1B %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
-ANOVA_materials 
+materials_ANOVA
 ```
 
-# There was a significant main effect of time period (F(df) = X, p <pvalues) and subfield (F(df) = X, p <pvalues), however the interaction between time period and subfield (F(df) = X, p <pvalues) were not statistically significant. 
-
-# For R-markdown
-  # Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r ANOVA_materials$DFn[1]`, `r ANOVA_materials$DFd[1]`) = `r ANOVA_materials$F[1]`, p = `r ANOVA_materials$p[1]`.
-  # However, the main effect of time period, F(`r ANOVA_materials$DFn[2]`, `r ANOVA_materials$DFd[2]`) = `r ANOVA_materials$F[2]`, p = `r ANOVA_materials$p[2]` and the interaction between subfield and time period, F(`r ANOVA_materials$DFn[3]`, `r ANOVA_materials$DFd[3]`) = `r ANOVA_materials$F[3]`, was not statistically significant.
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r materials_ANOVA$DFn[1]`, `r materials_ANOVA$DFd[1]`) = `r materials_ANOVA$F[1]`, p = `r materials_ANOVA$p[1]`. However, the main effect of time period, F(`r materials_ANOVA$DFn[2]`, `r materials_ANOVA$DFd[2]`) = `r materials_ANOVA$F[2]`, p = `r materials_ANOVA$p[2]` and the interaction between subfield and time period, F(`r materials_ANOVA$DFn[3]`, `r materials_ANOVA$DFd[3]`) = `r materials_ANOVA$F[3]`, was not statistically significant.
   
 ```{r}
 # Alternatively: 
@@ -137,5 +129,145 @@ ANOVA_materials
 ez_ANOVA_materials <- ezANOVA(final1B, dv = total_materials_score, wid = article_id_number, between = c(time_period, subfield_groups), detailed = TRUE)
 
 anova_apa(ez_ANOVA_materials)
+```
+
+# again, unsure about how this will become text
+
+# PLOTS 
+
+# SUBFIELD X DATA SCORE 
+
+```{r}
+data_subfield_descriptives <- final1B %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
+            SD = sd(total_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+# let's plot this
+
+data_subfield_descriptives %>%
+  ggplot(aes(x = reorder(subfield_groups, mean_data_score), y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+```
+
+# TIME PERIOD X DATA SCORE 
+
+```{r}
+data_timeperiod_descriptives <- final1B %>%
+  group_by(time_period) %>%
+  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
+            SD = sd(total_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_timeperiod_descriptives$time_period <- fct_relevel(data_timeperiod_descriptives$time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+
+levels(data_timeperiod_descriptives$time_period)
+
+# let's plot this
+
+data_timeperiod_descriptives %>%
+  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+```
+
+# INTERACTION between time and subfield
+
+```{r}
+data_subfieldtime_descriptives <- final1B %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
+            SD = sd(total_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfieldtime_descriptives $time_period <- fct_relevel(data_subfieldtime_descriptives $time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+
+data_subfieldtime_descriptives  %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+  theme_classic() + # white background
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
+```
+
+# t-tests for subfields - this isn't working for some reason
+
+# Data scores (using rstatix package)
+
+# Development vs. Cognition
+
+```{r}
+devcog_data <- final1B %>%
+  filter(subfield_groups %in% c("Developmental Psychology", "Cognition")) %>%
+  t_test(total_data_score ~ subfield_groups)
+```
+
+# Development vs. Social
+
+```{r}
+devsocial <- final1B %>%
+  filter(subfield_groups %in% c("Developmental Psychology", "Social Psychology")) %>%
+  t_test(total_data_score ~ subfield_groups)
+```
+
+# Development vs. Other
+
+```{r}
+devother <- final1B %>%
+  filter(subfield_groups %in% c("Developmental Psychology", "Other")) %>%
+  t_test(total_data_score ~ subfield_groups)
+```
+
+# Material scores
+
+# Developmental vs. Cognition
+
+```{r}
+devcog_materials <- final1B %>%
+  filter(subfield_groups %in% c("Developmental Psychology", "Cognition")) %>%
+  t_test(total_materials_score ~ subfield_groups)
+```
+
+# Developmental vs. Social
+
+```{r}
+devsocial_materials <- final1B %>%
+  filter(subfield_groups %in% c("Developmental Psychology", "Social Psychology")) %>%
+  t_test(total_materials_score ~ subfield_groups)
+```
+
+# Developmental vs. Other
+
+```{r}
+devother_materials <- final1B %>%
+  filter(subfield_groups %in% c("Developmental Psychology", "Other")) %>%
+  t_test(total_materials_score ~ subfield_groups)
 ```
 
