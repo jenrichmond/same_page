@@ -1,35 +1,36 @@
----
-title: "Confirmatory 1B Analysis Markdown"
-output: html_document
----
+# ANOVAs on ALL data 
 
-# Load Packages
-```{r}
+# Load packages
 library(tidyverse)
 library(janitor)
-library(grid)
-library(cowplot)
-library(httr)
-library(extrafont)
 library(here)
-library(ggeasy)
-library(rstatix)
-library(apa)
-library(ez)
-library(afex)
-```
 
-# Read in data
-```{r}
-options(scipen=999) # remove scientific notation
+# Read in 1B dataset ----
 
 data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
-```
 
-# First factor: Subfield
-```{r}
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
-subfield_groups <- data1B %>%
+# Select only relevant data 
+
+data1Bselect <- data1B %>%
+  select(article_id_number, subfield, total_data_score, total_materials_score)
+
+# Read in 1A dataset ----
+
+data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+
+# Select only relevant data 
+
+data1Aselect <- data1A %>%
+  select(article_id_number, subfield, total_data_score, total_materials_score)
+
+# let's merge the two datasets
+
+alldata <- rbind(data1Aselect, data1Bselect)
+
+# First factor: Subfield ----
+
+# let's let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+subfield_groups <- alldata %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
                                      subfield == "Health Psychology" ~ "Other",
@@ -42,103 +43,43 @@ subfield_groups <- data1B %>%
 # we can now delete the original subfield column
 subfield_groups <- subfield_groups %>%
   select(-subfield)
-```
 
-# Second factor: Time 
+# Second factor: Time -----
 
-```{r}
 dates <- subfield_groups %>%
   mutate(time_period = case_when(
+    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
+    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
+    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015",
     str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
     str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
     str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
   relocate(time_period, .after = article_id_number)
 
-glimpse(dates)
-```
-
-# Selecting only relevant data
-
-```{r}
-final1B <- dates %>%
-  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
-
-# check data types
-
-glimpse(final1B)
-
 # make sure subfield and timeperiod are factors 
 
-final1B$subfield_groups <- as.factor(final1B$subfield_groups)
-final1B$time_period <- as.factor(final1B$time_period)
-```
+dates$subfield_groups <- as.factor(dates$subfield_groups)
+dates$time_period <- as.factor(dates$time_period)
 
-# DATA ANOVA Analysis 
+# DATA ANOVA -----
 
-```{r}
-# We decided to use Type II ANOVA tests because this appears to be the more conservative test out of Type I, II and III tests, and is most appropriate for our findings
-
-data_ANOVA <- final1B %>%
+data_ANOVA <- dates %>%
   anova_test(total_data_score ~ subfield_groups * time_period)
 
 data_ANOVA
-```
 
+# MATERIALS ANOVA ----
 
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]` and time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`. However, the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, was not statistically significant.
-  
-```{r}
-# Alternatively: 
-
-ez_ANOVA_data <- ezANOVA(final1B, dv = total_data_score, wid = article_id_number, between = c(time_period, subfield_groups), detailed = TRUE)
-
-anova_apa(ez_ANOVA_data)
-
-papaja::apa_table(ez_ANOVA_data, caption = "Between-subjects ANOVA for Open Data Scores")
-results='asis' # to include table in final doc
-```
-
-# apa print options from papaja - Christina confused here
-
-#### estimate
-`r ez_ANOVA_data$estimate`
-
-### statistic
-`r ez_ANOVA_data$statistic`
-
-### full_result 
-`r ez_ANOVA_data$full_result`
-
-### table
-`r ez_ANOVA_data$table`
-
-# MATERIALS ANOVA Analysis 
-
-```{r}
-materials_ANOVA <- final1B %>%
+materials_ANOVA <- dates %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
 materials_ANOVA
-```
 
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r materials_ANOVA$DFn[1]`, `r materials_ANOVA$DFd[1]`) = `r materials_ANOVA$F[1]`, p = `r materials_ANOVA$p[1]`. However, the main effect of time period, F(`r materials_ANOVA$DFn[2]`, `r materials_ANOVA$DFd[2]`) = `r materials_ANOVA$F[2]`, p = `r materials_ANOVA$p[2]` and the interaction between subfield and time period, F(`r materials_ANOVA$DFn[3]`, `r materials_ANOVA$DFd[3]`) = `r materials_ANOVA$F[3]`, was not statistically significant.
-  
-```{r}
-# Alternatively: 
+# PLOTS -----
 
-ez_ANOVA_materials <- ezANOVA(final1B, dv = total_materials_score, wid = article_id_number, between = c(time_period, subfield_groups), detailed = TRUE)
+# Subfield x Data score
 
-anova_apa(ez_ANOVA_materials)
-```
-
-# again, unsure about how this will become text
-
-# PLOTS 
-
-# SUBFIELD X DATA SCORE 
-
-```{r}
-data_subfield_descriptives <- final1B %>%
+data_subfield_descriptives <- dates %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
@@ -159,19 +100,17 @@ data_subfield_descriptives %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
-```
 
-# TIME PERIOD X DATA SCORE 
+# Time period x Data score
 
-```{r}
-data_timeperiod_descriptives <- final1B %>%
+data_timeperiod_descriptives <- dates %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
-data_timeperiod_descriptives$time_period <- fct_relevel(data_timeperiod_descriptives$time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+data_timeperiod_descriptives$time_period <- fct_relevel(data_timeperiod_descriptives$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015", "2nd half 2019", "1st half 2020", "2nd half 2020"))
 
 levels(data_timeperiod_descriptives$time_period)
 
@@ -189,19 +128,17 @@ data_timeperiod_descriptives %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
-```
 
-# INTERACTION between time and subfield - Data scores 
+# Interaction between subfield and time - Data Scores
 
-```{r}
-data_subfieldtime_descriptives <- final1B %>%
+data_subfieldtime_descriptives <- dates %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
-data_subfieldtime_descriptives $time_period <- fct_relevel(data_subfieldtime_descriptives $time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+data_subfieldtime_descriptives $time_period <- fct_relevel(data_subfieldtime_descriptives $time_period, c("1st half 2014", "2nd half 2014", "1st half 2015", "2nd half 2019", "1st half 2020", "2nd half 2020"))
 
 data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
@@ -215,14 +152,13 @@ data_subfieldtime_descriptives  %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
-```
-# SUBFIELD X MATERIAL SCORE 
 
-```{r}
-materials_subfield_descriptives <- final1B %>%
+# Subfield x Materials score
+
+materials_subfield_descriptives <- dates %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
-            SD = sd(total_data_score, na.rm = TRUE),
+            SD = sd(total_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -235,24 +171,22 @@ materials_subfield_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
   theme_classic() + # white background
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
-```
 
-# TIME PERIOD X MATERIAL SCORE 
+# Time period x Materials score
 
-```{r}
-materials_timeperiod_descriptives <- final1B %>%
+materials_timeperiod_descriptives <- dates %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
             SD = sd(total_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
-materials_timeperiod_descriptives$time_period <- fct_relevel(materials_timeperiod_descriptives$time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+materials_timeperiod_descriptives$time_period <- fct_relevel(materials_timeperiod_descriptives$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015", "2nd half 2019", "1st half 2020", "2nd half 2020"))
 
 levels(materials_timeperiod_descriptives$time_period)
 
@@ -265,24 +199,22 @@ materials_timeperiod_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
   theme_classic() + # white background
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
-```
 
-# INTERACTION between time and subfield - Materials Score
+# Interaction between subfield and time - Materials Scores
 
-```{r}
-materials_subfieldtime_descriptives <- final1B %>%
+materials_subfieldtime_descriptives <- dates %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
             SD = sd(total_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
-materials_subfieldtime_descriptives $time_period <- fct_relevel(materials_subfieldtime_descriptives $time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+materials_subfieldtime_descriptives $time_period <- fct_relevel(materials_subfieldtime_descriptives $time_period, c("1st half 2014", "2nd half 2014", "1st half 2015", "2nd half 2019", "1st half 2020", "2nd half 2020"))
 
 materials_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
@@ -292,63 +224,8 @@ materials_subfieldtime_descriptives  %>%
                 width=.2, # narrower bars
                 position=position_dodge(.9)) + 
   theme_classic() + # white background
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
-```
-
-# t-tests for subfields - this isn't working for some reason
-
-# Data scores (using rstatix package)
-
-# Development vs. Cognition
-
-```{r}
-devcog_data <- final1B %>%
-  filter(subfield_groups %in% c("Developmental Psychology", "Cognition")) %>%
-  t_test(total_data_score ~ subfield_groups)
-```
-
-# Development vs. Social
-
-```{r}
-devsocial <- final1B %>%
-  filter(subfield_groups %in% c("Developmental Psychology", "Social Psychology")) %>%
-  t_test(total_data_score ~ subfield_groups)
-```
-
-# Development vs. Other
-
-```{r}
-devother <- final1B %>%
-  filter(subfield_groups %in% c("Developmental Psychology", "Other")) %>%
-  t_test(total_data_score ~ subfield_groups)
-```
-
-# Material scores
-
-# Developmental vs. Cognition
-
-```{r}
-devcog_materials <- final1B %>%
-  filter(subfield_groups %in% c("Developmental Psychology", "Cognition")) %>%
-  t_test(total_materials_score ~ subfield_groups)
-```
-
-# Developmental vs. Social
-
-```{r}
-devsocial_materials <- final1B %>%
-  filter(subfield_groups %in% c("Developmental Psychology", "Social Psychology")) %>%
-  t_test(total_materials_score ~ subfield_groups)
-```
-
-# Developmental vs. Other
-
-```{r}
-devother_materials <- final1B %>%
-  filter(subfield_groups %in% c("Developmental Psychology", "Other")) %>%
-  t_test(total_materials_score ~ subfield_groups)
-```
 
