@@ -1,5 +1,5 @@
 ---
-title: "Confirmatory 1B Analysis Markdown Part 1"
+title: "Confirmatory 1A Analysis Markdown"
 output: html_document
 ---
 # PREPARATION
@@ -25,13 +25,13 @@ library(papaja)
 ```{r message=FALSE, warning=FALSE}
 options(scipen=999) # remove scientific notation
 
-data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
 ```
 
 ## First factor: Subfield
 ```{r}
 # first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
-subfield_groups <- data1B %>%
+subfield_groups <- data1A %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
                                      subfield == "Health Psychology" ~ "Other",
@@ -49,29 +49,31 @@ subfield_groups <- subfield_groups %>%
 ## Second factor: Time 
 
 ```{r}
+# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
+
 dates <- subfield_groups %>%
   mutate(time_period = case_when(
-    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
-    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
-    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
+    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
+    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
+    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
   relocate(time_period, .after = article_id_number)
+
 ```
 
-## Selecting only relevant data
+## Select relevant data 
 
 ```{r message=FALSE}
-final1B <- dates %>%
+final1A <- dates %>%
   select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
 
 # make sure subfield and timeperiod are factors 
 
-final1B$subfield_groups <- as.factor(final1B$subfield_groups)
-final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020","2nd half 2020"))
+final1A$subfield_groups <- as.factor(final1A$subfield_groups)
+final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
 
 # check data types
 
-glimpse(final1B)
-
+glimpse(final1A)
 ```
 
 # DATA ANOVA Analysis 
@@ -79,20 +81,21 @@ glimpse(final1B)
 ```{r}
 # We decided to use Type II ANOVA tests because this appears to be the more conservative test out of Type I, II and III tests, and is most appropriate for our findings
 
-data_ANOVA <- final1B %>%
+data_ANOVA <- final1A %>%
   anova_test(total_data_score ~ subfield_groups * time_period)
 
 data_ANOVA
 
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]`, ges = `r data_ANOVA$ges[1]`, and time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`, ges = `r data_ANOVA$ges[2]`. However, the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, ges = `r data_ANOVA$ges[3]`, was not statistically significant.
+Our two-way between-subjects ANOVA generated a significant main effect of time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[2]`, ges = `r data_ANOVA$ges[2]`. However, the main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]`, ges = `r data_ANOVA$ges[1]`, and the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, ges = `r data_ANOVA$ges[3]`, were not statistically significant.
+
   
 ```{r}
 # Alternatively we can use the papaja package to print the stats: 
 
 data_aov <- aov_ez(
-  data = final1B, dv = "total_data_score", 
+  data = final1A, dv = "total_data_score", 
   id = "article_id_number", 
   between = c("time_period", "subfield_groups"), 
   type = "2")
@@ -106,26 +109,25 @@ apa_table(data_apa$table,
           note = "This table was created with apa_table().")
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa$full$time_period`, and a significant main effect of subfield, `r data_apa$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa$full$time_period_subfield_groups`, was not statistically significant. 
-
-
+Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa$full$time_period`. However, the main effect of subfield, `r data_apa$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa$full$time_period_subfield_groups`, were not statistically significant. 
 
 # MATERIALS ANOVA Analysis 
 
 ```{r}
-materials_ANOVA <- final1B %>%
+materials_ANOVA <- final1A %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
 materials_ANOVA
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r materials_ANOVA$DFn[1]`, `r materials_ANOVA$DFd[1]`) = `r materials_ANOVA$F[1]`, p = `r materials_ANOVA$p[1]`, ges = `r materials_ANOVA$ges[1]`. However, the main effect of time period, F(`r materials_ANOVA$DFn[2]`, `r materials_ANOVA$DFd[2]`) = `r materials_ANOVA$F[2]`, p = `r materials_ANOVA$p[2]`, ges = `r materials_ANOVA$ges[2]`, and the interaction between subfield and time period, F(`r materials_ANOVA$DFn[3]`, `r materials_ANOVA$DFd[3]`) = `r materials_ANOVA$F[3]`, ges = `r materials_ANOVA$ges[3]`, were not statistically significant.
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r materials_ANOVA$DFn[1]`, `r materials_ANOVA$DFd[1]`) = `r materials_ANOVA$F[1]`, p = `r materials_ANOVA$p[1]`, ges = `r materials_ANOVA$ges[1]`, and a significant main effect of time period, F(`r materials_ANOVA$DFn[2]`, `r materials_ANOVA$DFd[2]`) = `r materials_ANOVA$F[2]`, p = `r materials_ANOVA$p[2]`, ges = `r materials_ANOVA$ges[2]`. However, the interaction between subfield and time period, F(`r materials_ANOVA$DFn[3]`, `r materials_ANOVA$DFd[3]`) = `r materials_ANOVA$F[3]`, ges = `r materials_ANOVA$ges[3]`, was not statistically significant.
+
   
 ```{r}
 # Alternatively we can use the papaja package to print the stats: 
 
 materials_aov <- aov_ez(
-  data = final1B, dv = "total_materials_score", 
+  data = final1A, dv = "total_materials_score", 
   id = "article_id_number", 
   between = c("time_period", "subfield_groups"), 
   type = "2")
@@ -139,8 +141,7 @@ apa_table(materials_apa$table,
           note = "This table was created with apa_table().")
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa$full$subfield_groups`, however the main effect of time period, `r materials_apa$full$time_period`, and the interaction between time period and subfield, `r materials_apa$full$time_period_subfield_groups`, were not statistically significant. 
-
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa$full$subfield_groups`, and a significant main effect of time period, `r materials_apa$full$time_period`. However the interaction between time period and subfield, `r materials_apa$full$time_period_subfield_groups`, was not statistically significant. 
 
 # PLOTS
 
@@ -149,7 +150,7 @@ Our two-way between-subjects ANOVA generated a significant main effect of subfie
 ### Subfield x Data Score
 
 ```{r}
-data_subfield_descriptives <- final1B %>%
+data_subfield_descriptives <- final1A %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
@@ -175,7 +176,7 @@ data_subfield_descriptives %>%
 ### Time Period x Data Score
 
 ```{r}
-data_timeperiod_descriptives <- final1B %>%
+data_timeperiod_descriptives <- final1A %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
@@ -205,7 +206,7 @@ data_timeperiod_descriptives %>%
 ### Interaction between time and subfield - Data scores 
 
 ```{r}
-data_subfieldtime_descriptives <- final1B %>%
+data_subfieldtime_descriptives <- final1A %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
@@ -233,7 +234,7 @@ data_subfieldtime_descriptives  %>%
 ### Subfield x Materials Score
 
 ```{r}
-materials_subfield_descriptives <- final1B %>%
+materials_subfield_descriptives <- final1A %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
@@ -259,7 +260,7 @@ materials_subfield_descriptives %>%
 ### Time Period x Materials Score
 
 ```{r}
-materials_timeperiod_descriptives <- final1B %>%
+materials_timeperiod_descriptives <- final1A %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
             SD = sd(total_materials_score, na.rm = TRUE),
@@ -289,7 +290,7 @@ materials_timeperiod_descriptives %>%
 ### Interaction between time and subfield - Materials Score
 
 ```{r}
-materials_subfieldtime_descriptives <- final1B %>%
+materials_subfieldtime_descriptives <- final1A %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
             SD = sd(total_materials_score, na.rm = TRUE),
@@ -311,7 +312,6 @@ materials_subfieldtime_descriptives  %>%
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
   theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
 ```
-
 # SUBFIELD T-TESTS
 
 ## DATA
@@ -319,7 +319,7 @@ materials_subfieldtime_descriptives  %>%
 ### Development vs. Cognition
 
 ```{r}
-devcog_data <- final1B %>%
+devcog_data <- final1A %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
 pairwise_t_test(devcog_data, total_data_score ~ subfield_groups)
@@ -327,12 +327,12 @@ pairwise_t_test(devcog_data, total_data_score ~ subfield_groups)
 devcog_data_output <- apa_print(t.test(total_data_score ~ subfield_groups, data = devcog_data))
 ```
 
-A pairwise t-test showed that articles published in the subfield of Cognition generated significantly higher average Open Data Scores than articles in Developmental Psychology, `r devcog_data_output$statistic`.
+A pairwise t-test showed that articles published in the subfield of Cognition did not generate significantly different  Open Data Scores than articles in Developmental Psychology, `r devcog_data_output$statistic`.
 
 ### Development vs. Social
 
 ```{r}
-devsocial_data <- final1B %>%
+devsocial_data <- final1A %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
 pairwise_t_test(devsocial_data, total_data_score ~ subfield_groups)
@@ -340,12 +340,12 @@ pairwise_t_test(devsocial_data, total_data_score ~ subfield_groups)
 devsocial_data_output <- apa_print(t.test(total_data_score ~ subfield_groups, data = devsocial_data))
 ```
 
-A pairwise t-test showed that articles published in the subfield of Social Psychology did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devsocial_data_output$statistic`.
+A pairwise t-test showed that articles published in the subfield of Social Psychology generated significantly higher Open Data Scores, on average, than articles in Developmental Psychology, `r devsocial_data_output$statistic`.
 
 ### Development vs. Other
 
 ```{r}
-devother_data <- final1B %>%
+devother_data <- final1A %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
 pairwise_t_test(devother_data, total_data_score ~ subfield_groups)
@@ -360,7 +360,7 @@ A pairwise t-test showed that articles published in the 'Other' subfield did not
 ### Developmental vs. Cognition
 
 ```{r}
-devcog_materials <- final1B %>%
+devcog_materials <- final1A %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
 pairwise_t_test(devcog_materials, total_materials_score ~ subfield_groups)
@@ -373,7 +373,7 @@ A pairwise t-test showed that articles published in the subfield of Cognition ge
 ### Developmental vs. Social
 
 ```{r}
-devsocial_materials <- final1B %>%
+devsocial_materials <- final1A %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
 pairwise_t_test(devsocial_materials, total_materials_score ~ subfield_groups)
@@ -381,12 +381,12 @@ pairwise_t_test(devsocial_materials, total_materials_score ~ subfield_groups)
 devsocial_materials_output <- apa_print(t.test(total_materials_score ~ subfield_groups, data = devsocial_materials))
 ```
 
-A pairwise t-test showed that articles published in the subfield of Social Psychology did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devsocial_materials_output$statistic`.
+A pairwise t-test showed that articles published in the subfield of Social Psychology generated significantly higher Open Data Scores, on average, than articles in Developmental Psychology, `r devsocial_materials_output$statistic`.
 
 ### Developmental vs. Other
 
 ```{r}
-devother_materials <- final1B %>%
+devother_materials <- final1A %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
 pairwise_t_test(devother_materials, total_materials_score ~ subfield_groups)
@@ -394,3 +394,53 @@ pairwise_t_test(devother_materials, total_materials_score ~ subfield_groups)
 devother_materials_output <- apa_print(t.test(total_materials_score ~ subfield_groups, data = devother_materials))
 ```
 A pairwise t-test showed that articles published in the 'Other' subfield did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devother_materials_output$statistic`.
+
+# TIME T-TESTS
+
+## DATA
+
+### First half 2014 vs. Second half 2014
+
+```{r}
+first2014_second2014 <- final1A %>%
+  filter(time_period %in% c("1st half 2014", "2nd half 2014"))
+
+pairwise_t_test(first2014_second2014, total_data_score ~ time_period)
+
+first2014_second2014_data_output <- apa_print(t.test(total_data_score ~ time_period, data = first2014_second2014))
+```
+
+Articles published in the second half of 2014 generated significantly higher Open Data Scores than articles published in the first half of 2014, `r first2014_second2014_data_output$statistic`.
+
+### Second half 2014 vs. First half 2015
+
+```{r}
+second2014_first2015 <- final1A %>%
+  filter(time_period %in% c("2nd half 2014", "1st half 2015"))
+
+pairwise_t_test(second2014_first2015, total_data_score ~ time_period)
+
+second2014_first2015_data_output <- apa_print(t.test(total_data_score ~ time_period, data = second2014_first2015))
+```
+Articles published in the second half of 2014 did not generate significantly higher Open Data Scores than articles published in the first half of 2015, `r second2014_first2015_data_output$statistic`.
+
+## MATERIALS
+
+### First half 2014 vs. Second half 2014
+
+```{r}
+pairwise_t_test(first2014_second2014, total_materials_score ~ time_period)
+
+first2014_second2014_materials_output <- apa_print(t.test(total_materials_score ~ time_period, data = first2014_second2014))
+```
+
+Articles published in the second half of 2014 did not generate significantly higher Open Materials Scores than articles published in the first half of 2014, `r first2014_second2014_materials_output$statistic`.
+
+### Second half 2014 vs. First half 2015
+
+```{r}
+pairwise_t_test(second2014_first2015, total_data_score ~ time_period)
+
+second2014_first2015_materials_output <- apa_print(t.test(total_materials_score ~ time_period, data = second2014_first2015))
+```
+Articles published in the second half of 2014 did not generate significantly higher Open Data Scores than articles published in the first half of 2015, `r second2014_first2015_materials_output$statistic`.
