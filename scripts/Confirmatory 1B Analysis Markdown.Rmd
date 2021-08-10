@@ -4,7 +4,7 @@ output: html_document
 ---
 
 # Load Packages
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(janitor)
 library(grid)
@@ -20,7 +20,7 @@ library(afex)
 ```
 
 # Read in data
-```{r}
+```{r message=FALSE, warning=FALSE}
 options(scipen=999) # remove scientific notation
 
 data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
@@ -54,7 +54,7 @@ dates <- subfield_groups %>%
     str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
   relocate(time_period, .after = article_id_number)
 
-glimpse(dates)
+
 ```
 
 # Selecting only relevant data
@@ -63,14 +63,17 @@ glimpse(dates)
 final1B <- dates %>%
   select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
 
-# check data types
 
-glimpse(final1B)
 
 # make sure subfield and timeperiod are factors 
 
 final1B$subfield_groups <- as.factor(final1B$subfield_groups)
-final1B$time_period <- as.factor(final1B$time_period)
+final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020","2nd half 2020"))
+
+# check data types
+
+glimpse(final1B)
+
 ```
 
 # DATA ANOVA Analysis 
@@ -92,25 +95,40 @@ Our two-way between-subjects ANOVA generated a significant main effect of subfie
 
 ez_ANOVA_data <- ezANOVA(final1B, dv = total_data_score, wid = article_id_number, between = c(time_period, subfield_groups), detailed = TRUE)
 
-anova_apa(ez_ANOVA_data)
+ez_ANOVA_data # list of 2 items (3x9 df & 1x7 df)
 
-papaja::apa_table(ez_ANOVA_data, caption = "Between-subjects ANOVA for Open Data Scores")
-results='asis' # to include table in final doc
+ez_output <- as.data.frame(ez_ANOVA_data[1]) # pull first item
+
+# apa package
+#anova_apa(ez_ANOVA_data)
+
+#papaja::apa_table(ez_ANOVA_data, caption = "Between-subjects ANOVA for Open Data Scores")
+
+#results='asis' # to include table in final doc
 ```
 
 # apa print options from papaja - Christina confused here
 
-#### estimate
-`r ez_ANOVA_data$estimate`
+```{r}
+library(papaja)
 
-### statistic
-`r ez_ANOVA_data$statistic`
+study1B_aov <- afex::aov_ez(
+  data = final1B, dv = "total_data_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2"
+)
 
-### full_result 
-`r ez_ANOVA_data$full_result`
+study1B_aov$anova_table
 
-### table
-`r ez_ANOVA_data$table`
+study1B_apa <- apa_print(study1B_aov)
+
+
+```
+
+There was a significant main effect of time period `r study1B_apa$statistic$time_period` and a significant main effect of subfield `r study1B_apa$statistic$subfield_groups`, however, there was no interaction between time period and subfield `r study1B_apa$statistic$time_period_subfield_groups`. 
+
+
 
 # MATERIALS ANOVA Analysis 
 
@@ -304,7 +322,7 @@ materials_subfieldtime_descriptives  %>%
 
 # Development vs. Cognition
 
-```{r}
+```{r eval = FALSE}
 devcog_data <- final1B %>%
   filter(subfield_groups %in% c("Developmental Psychology", "Cognition")) %>%
   t_test(total_data_score ~ subfield_groups)
@@ -312,7 +330,7 @@ devcog_data <- final1B %>%
 
 # Development vs. Social
 
-```{r}
+```{r eval = FALSE}
 devsocial <- final1B %>%
   filter(subfield_groups %in% c("Developmental Psychology", "Social Psychology")) %>%
   t_test(total_data_score ~ subfield_groups)
@@ -320,7 +338,7 @@ devsocial <- final1B %>%
 
 # Development vs. Other
 
-```{r}
+```{r eval = FALSE}
 devother <- final1B %>%
   filter(subfield_groups %in% c("Developmental Psychology", "Other")) %>%
   t_test(total_data_score ~ subfield_groups)
@@ -330,7 +348,7 @@ devother <- final1B %>%
 
 # Developmental vs. Cognition
 
-```{r}
+```{r eval = FALSE}
 devcog_materials <- final1B %>%
   filter(subfield_groups %in% c("Developmental Psychology", "Cognition")) %>%
   t_test(total_materials_score ~ subfield_groups)
@@ -338,7 +356,7 @@ devcog_materials <- final1B %>%
 
 # Developmental vs. Social
 
-```{r}
+```{r eval = FALSE}
 devsocial_materials <- final1B %>%
   filter(subfield_groups %in% c("Developmental Psychology", "Social Psychology")) %>%
   t_test(total_materials_score ~ subfield_groups)
@@ -346,7 +364,7 @@ devsocial_materials <- final1B %>%
 
 # Developmental vs. Other
 
-```{r}
+```{r eval = FALSE}
 devother_materials <- final1B %>%
   filter(subfield_groups %in% c("Developmental Psychology", "Other")) %>%
   t_test(total_materials_score ~ subfield_groups)
