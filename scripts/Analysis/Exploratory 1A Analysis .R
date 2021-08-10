@@ -1,20 +1,10 @@
 # Exploratory 1A Analysis 
 
 # Load packages
-library(qualtRics)
 library(tidyverse)
 library(janitor)
-library(ggplot2)
-library(grid)
-library(cowplot)
-library(httr)
-library(extrafont)
 library(here)
-library(ggeasy)
-library(jmv)
-library(psych)
-library(afex)
-library(rstatix)
+library(gt)
 
 # let's read in the data
 
@@ -28,6 +18,8 @@ subfield_groups <- data1A %>%
                                      subfield == "Cognitive Neuroscience" ~ "Other",
                                      subfield == "Health Psychology" ~ "Other",
                                      subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
@@ -56,6 +48,36 @@ levels(dates$time_period)
 subfield_databadges <- dates %>%
   tabyl(subfield_groups, did_the_article_receive_a_badge_for_open_data) %>%
   mutate("Percentage of articles that received an Open Data badge" = Yes/(Yes + No)*100)
+
+subfield_databadges_table <- subfield_databadges %>%
+  gt(subfield_databadges)
+
+## STUCK HERE
+
+subfield_databadges_table <- subfield_databadges_table %>%
+  gt(rowname_col = "subfield_groups", 
+  groupname_col = group_vars(subfield_databadges),
+  cols_label(
+    Subfield = "subfield_groups",
+    `Not Awarded Badge` = "No",
+    `Awarded Badge` = "Yes",
+    Percentage = "Percentage of articles that received an Open Data badge"))
+  
+  tab_header(subfield_databadges_table, title = "Subfield vs. Open Data Badges") 
+
+subfield_databadges_table
+
+%>%
+  cols_label(subfield_databadges_table, c("Subfield", "Not Awarded Badge", "Awarded Badge", "Percentage")) 
+
+
+  rowname_col = "rowname",
+  groupname_col = group_vars(subfield_databadges),
+  rownames_to_stub = FALSE,
+  auto_align = TRUE,
+  row_group.sep = getOption("gt.row_group.sep", " - "))
+
+apa.descriptives(data = subfield_databadges, variables = NULL, title = "Subfield vs. Open Data Badges", filename = "Subfield vs. Open Data Badges.docx", note = "The percentage of articles which received an Open Data Badge, per subfield", position = "lower", merge = FALSE, landscape = FALSE, save = FALSE)
 
 # Materials
 subfield_materialsbadges <- dates %>%
