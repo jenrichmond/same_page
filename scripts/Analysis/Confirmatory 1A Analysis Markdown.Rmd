@@ -439,7 +439,7 @@ Articles published in the second half of 2014 did not generate significantly hig
 ### Second half 2014 vs. First half 2015
 
 ```{r}
-pairwise_t_test(second2014_first2015, total_data_score ~ time_period)
+pairwise_t_test(second2014_first2015, total_materials_score ~ time_period)
 
 second2014_first2015_materials_output <- apa_print(t.test(total_materials_score ~ time_period, data = second2014_first2015))
 ```
