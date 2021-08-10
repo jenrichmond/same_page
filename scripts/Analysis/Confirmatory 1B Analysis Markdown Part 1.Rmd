@@ -394,3 +394,53 @@ pairwise_t_test(devother_materials, total_materials_score ~ subfield_groups)
 devother_materials_output <- apa_print(t.test(total_materials_score ~ subfield_groups, data = devother_materials))
 ```
 A pairwise t-test showed that articles published in the 'Other' subfield did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devother_materials_output$statistic`.
+
+# TIME T-TESTS
+
+## DATA
+
+### Second half 2019 vs. First half 2020
+
+```{r}
+second2019_first2020 <- final1B %>%
+  filter(time_period %in% c("2nd half 2019", "1st half 2020"))
+
+pairwise_t_test(second2019_first2020, total_data_score ~ time_period)
+
+second2019_first2020_data_output <- apa_print(t.test(total_data_score ~ time_period, data = second2019_first2020))
+```
+
+Articles published in the first half of 2020 generated significantly higher Open Data Scores than articles published in the second half of 2019, `r second2019_first2020_data_output$statistic`.
+
+### First half 2020 vs. Second half 2020
+
+```{r}
+first2020_second2020 <- final1B %>%
+  filter(time_period %in% c("1st half 2020", "2nd half 2020"))
+
+pairwise_t_test(first2020_second2020, total_data_score ~ time_period)
+
+first2020_second2020_data_output <- apa_print(t.test(total_data_score ~ time_period, data = first2020_second2020))
+```
+Articles published in the second half of 2020 did not generate significantly higher Open Data Scores than articles published in the first half of 2020, `r first2020_second2020_data_output$statistic`.
+
+## MATERIALS
+
+### Second half 2019 vs. First half 2020
+
+```{r}
+pairwise_t_test(second2019_first2020, total_materials_score ~ time_period)
+
+second2019_first2020_materials_output <- apa_print(t.test(total_materials_score ~ time_period, data = second2019_first2020))
+```
+
+Articles published in the first half of 2020 did not generate significantly higher Open Materials Scores than articles published in the second half of 2019, `r second2019_first2020_materials_output$statistic`.
+
+### First half 2020 vs. Second half 2020
+
+```{r}
+pairwise_t_test(first2020_second2020, total_materials_score ~ time_period)
+
+first2020_second2020_materials_output <- apa_print(t.test(total_materials_score ~ time_period, data = first2020_second2020))
+```
+Articles published in the second half of 2020 did not generate significantly higher Open Data Scores than articles published in the first half of 2020, `r first2020_second2020_materials_output$statistic`.

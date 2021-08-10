@@ -422,7 +422,7 @@ pairwise_t_test(second2014_first2015, total_data_score ~ time_period)
 
 second2014_first2015_data_output <- apa_print(t.test(total_data_score ~ time_period, data = second2014_first2015))
 ```
-Articles published in the second half of 2014 did not generate significantly higher Open Data Scores than articles published in the first half of 2015, `r second2014_first2015_data_output$statistic`.
+Articles published in the first half of 2015 did not generate significantly higher Open Data Scores than articles published in the second half of 2014, `r second2014_first2015_data_output$statistic`.
 
 ## MATERIALS
 
@@ -443,4 +443,4 @@ pairwise_t_test(second2014_first2015, total_data_score ~ time_period)
 
 second2014_first2015_materials_output <- apa_print(t.test(total_materials_score ~ time_period, data = second2014_first2015))
 ```
-Articles published in the second half of 2014 did not generate significantly higher Open Data Scores than articles published in the first half of 2015, `r second2014_first2015_materials_output$statistic`.
+Articles published in the first half of 2015 did not generate significantly higher Open Data Scores than articles published in the second half of 2014, `r second2014_first2015_materials_output$statistic`.
