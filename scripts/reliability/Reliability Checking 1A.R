@@ -3,7 +3,7 @@ library(tidyverse)
 library(janitor)
 library(here)
 library(Hmisc)
-library("vcd")
+library(vcd)
 library(irr)
 library(psych)
 
@@ -32,7 +32,7 @@ gold_subfield_long <- gold_psyc_subfield %>%
   select(coder_name, article_id_number, subfield) %>%
   pivot_wider(names_from = coder_name, values_from = subfield) 
 
-# CODER'S DATA -----
+# CODERS DATA -----
 
 # let's load in coder's reliability checking data
 

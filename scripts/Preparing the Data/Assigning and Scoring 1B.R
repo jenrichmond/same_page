@@ -101,7 +101,7 @@ data_scoring <- psyc_subfield %>%
 # Now let's assign scores for openness of data
 data_scored_for_data <- data_scoring %>%
   mutate(data_score = case_when(question == "software" & response == "No" ~ 0, 
-                                question == "software" & response == "Yes" ~ 0, 
+                                question == "software" & response == "Yes" ~ 1, 
                                 question == "data_statement_present" & response == "No" ~ 0, 
                                 question == "data_statement_present" & response == "Yes" ~ 1,
                                 question == "data_statement_indicates" & response == "Unavailable" ~ 0, 
@@ -259,16 +259,4 @@ total_summary <- left_join(psyc_subfield, scores, by = "article_id_number") %>%
 # Export dataset as a csv. -----
 
 total_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1B.csv"))
-
-# Grouping subfields - I think we decided on Dev, Social, Cognition and 'Other' but confirm with Jenny
-  # Option 1
-    # Dev: 33
-    # Social: 54
-    # Cognition: 57
-    # Other: 41
-  # Option 2
-    # Dev: 33
-    # Social + Health: 61
-    # Cognition + Perception: 77
-    # BN + CN: 14
 
