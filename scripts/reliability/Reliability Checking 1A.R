@@ -7,6 +7,13 @@ library(vcd)
 library(irr)
 library(psych)
 
+# Cicchetti (1994) gives the following guidelines for interpretation for kappa or ICC inter-rater agreement measures:
+
+#Less than 0.40—poor.
+#Between 0.40 and 0.59—fair.
+#Between 0.60 and 0.74—good.
+#Between 0.75 and 1.00—excellent.
+
 # GOLD STANDARD -----
 
 # Read in Christina's Reliability Checking data - gold standard
@@ -68,12 +75,10 @@ christina_jenn_reliability <- merge(christina_jenn, jenn, by = "article_id_numbe
 christina_jenn_reliability <- christina_jenn_reliability %>%
   select(-article_id_number)
 
-cohen.kappa(christina_jenn_reliability)
-  # I don't know how to print this in a dataframe - do we need to?
-  # "weighted.kappa is (probability of observed matches - probability of expected matches)/(1 - probability of expected matches). Kappa just considers the matches on the main diagonal. Weighted kappa considers off diagonal elements as well."
+# kappa reliability analysis 
 kappa2(christina_jenn_reliability)
 
-# Also, a little bit confused about how to write this in text format
+# EXCELLENT reliability
 
 # HELEN'S RELIABILITY ----
 
@@ -95,8 +100,10 @@ christina_helen_reliability <- merge(christina_helen, helen, by = "article_id_nu
 christina_helen_reliability <- christina_helen_reliability %>%
   select(-article_id_number)
 
-cohen.kappa(christina_helen_reliability)
+# kappa reliability analysis 
 kappa2(christina_helen_reliability)
+
+# FAIR reliability
 
 # PATRICK'S RELIABILITY ----
 
@@ -116,8 +123,10 @@ christina_patrick_reliability <- merge(christina_patrick, patrick, by = "article
 christina_patrick_reliability <- christina_patrick_reliability %>%
   select(-article_id_number)
 
-cohen.kappa(christina_patrick_reliability)
+# kappa reliability analysis 
 kappa2(christina_patrick_reliability)
+
+# POOR reliability
 
 # GEORGIA'S RELIABILITY ----
 
@@ -140,8 +149,10 @@ christina_georgia_reliability <- merge(christina_georgia, georgia, by = "article
 christina_georgia_reliability <- christina_georgia_reliability %>%
   select(-article_id_number)
 
-cohen.kappa(christina_georgia_reliability)
+# kappa reliability analysis 
 kappa2(christina_georgia_reliability)
+
+# GOOD reliability
 
 # WILL'S RELIABILITY ----
 
@@ -161,12 +172,12 @@ christina_will_reliability <- merge(christina_will, will, by = "article_id_numbe
 christina_will_reliability <- christina_will_reliability %>%
   select(-article_id_number)
 
-cohen.kappa(christina_will_reliability)
+# kappa reliability analysis 
 kappa2(christina_will_reliability)
 
-# Should I summarise these findings in some way? I guess this depends on whether we're putting this script on Git
+# POOR reliability
 
-
+# Overall, 1A inter-rater reliability ranges from poor to excellent
 
 
 
