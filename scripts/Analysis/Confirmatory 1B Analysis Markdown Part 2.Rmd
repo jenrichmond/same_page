@@ -336,62 +336,55 @@ devcog_data <- dates %>%
 t_apa(t_test(total_data_score ~ subfield_groups, devcog_data, paired = FALSE))
 ```
 
-An independent samples t-test showed that articles published in the field of Cognition generated higher Open Data Scores, on average, than articles published in the field of Developmental Psychology, 
-
 ### Development vs. Social
 
-```{r}
+An independent samples t-test showed that articles published in the field of Social Psychology did not generate statistically significant different Open Data Scores, on average, than articles published in the field of Developmental Psychology, 
+```{r echo=FALSE}
 devsocial_data <- dates %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
-devsocial_data_output <- ttestIS(formula = total_data_score ~ subfield_groups, data = devsocial_data)
-
-as.data.frame(devsocial_data_output$ttest)
+t_apa(t_test(total_data_score ~ subfield_groups, devsocial_data, paired = FALSE))
 ```
 
 ### Development vs. Other
 
-```{r}
+An independent samples t-test showed that articles published in the Other subfield did not generate statistically significant different Open Data Scores, on average, than articles published in the field of Developmental Psychology, 
+```{r echo=FALSE}
 devother_data <- dates %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
-devother_data_output <- ttestIS(formula = total_data_score ~ subfield_groups, data = devother_data)
-
-as.data.frame(devother_data_output$ttest)
+t_apa(t_test(total_data_score ~ subfield_groups, devother_data, paired = FALSE))
 ```
 
 ## MATERIAL
 
 ### Developmental vs. Cognition
 
-```{r}
+An independent samples t-test showed that articles published in the field of Cognition generated higher Open Materials Scores, on average, than articles published in the field of Developmental Psychology, 
+```{r echo=FALSE}
 devcog_materials <- dates %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
-devcog_materials_output <- ttestIS(formula = total_materials_score ~ subfield_groups, data = devcog_materials)
-
-as.data.frame(devcog_materials_output$ttest)
+t_apa(t_test(total_materials_score ~ subfield_groups, devcog_materials, paired = FALSE))
 ```
 
 
 ### Developmental vs. Social
 
-```{r}
+An independent samples t-test showed that articles published in the field of Social Psychology generated higher Open Materials Scores, on average, than articles published in the field of Developmental Psychology, 
+```{r echo=FALSE}
 devsocial_materials <- dates %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
-devsocial_materials_output <- ttestIS(formula = total_materials_score ~ subfield_groups, data = devsocial_materials)
-
-as.data.frame(devsocial_materials_output$ttest)
+t_apa(t_test(total_materials_score ~ subfield_groups, devsocial_materials, paired = FALSE))
 ```
 
 ### Developmental vs. Other
 
-```{r}
+An independent samples t-test showed that articles published in the Other subfield did not generate statistically significant different Open Materials Scores, on average, than articles published in the field of Developmental Psychology, 
+```{r echo=FALSE}
 devother_materials <- dates %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
-devother_materials_output <- ttestIS(formula = total_materials_score ~ subfield_groups, data = devother_materials)
-
-as.data.frame(devother_materials_output$ttest)
+t_apa(t_test(total_materials_score ~ subfield_groups, devother_materials, paired = FALSE))
 ```
