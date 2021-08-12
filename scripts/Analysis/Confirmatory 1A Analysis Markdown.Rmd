@@ -163,7 +163,7 @@ data_subfield_descriptives <- final1A %>%
 
 # let's plot this
 
-p1 <- data_subfield_descriptives %>%
+d1 <- data_subfield_descriptives %>%
   ggplot(aes(x = reorder(subfield_groups, mean_data_score), y = mean_data_score, fill = subfield_groups)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
@@ -188,7 +188,7 @@ data_timeperiod_descriptives <- final1A %>%
 
 # let's plot this
 
-p2 <- data_timeperiod_descriptives %>%
+d2 <- data_timeperiod_descriptives %>%
   ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
@@ -211,7 +211,7 @@ data_subfieldtime_descriptives <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-p3 <- data_subfieldtime_descriptives  %>%
+d3 <- data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
   geom_col(position = "dodge") +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
@@ -224,7 +224,9 @@ p3 <- data_subfieldtime_descriptives  %>%
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(legend.title = element_blank())  # remove legend title
 
-(p1 | p2) / p3
+(d1 | d2) / d3
+
+d3 + geom_point() + geom_jitter()
 ```
 
 ## MATERIALS
@@ -302,6 +304,8 @@ m3 <- materials_subfieldtime_descriptives  %>%
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") # change the x and y labels
 
 (m1 | m2) / m3
+
+m3 + geom_point() + geom_jitter()
 
 ```
 # SUBFIELD T-TESTS
