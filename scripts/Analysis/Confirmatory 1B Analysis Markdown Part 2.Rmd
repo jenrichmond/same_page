@@ -5,7 +5,7 @@ output: html_document
 # PREPARATION
 
 ## Load Packages
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
 library(janitor)
 library(grid)
@@ -19,10 +19,12 @@ library(apa)
 library(ez)
 library(afex)
 library(papaja)
+library(patchwork)
+library(jmv)
 ```
 
 ## Read in 1B data
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 options(scipen=999) # remove scientific notation
 
 data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
@@ -30,33 +32,33 @@ data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
 
 ## Select only relevant 1B data 
 
-```{r}
+```{r include=FALSE}
 data1Bselect <- data1B %>%
   select(article_id_number, subfield, total_data_score, total_materials_score)
 ```
 
 ## Read in 1A data
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
 ```
 
 ## Select only relevant 1A data
 
-```{r}
+```{r include=FALSE}
 data1Aselect <- data1A %>%
   select(article_id_number, subfield, total_data_score, total_materials_score)
 ```
 
 ## Merge 1A and 1B data into one dataframe
 
-```{r}
+```{r include=FALSE}
 alldata <- rbind(data1Aselect, data1Bselect)
 ```
 
 ## First factor: Subfield 
 
-```{r}
+```{r include=FALSE}
 # let's let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
 subfield_groups <- alldata %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
@@ -75,28 +77,24 @@ subfield_groups <- subfield_groups %>%
 
 ## Second factor: Time period
 
-```{r}
+```{r include=FALSE}
 dates <- subfield_groups %>%
   mutate(time_period = case_when(
-    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
-    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
-    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015",
-    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
-    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
-    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
+    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014|7-2014|8-2014|9-2014|10-2014|11-2014|12-2014|1-2015|2-2015|3-2015|4-2015|5-2015") ~ "2014-15",
+    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12|2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6|2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2019-20")) %>%
   relocate(time_period, .after = article_id_number)
 
 # make sure subfield and timeperiod are factors 
 
 dates$subfield_groups <- as.factor(dates$subfield_groups)
-dates$time_period <- fct_relevel(dates$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015", "2nd half 2019", "1st half 2020","2nd half 2020"))
+dates$time_period <- fct_relevel(dates$time_period, c("2014-15", "2019-20"))
 
 levels(dates$time_period)
 ```
 
 # DATA ANOVA
 
-```{r}
+```{r echo=FALSE}
 data_ANOVA <- dates %>%
   anova_test(total_data_score ~ subfield_groups * time_period)
 
@@ -105,7 +103,7 @@ data_ANOVA
 
 Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]`, ges = `r data_ANOVA$ges[1]`, and time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`, ges = `r data_ANOVA$ges[2]`. However, the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, ges = `r data_ANOVA$ges[3]`, was not statistically significant.
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 # Alternatively we can use the papaja package to print the stats: 
 
 data_aov <- aov_ez(
@@ -127,7 +125,7 @@ Our two-way between-subjects ANOVA generated a significant main effect of time p
 
 # MATERIALS ANOVA Analysis 
 
-```{r}
+```{r echo=FALSE}
 materials_ANOVA <- dates %>%
   anova_test(total_materials_score ~ subfield_groups * time_period)
 
@@ -136,7 +134,7 @@ materials_ANOVA
 
 Our two-way between-subjects ANOVA generated a significant main effect of subfield, F(`r materials_ANOVA$DFn[1]`, `r materials_ANOVA$DFd[1]`) = `r materials_ANOVA$F[1]`, p = `r materials_ANOVA$p[1]`, ges = `r materials_ANOVA$ges[1]`, and time period, F(`r materials_ANOVA$DFn[2]`, `r materials_ANOVA$DFd[2]`) = `r materials_ANOVA$F[2]`, p = `r materials_ANOVA$p[2]`, ges = `r materials_ANOVA$ges[2]`. However, the interaction between subfield and time period, F(`r materials_ANOVA$DFn[3]`, `r materials_ANOVA$DFd[3]`) = `r materials_ANOVA$F[3]`, ges = `r materials_ANOVA$ges[3]`, was not statistically significant.
 
-```{r}
+```{r echo=FALSE}
 # Alternatively we can use the papaja package to print the stats: 
 
 materials_aov <- aov_ez(
@@ -162,7 +160,7 @@ Our two-way between-subjects ANOVA generated a significant main effect of subfie
 
 ### Subfield x Data Score
 
-```{r}
+```{r include=FALSE}
 data_subfield_descriptives <- dates %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
@@ -172,7 +170,7 @@ data_subfield_descriptives <- dates %>%
 
 # let's plot this
 
-data_subfield_descriptives %>%
+d1 <- data_subfield_descriptives %>%
   ggplot(aes(x = reorder(subfield_groups, mean_data_score), y = mean_data_score, fill = subfield_groups)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
@@ -182,13 +180,12 @@ data_subfield_descriptives %>%
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") # change the x and y labels
 ```
 
 ### Time Period x Data Score
 
-```{r}
+```{r include=FALSE}
 data_timeperiod_descriptives <- dates %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
@@ -198,7 +195,7 @@ data_timeperiod_descriptives <- dates %>%
 
 # let's plot this
 
-data_timeperiod_descriptives %>%
+d2 <- data_timeperiod_descriptives %>%
   ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
@@ -208,13 +205,12 @@ data_timeperiod_descriptives %>%
   scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") # change the x and y labels
 ```
 
 ### Interaction between time and subfield - Data scores 
 
-```{r}
+```{r echo=FALSE}
 data_subfieldtime_descriptives <- dates %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
@@ -222,7 +218,7 @@ data_subfieldtime_descriptives <- dates %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-data_subfieldtime_descriptives  %>%
+d3 <- data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
   geom_col(position = "dodge") +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
@@ -233,7 +229,11 @@ data_subfieldtime_descriptives  %>%
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
+  theme(legend.title = element_blank())  # remove legend title
+
+(d1 | d2) / d3
+
+d3 + geom_point() + geom_jitter()
 
 ```
 
@@ -241,7 +241,7 @@ data_subfieldtime_descriptives  %>%
 
 ### Subfield x Materials Score
 
-```{r}
+```{r include=FALSE}
 materials_subfield_descriptives <- dates %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
@@ -251,7 +251,7 @@ materials_subfield_descriptives <- dates %>%
 
 # let's plot this
 
-materials_subfield_descriptives %>%
+m1 <- materials_subfield_descriptives %>%
   ggplot(aes(x = reorder(subfield_groups, mean_materials_score), y = mean_materials_score, fill = subfield_groups)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
@@ -261,14 +261,13 @@ materials_subfield_descriptives %>%
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") # change the x and y labels
 
 ```
 
 ### Time Period x Materials Score
 
-```{r}
+```{r include=FALSE}
 # Time period x Materials score
 
 materials_timeperiod_descriptives <- dates %>%
@@ -280,7 +279,7 @@ materials_timeperiod_descriptives <- dates %>%
 
 # let's plot this
 
-materials_timeperiod_descriptives %>%
+m2 <- materials_timeperiod_descriptives %>%
   ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
@@ -290,14 +289,13 @@ materials_timeperiod_descriptives %>%
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  theme(plot.margin=unit(c(1,1,1,1),"cm")) # more white space
+  easy_labs(x = "Time Period", y = "Mean Open Materials Score") # change the x and y labels
 
 ```
 
 ### Interaction between time and subfield - Materials Score
 
-```{r}
+```{r echo=FALSE}
 materials_subfieldtime_descriptives <- dates %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
@@ -305,7 +303,7 @@ materials_subfieldtime_descriptives <- dates %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-materials_subfieldtime_descriptives  %>%
+m3 <- materials_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
   geom_col(position = "dodge") +
   geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
@@ -316,7 +314,11 @@ materials_subfieldtime_descriptives  %>%
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  theme(plot.margin=unit(c(1,1,1,1),"cm"))  # more white space
+    theme(legend.title = element_blank())  # remove legend title
+
+(m1 | m2) / m3
+
+m3 + geom_point() + geom_jitter()
 
 ```
 
@@ -326,16 +328,15 @@ materials_subfieldtime_descriptives  %>%
 
 ### Development vs. Cognition
 
-```{r}
+An independent samples t-test showed that articles published in the field of Cognition generated higher Open Data Scores, on average, than articles published in the field of Developmental Psychology, 
+```{r echo=FALSE}
 devcog_data <- dates %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
-pairwise_t_test(devcog_data, total_data_score ~ subfield_groups)
-
-devcog_data_output <- apa_print(t.test(total_data_score ~ subfield_groups, data = devcog_data))
+t_apa(t_test(total_data_score ~ subfield_groups, devcog_data, paired = FALSE))
 ```
 
-A pairwise t-test showed that articles published in the subfield of Cognition generated significantly higher average Open Data Scores than articles in Developmental Psychology, `r devcog_data_output$statistic`.
+An independent samples t-test showed that articles published in the field of Cognition generated higher Open Data Scores, on average, than articles published in the field of Developmental Psychology, 
 
 ### Development vs. Social
 
@@ -343,12 +344,10 @@ A pairwise t-test showed that articles published in the subfield of Cognition ge
 devsocial_data <- dates %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
-pairwise_t_test(devsocial_data, total_data_score ~ subfield_groups)
+devsocial_data_output <- ttestIS(formula = total_data_score ~ subfield_groups, data = devsocial_data)
 
-devsocial_data_output <- apa_print(t.test(total_data_score ~ subfield_groups, data = devsocial_data))
+as.data.frame(devsocial_data_output$ttest)
 ```
-
-A pairwise t-test showed that articles published in the subfield of Social Psychology did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devsocial_data_output$statistic`.
 
 ### Development vs. Other
 
@@ -356,12 +355,10 @@ A pairwise t-test showed that articles published in the subfield of Social Psych
 devother_data <- dates %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
-pairwise_t_test(devother_data, total_data_score ~ subfield_groups)
+devother_data_output <- ttestIS(formula = total_data_score ~ subfield_groups, data = devother_data)
 
-devother_data_output <- apa_print(t.test(total_data_score ~ subfield_groups, data = devother_data))
+as.data.frame(devother_data_output$ttest)
 ```
-
-A pairwise t-test showed that articles published in the 'Other' subfield did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devother_data_output$statistic`.
 
 ## MATERIAL
 
@@ -371,12 +368,11 @@ A pairwise t-test showed that articles published in the 'Other' subfield did not
 devcog_materials <- dates %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
-pairwise_t_test(devcog_materials, total_materials_score ~ subfield_groups)
+devcog_materials_output <- ttestIS(formula = total_materials_score ~ subfield_groups, data = devcog_materials)
 
-devcog_materials_output <- apa_print(t.test(total_materials_score ~ subfield_groups, data = devcog_materials))
+as.data.frame(devcog_materials_output$ttest)
 ```
 
-A pairwise t-test showed that articles published in the subfield of Cognition generated significantly higher average Open Data Scores than articles in Developmental Psychology, `r devcog_materials_output$statistic`.
 
 ### Developmental vs. Social
 
@@ -384,12 +380,10 @@ A pairwise t-test showed that articles published in the subfield of Cognition ge
 devsocial_materials <- dates %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
-pairwise_t_test(devsocial_materials, total_materials_score ~ subfield_groups)
+devsocial_materials_output <- ttestIS(formula = total_materials_score ~ subfield_groups, data = devsocial_materials)
 
-devsocial_materials_output <- apa_print(t.test(total_materials_score ~ subfield_groups, data = devsocial_materials))
+as.data.frame(devsocial_materials_output$ttest)
 ```
-
-A pairwise t-test showed that articles published in the subfield of Social Psychology generated significantly higher average Open Data Scores than articles in Developmental Psychology, `r devsocial_materials_output$statistic`.
 
 ### Developmental vs. Other
 
@@ -397,8 +391,7 @@ A pairwise t-test showed that articles published in the subfield of Social Psych
 devother_materials <- dates %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
-pairwise_t_test(devother_materials, total_materials_score ~ subfield_groups)
+devother_materials_output <- ttestIS(formula = total_materials_score ~ subfield_groups, data = devother_materials)
 
-devother_materials_output <- apa_print(t.test(total_materials_score ~ subfield_groups, data = devother_materials))
+as.data.frame(devother_materials_output$ttest)
 ```
-A pairwise t-test showed that articles published in the 'Other' subfield did not generate significantly different Open Data Scores, on average, than articles in Developmental Psychology, `r devother_materials_output$statistic`.
