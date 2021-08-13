@@ -57,6 +57,37 @@ psyc_subfield <- data %>%
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
   relocate(subfield, .after = article_id_number)
 
+# GENERAL RELIABILITY ----
+
+# let's make the coders' data long
+coders_long <- psyc_subfield  %>%
+  select(coder_name, article_id_number, subfield) %>%
+  pivot_wider(names_from = coder_name, values_from = subfield) 
+
+# let's fill in some data 
+coders_long <- coders_long %>%
+  mutate(`Helen Gu` = case_when(article_id_number == "2-7-2014" ~ "Social Psychology", article_id_number == "5-2-2015" ~ "Social Psychology",
+                              TRUE ~ as.character(`Helen Gu`))) %>% # Helen put 'Other' for these two articles. Christina checked what she wrote in the 'Other' box and came to these conclusions.
+  mutate(`Georgia Saddler` = case_when(article_id_number == "10-3-2014" ~ "Social Psychology",
+                              TRUE ~ as.character(`Georgia Saddler`))) # Georgia put 'Other' for this article. Christina checked what she wrote in the 'Other' box and came to this conclusion.
+
+# merge gold standard with coders' data
+gold_overall_reliability <- merge(coders_long, gold_subfield_long, by = "article_id_number")
+
+# let's take out the id column so R doesn't think "ID" is a rater
+gold_overall_reliability <- gold_overall_reliability %>%
+  select(-article_id_number, `Jenn Lee`:`Will Osmand`, gold_standard = `Christina Rochios`)
+
+# let's merge the coders data into one column
+overall_reliability <- gold_overall_reliability %>%
+  unite("coders_data", `Jenn Lee`:`Will Osmand`, remove = TRUE, na.rm = TRUE) %>%
+  select(gold_standard, coders_data)
+
+# let's run the kappa reliability analysis 
+kappa2(overall_reliability)
+
+# FAIR general reliability 
+
 # JENN'S RELIABILITY ----
 
 # let's filter for Jenn's data alone and make it long

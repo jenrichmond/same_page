@@ -142,6 +142,32 @@ coder_total_summary <- coders_data %>%
 coder_reliability_summary <- coder_total_summary %>%
   select(coder_name, article_id_number, total_openness_score)
 
+# OVERALL RELIABILITY ----
+
+# let's make the coders' data long
+overall <- coder_reliability_summary %>%
+  pivot_wider(names_from = coder_name, values_from = total_openness_score) 
+
+# merge gold standard with coders' data
+gold_overall_reliability <- merge(overall, gold_reliability_summary, by = "article_id_number")
+
+# let's take out the id column so R doesn't think "ID" is a rater
+gold_overall_reliability <- gold_overall_reliability %>%
+  select(-article_id_number, `Georgia Saddler`:`patrick mccraw`, gold_standard = total_openness_score)
+
+# let's merge the coders data into one column
+gold_overall_reliability <- gold_overall_reliability %>%
+  unite("coders_data", `Georgia Saddler`:`patrick mccraw`, remove = TRUE, na.rm = TRUE) %>%
+  select(gold_standard, coders_data)
+
+# let's make the coders_data column numeric 
+gold_overall_reliability$coders_data <- as.numeric(gold_overall_reliability$coders_data)
+
+# let's run the icc reliability analysis 
+icc(gold_overall_reliability, model="twoway", type="agreement", r0 = 0, conf.level = 0.95)
+
+EXCELLENT general reliability 
+
 # PATRICK'S RELIABILITY ----
 
 # let's filter for Jenn's data alone and make it long
