@@ -27,73 +27,66 @@ subfield_groups <- subfield_groups %>%
   select(-subfield)
 
 # Select and rename variables we're interested in
-select <- dates %>%
+select <- subfield_groups  %>%
   select(article_id_number, subfield_groups, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
 
 # let's create some summary tables
 
 # reportedly available
-reportedly_available_data <- dates %>%
+reportedly_available_data <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, data_statement_indicates_that_data_are) %>%
   mutate("Percent" = Available/(Available)*100) %>%
   select(subfield_groups, Number = Available, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Reportedly Available"))
+  mutate(Real_Stage = "Reportedly Available")
 
 # loctable data
-locatable_data <- dates %>%
+locatable_data <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, are_the_data_located_at_the_working_page) %>%
   mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Locatable Data"))
+  mutate(Real_Stage = "Locatable Data")
 
 # correct data 
-correct_data <- dates %>%
+correct_data <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, does_the_data_correspond_to_what_is_reported_in_the_article) %>%
   mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Correct Data"))
+  mutate(Real_Stage = "Correct Data")
 
 # complete data
-complete_data <- dates %>%
+complete_data <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, are_the_data_complete) %>%
   mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `No, not all of the data are available` + `Unclear whether or not all of the data are available`)*100) %>%
   select(subfield_groups, Number = `Yes, all of the data appear to be available`, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Complete Data"))
+  mutate(Real_Stage = "Complete Data")
 
 # software specified
-software_specified <- dates %>%
+software_specified <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, software) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Software Specified"))
+  mutate(Real_Stage = "Software Specified")
 
 # codebook available 
-data_codebook_available <- dates %>%
+data_codebook_available <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Codebook Available"))
+  mutate(Real_Stage = "Codebook Available")
 
 # scripts available 
-data_scripts_available <- dates %>%
+data_scripts_available <- select %>%
   filter(data_statement_indicates_that_data_are == "Available") %>%
   tabyl(subfield_groups, are_analysis_scripts_included_with_the_data) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
-  mutate("Real_Stage" = NA) %>%
-  mutate(Real_Stage = coalesce(Real_Stage, "Scripts Available"))
+  mutate(Real_Stage = "Scripts Available")
 
 # Let's bind all the statistics together 
 
