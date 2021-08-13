@@ -7,10 +7,6 @@ output: html_document
 ## Load Packages
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
-library(janitor)
-library(grid)
-library(cowplot)
-library(httr)
 library(extrafont)
 library(here)
 library(ggeasy)
@@ -160,13 +156,15 @@ Our two-way between-subjects ANOVA generated a significant main effect of subfie
 
 ### Subfield x Data Score
 
-```{r include=FALSE}
+```{r echo=FALSE}
 data_subfield_descriptives <- dates %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
+
+data_subfield_descriptives
 
 # let's plot this
 
@@ -180,18 +178,21 @@ d1 <- data_subfield_descriptives %>%
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") # change the x and y labels
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(a)')
 ```
 
 ### Time Period x Data Score
 
-```{r include=FALSE}
+```{r echo=FALSE}
 data_timeperiod_descriptives <- dates %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
             SD = sd(total_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
+
+data_timeperiod_descriptives
 
 # let's plot this
 
@@ -205,7 +206,8 @@ d2 <- data_timeperiod_descriptives %>%
   scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Data Score") # change the x and y labels
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(b)')
 ```
 
 ### Interaction between time and subfield - Data scores 
@@ -229,7 +231,8 @@ d3 <- data_subfieldtime_descriptives  %>%
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  theme(legend.title = element_blank())  # remove legend title
+  theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
 
 (d1 | d2) / d3
 
@@ -249,6 +252,8 @@ materials_subfield_descriptives <- dates %>%
             N = n(),
             stderr = SD/sqrt(N))
 
+materials_subfield_descriptives
+
 # let's plot this
 
 m1 <- materials_subfield_descriptives %>%
@@ -261,21 +266,22 @@ m1 <- materials_subfield_descriptives %>%
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Materials Score") # change the x and y labels
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(a)')
 
 ```
 
 ### Time Period x Materials Score
 
 ```{r include=FALSE}
-# Time period x Materials score
-
 materials_timeperiod_descriptives <- dates %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
             SD = sd(total_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
+
+materials_timeperiod_descriptives
 
 # let's plot this
 
@@ -289,7 +295,8 @@ m2 <- materials_timeperiod_descriptives %>%
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Materials Score") # change the x and y labels
+  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(b)')
 
 ```
 
@@ -314,7 +321,8 @@ m3 <- materials_subfieldtime_descriptives  %>%
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-    theme(legend.title = element_blank())  # remove legend title
+    theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
 
 (m1 | m2) / m3
 
