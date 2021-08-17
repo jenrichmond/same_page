@@ -166,7 +166,10 @@ gold_overall_reliability$coders_data <- as.numeric(gold_overall_reliability$code
 # let's run the icc reliability analysis 
 icc(gold_overall_reliability, model="twoway", type="agreement", r0 = 0, conf.level = 0.95)
 
-EXCELLENT general reliability 
+# EXCELLENT general reliability 
+
+# agreement of coders
+agree(gold_overall_reliability, tolerance=5)
 
 # PATRICK'S RELIABILITY ----
 

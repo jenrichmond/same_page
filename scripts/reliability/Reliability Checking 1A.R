@@ -7,12 +7,10 @@ library(vcd)
 library(irr)
 library(psych)
 
-# Cicchetti (1994) gives the following guidelines for interpretation for kappa or ICC inter-rater agreement measures:
-
-#Less than 0.40—poor.
-#Between 0.40 and 0.59—fair.
-#Between 0.60 and 0.74—good.
-#Between 0.75 and 1.00—excellent.
+# guidelines suggested by Fleiss (1981): 
+  #40–.60 is fair, 
+  #.60–.75 is good, 
+  #and over .75 is excellent.
 
 # GOLD STANDARD -----
 
@@ -87,6 +85,9 @@ overall_reliability <- gold_overall_reliability %>%
 kappa2(overall_reliability)
 
 # FAIR general reliability 
+
+# agreement of coders
+agree(overall_reliability, tolerance=0)
 
 # JENN'S RELIABILITY ----
 
