@@ -1,6 +1,8 @@
 ---
 title: "Confirmatory 1B Analysis Markdown Part 2"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 # PREPARATION
 
@@ -244,7 +246,7 @@ d3 + geom_point() + geom_jitter()
 
 ### Subfield x Materials Score
 
-```{r include=FALSE}
+```{r echo=FALSE}
 materials_subfield_descriptives <- dates %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),

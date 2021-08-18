@@ -1,8 +1,8 @@
 ---
 title: "Confirmatory 1A Analysis Markdown"
 output:
-  html_document: default
   word_document: default
+  html_document: default
 ---
 # PREPARATION
 
@@ -92,7 +92,7 @@ data_ANOVA
 
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[2]`, ges = `r data_ANOVA$ges[2]`. However, the main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]`, ges = `r data_ANOVA$ges[1]`, and the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, ges = `r data_ANOVA$ges[3]`, were not statistically significant.
+Our two-way between-subjects ANOVA generated a significant main effect of time period, F(`r data_ANOVA$DFn[2]`, `r data_ANOVA$DFd[2]`) = `r data_ANOVA$F[2]`, p = `r data_ANOVA$p[2]`, ges = `r data_ANOVA$ges[2]`. However, the main effect of subfield, F(`r data_ANOVA$DFn[1]`, `r data_ANOVA$DFd[1]`) = `r data_ANOVA$F[1]`, p = `r data_ANOVA$p[1]`, ges = `r data_ANOVA$ges[1]`, and the interaction between subfield and time period, F(`r data_ANOVA$DFn[3]`, `r data_ANOVA$DFd[3]`) = `r data_ANOVA$F[3]`, ges = `r data_ANOVA$ges[3]`, were not statistically significant.
 
   
 ```{r echo=FALSE}
