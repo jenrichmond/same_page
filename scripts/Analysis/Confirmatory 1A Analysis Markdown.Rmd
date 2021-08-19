@@ -112,8 +112,6 @@ data_apa <- apa_print(data_aov)
 apa_table(data_apa$table,
           caption = "Between-subjects ANOVA for Open Data Scores", 
           note = "This table was created with apa_table().")
-
-report(data_aov)
 ```
 
 Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa$full$time_period`. However, the main effect of subfield, `r data_apa$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa$full$time_period_subfield_groups`, were not statistically significant. 
