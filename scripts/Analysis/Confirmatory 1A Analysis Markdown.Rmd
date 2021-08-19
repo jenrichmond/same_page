@@ -23,6 +23,7 @@ library(afex)
 library(papaja)
 library(patchwork)
 library(jmv)
+library(report)
 ```
 
 ## Read in data
@@ -111,6 +112,8 @@ data_apa <- apa_print(data_aov)
 apa_table(data_apa$table,
           caption = "Between-subjects ANOVA for Open Data Scores", 
           note = "This table was created with apa_table().")
+
+report(data_aov)
 ```
 
 Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa$full$time_period`. However, the main effect of subfield, `r data_apa$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa$full$time_period_subfield_groups`, were not statistically significant. 
@@ -336,7 +339,11 @@ An independent samples t-test showed that articles published in the the field of
 devcog_materials <- final1A %>%
   filter(subfield_groups %in% c("Development", "Cognition")) 
 
+ttest1 <- t_test(total_materials_score ~ subfield_groups, devcog_materials, paired = FALSE)
+
 t_apa(t_test(total_materials_score ~ subfield_groups, devcog_materials, paired = FALSE))
+
+report(ttest1)
 ```
 
 ### Developmental vs. Social
@@ -346,7 +353,11 @@ An independent samples t-test showed that articles published in the the field of
 devsocial_materials <- final1A %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
+ttest2 <- t_test(total_materials_score ~ subfield_groups, devsocial_materials, paired = FALSE)
+
 t_apa(t_test(total_materials_score ~ subfield_groups, devsocial_materials, paired = FALSE))
+
+report(ttest2)
 ```
 
 ### Developmental vs. Other
@@ -356,7 +367,11 @@ An independent samples t-test showed that articles published in the the Other su
 devother_materials <- final1A %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
+ttest3 <- t_test(total_materials_score ~ subfield_groups, devother_materials, paired = FALSE)
+
 t_apa(t_test(total_materials_score ~ subfield_groups, devother_materials, paired = FALSE))
+
+report(ttest3)
 ```
 
 # TIME T-TESTS
@@ -370,7 +385,11 @@ An independent samples t-test showed that articles published in the second half 
 first2014_second2014 <- final1A %>%
   filter(time_period %in% c("1st half 2014", "2nd half 2014"))
 
+ttest4 <- t_test(total_data_score ~ time_period, first2014_second2014, paired = FALSE)
+
 t_apa(t_test(total_data_score ~ time_period, first2014_second2014, paired = FALSE))
+
+report(ttest4) 
 ```
 
 
@@ -381,7 +400,11 @@ An independent samples t-test showed that articles published in the first half o
 second2014_first2015 <- final1A %>%
   filter(time_period %in% c("2nd half 2014", "1st half 2015"))
 
+ttest5 <- t_test(total_data_score ~ time_period, second2014_first2015, paired = FALSE)
+
 t_apa(t_test(total_data_score ~ time_period, second2014_first2015, paired = FALSE))
+
+report(ttest5)
 ```
 
 ## MATERIALS
@@ -390,14 +413,22 @@ t_apa(t_test(total_data_score ~ time_period, second2014_first2015, paired = FALS
 
 An independent samples t-test showed that articles published in the second half of 2014 did not generate statistically different Open Data Scores, on average, than articles published in the first half of 2014,
 ```{r echo=FALSE}
+ttest6 <- t_test(total_materials_score ~ time_period, first2014_second2014, paired = FALSE)
+
 t_apa(t_test(total_materials_score ~ time_period, first2014_second2014, paired = FALSE))
+
+report(ttest6)
 ```
 
 ### Second half 2014 vs. First half 2015
 
 An independent samples t-test showed that articles published in the first half of 2015 did not generate statistically different Open Data Scores, on average, than articles published in the second half of 2014,
 ```{r echo=FALSE}
+ttest7 <- t_test(total_materials_score ~ time_period, second2014_first2015, paired = FALSE)
+
 t_apa(t_test(total_materials_score ~ time_period, second2014_first2015, paired = FALSE))
+
+report(ttest7)
 ```
 
 ### First half 2014 vs. First half 2015
@@ -407,6 +438,10 @@ An independent samples t-test showed that articles published in the first half o
 first2014_first2015 <- final1A %>%
   filter(time_period %in% c("1st half 2014", "1st half 2015"))
 
+ttest8 <- t_test(total_materials_score ~ time_period, first2014_first2015, paired = FALSE)
+
 t_apa(t_test(total_materials_score ~ time_period, first2014_first2015, paired = FALSE))
+
+report(ttest8)
 ```
 
