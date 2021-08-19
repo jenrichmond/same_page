@@ -22,18 +22,18 @@ gold_standard_data <- read_csv(here("data_files", "data1A_reliability_checking")
 # Let's assign the articles to a subfield
 
 gold_psyc_subfield <- gold_standard_data %>%
-  mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
+  mutate(subfield = case_when("Animals" == participants ~ "Other", 
                               "Humans" == participants & "0-18 years or 65 years+" == age ~ "Developmental Psychology", 
-                              "Humans" == participants & "Brain" == brain_beh  ~ "Cognitive Neuroscience",
-                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Sensation" == topic ~ "Perception",
+                              "Humans" == participants & "Brain" == brain_beh  ~ "Other",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Sensation" == topic ~ "Other",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Emotion, personality, social behaviour" == topic ~ "Social Psychology",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" == topic ~ "Cognition",
-                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Other")) %>%
   relocate(subfield, .after = article_id_number)
 
-# let's make the data long
+# let's make the data wide
 
-gold_subfield_long <- gold_psyc_subfield %>%
+gold_subfield_wide <- gold_psyc_subfield %>%
   select(coder_name, article_id_number, subfield) %>%
   pivot_wider(names_from = coder_name, values_from = subfield) 
 
@@ -46,31 +46,31 @@ data <- read_csv(here("data_files", "scored_master_dataset_1A.csv")) %>%
   filter(article_id_number %in% c("10-4-2014", "15-4-2014", "18-4-2015", "6-1-2015", "9-4-2014", "2-6-2014", "2-7-2014", "22-4-2014", "4-2-2015", "5-2-2015", "1-10-2014", "12-9-2014", "5-10-2014", "5-3-2015", "7-1-2015", "1-3-2015", "10-3-2014", "14-8-2014", "8-5-2014", "9-9-2014", "24-2-2014", "5-3-2014", "5-5-2014", "5-6-2014", "7-3-2014"))
 
 psyc_subfield <- data %>%
-  mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
+  mutate(subfield = case_when("Animals" == participants ~ "Other", 
                               "Humans" == participants & "0-18 years or 65 years+" == age ~ "Developmental Psychology", 
-                              "Humans" == participants & "Brain" == brain_beh  ~ "Cognitive Neuroscience",
-                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Sensation" == topic ~ "Perception",
+                              "Humans" == participants & "Brain" == brain_beh  ~ "Other",
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Sensation" == topic ~ "Other",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Emotion, personality, social behaviour" == topic ~ "Social Psychology",
                               "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Intelligence, memory, decision making, reasoning, language, problem solving, creative thinking" == topic ~ "Cognition",
-                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Health Psychology")) %>%
+                              "Humans" == participants & brain_beh %in% c("Both", "Behaviour") & "Fitness, weight, consumption, hormone levels, chemical uptake, sleeping patterns" == topic ~ "Other")) %>%
   relocate(subfield, .after = article_id_number)
 
 # GENERAL RELIABILITY ----
 
-# let's make the coders' data long
-coders_long <- psyc_subfield  %>%
+# let's make the coders' data wide
+coders_wide <- psyc_subfield  %>%
   select(coder_name, article_id_number, subfield) %>%
   pivot_wider(names_from = coder_name, values_from = subfield) 
 
 # let's fill in some data 
-coders_long <- coders_long %>%
+coders_wide <- coders_wide %>%
   mutate(`Helen Gu` = case_when(article_id_number == "2-7-2014" ~ "Social Psychology", article_id_number == "5-2-2015" ~ "Social Psychology",
                               TRUE ~ as.character(`Helen Gu`))) %>% # Helen put 'Other' for these two articles. Christina checked what she wrote in the 'Other' box and came to these conclusions.
   mutate(`Georgia Saddler` = case_when(article_id_number == "10-3-2014" ~ "Social Psychology",
                               TRUE ~ as.character(`Georgia Saddler`))) # Georgia put 'Other' for this article. Christina checked what she wrote in the 'Other' box and came to this conclusion.
 
 # merge gold standard with coders' data
-gold_overall_reliability <- merge(coders_long, gold_subfield_long, by = "article_id_number")
+gold_overall_reliability <- merge(coders_wide, gold_subfield_wide, by = "article_id_number")
 
 # let's take out the id column so R doesn't think "ID" is a rater
 gold_overall_reliability <- gold_overall_reliability %>%
@@ -84,7 +84,7 @@ overall_reliability <- gold_overall_reliability %>%
 # let's run the kappa reliability analysis 
 kappa2(overall_reliability)
 
-# FAIR general reliability 
+# GOOD general reliability 
 
 # agreement of coders
 agree(overall_reliability, tolerance=0)
