@@ -239,6 +239,8 @@ all_material_stats <- all_material_stats %>%
 Let's plot
 
 ```{r echo=FALSE}
+# position dodge is at width = 0.75
+
 pointlocation <- c(1.28,2,3,4,5,1.1,2,3,4,4.95,.92,2.09,3,4,5.07,.74,1.92,3,4,5)
 
 materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
@@ -278,4 +280,42 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
 
 materials_plot
 
+# Using pointlocation (from Kidwell OSF)
+
+pointlocation <- c(1.28,2,3,4,5,1.1,2,3,4,4.95,.92,2.09,3,4,5.07,.74,1.92,3,4,5)
+
+ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
+  coord_cartesian(ylim=c(0,100)) +
+  geom_line(aes(size=subfield_groups, colour=subfield_groups, x=Real_Stage)) +
+  geom_point(aes(x=pointlocation), size=8, shape=21, fill="white", position = position_dodge(width = 0)) +
+  geom_text(aes(x=pointlocation,
+                label=Number,
+                hjust=.5,
+                vjust=.5),
+            size=3,
+            show.legend = F, position = position_dodge(width = 0.75)) +
+  scale_color_manual(values=c("#E69F00","#009E73", "#D55E00", "#0072B2"),
+                     labels=c("Development",
+                              "Social",
+                              "Cognition",
+                              "Other")) +
+  scale_size_manual(name= "subfield_groups",
+                    values=c(2,
+                             2,
+                             2,
+                             2),
+                    guide=F) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=9)) +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
+  ylab("Percentage of Articles with Materials Reportedly Available") +
+  theme(legend.position=c(.125, .16)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 8)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  guides(colour = guide_legend(override.aes = list(size = 2, shape = NA))) +
+  theme(axis.line= element_line(), axis.title.x=element_blank(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
 ```
