@@ -1,0 +1,209 @@
+---
+title: "Exploratory 1B Analysis Part 2"
+output: html_document
+---
+
+Load Packages
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(janitor)
+library(here)
+library(rstatix)
+library(apa)
+library(ez)
+library(afex)
+library(papaja)
+library(patchwork)
+library(jmv)
+library(raincloudplots)
+source("R_rainclouds.R")
+library(ggeasy)
+```
+
+# 1A PLOTS
+
+## Read in data
+```{r message=FALSE, warning=FALSE, include=FALSE}
+options(scipen=999) # remove scientific notation
+
+data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+```
+
+## First factor: Subfield
+```{r include=FALSE}
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+subfield_groups <- data1A %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+subfield_groups <- subfield_groups %>%
+  select(-subfield)
+```
+
+## Second factor: Time 
+
+```{r include=FALSE}
+# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
+
+dates <- subfield_groups %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
+    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
+    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
+  relocate(time_period, .after = article_id_number)
+
+```
+
+## Select relevant data 
+
+```{r message=FALSE, include=FALSE}
+final1A <- dates %>%
+  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+
+# make sure subfield and timeperiod are factors 
+
+final1A$subfield_groups <- as.factor(final1A$subfield_groups)
+final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+# check data types
+
+glimpse(final1A)
+```
+
+# 1A Data Plot
+
+```{r}
+
+# Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
+
+dataplot1 <- final1A %>% 
+  ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
+  geom_point(position = position_jitter(width = .15), size = .8) +
+     geom_boxplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
+  theme_classic() +
+  labs(x = element_blank(), y = 'Open Data Score') +
+  easy_remove_legend() + 
+  ggtitle('2014-15')
+
+dataplot1
+```
+
+# 1A Materials Plot
+
+```{r}
+materialsplot1 <- final1A %>% 
+  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
+  geom_point(position = position_jitter(width = .15), size = .8) +
+     geom_boxplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
+  theme_classic() +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend()
+
+materialsplot1
+```
+
+# 1B PLOTS
+
+## Read in data
+
+```{r}
+data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+```
+
+## First factor: Subfield
+```{r include=FALSE}
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+subfield_groups_materials <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+subfield_groups_materials <- subfield_groups_materials %>%
+  select(-subfield)
+```
+
+## Second factor: Time 
+
+```{r include=FALSE}
+# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
+
+dates <- subfield_groups_materials %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
+    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
+    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
+  relocate(time_period, .after = article_id_number)
+
+```
+
+## Select relevant data 
+
+```{r}
+final1B <- dates %>%
+  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+
+# make sure subfield and timeperiod are factors 
+
+final1B$subfield_groups <- as.factor(final1B$subfield_groups)
+final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
+
+# check data types
+
+glimpse(final1B)
+```
+
+# 1B Data Plot
+
+```{r}
+
+# Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
+
+dataplot2 <- final1B %>% 
+  ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
+  geom_point(position = position_jitter(width = .15), size = .8) +
+     geom_boxplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
+  theme_classic() +
+  labs(x = element_blank(), y = 'Open Data Score') +
+  easy_remove_legend() +
+  ggtitle('2019-20')
+
+dataplot2
+```
+# 1A Materials Plot
+
+```{r}
+materialsplot2 <- final1B %>% 
+  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
+  geom_point(position = position_jitter(width = .15), size = .8) +
+     geom_boxplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
+  theme_classic() +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend()
+
+materialsplot2
+```
+
+# PRINT PLOTS
+
+```{r}
+(dataplot1 | materialsplot1) / 
+(dataplot2 | materialsplot2)
+```
+
