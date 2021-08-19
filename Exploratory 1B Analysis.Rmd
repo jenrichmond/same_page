@@ -1,9 +1,9 @@
 ---
-title: "Exploratory 1A Analysis"
+title: "Exploratory 1B Analysis"
 output: html_document
 ---
 
-# Load packages 
+Load packages 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
 library(tidyverse)
@@ -12,14 +12,14 @@ library(here)
 library(janitor)
 ```
 
-# Read and clean data 
+Read and clean packages
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
-data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
 
 # first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
-subfield_groups <- data1A %>%
+subfield_groups <- data1B %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
                                      subfield == "Health Psychology" ~ "Other",
@@ -34,13 +34,14 @@ subfield_groups <- subfield_groups %>%
   select(-subfield)
 ```
 
+
 # DATA
 
 Select only variables we're interested in
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 select_data <- subfield_groups  %>%
-  select(article_id_number, subfield_groups, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
+  select(article_id_number, subfield_groups, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
 
 ```
 
@@ -49,39 +50,39 @@ Let's create some summary tables
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # reportedly available
 reportedly_available_data <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
-  tabyl(subfield_groups, data_statement_indicates_that_data_are) %>%
+  filter(data_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, data_statement_indicates) %>%
   mutate("Percent" = Available/(Available)*100) %>%
   select(subfield_groups, Number = Available, Percent) %>%
   mutate(Real_Stage = "Reportedly Available")
 
 # locatable data
 locatable_data <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
-  tabyl(subfield_groups, are_the_data_located_at_the_working_page) %>%
+  filter(data_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, data_locatable) %>%
   mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Actually Locatable")
 
 # correct data 
 correct_data <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
-  tabyl(subfield_groups, does_the_data_correspond_to_what_is_reported_in_the_article) %>%
+  filter(data_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, data_correspond) %>%
   mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Correct Data")
 
 # complete data
 complete_data <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
-  tabyl(subfield_groups, are_the_data_complete) %>%
-  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `No, not all of the data are available` + `Unclear whether or not all of the data are available`)*100) %>%
+  filter(data_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, data_complete) %>%
+  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `Unclear whether or not all the data are available`)*100) %>%
   select(subfield_groups, Number = `Yes, all of the data appear to be available`, Percent) %>%
   mutate(Real_Stage = "Complete Data")
 
 # software specified
 software_specified <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
+  filter(data_statement_indicates == "Available") %>%
   tabyl(subfield_groups, software) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
@@ -89,16 +90,16 @@ software_specified <- select_data %>%
 
 # codebook available 
 data_codebook_available <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
-  tabyl(subfield_groups, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
+  filter(data_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, data_codebook) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Codebook Available")
 
 # scripts available 
 data_scripts_available <- select_data %>%
-  filter(data_statement_indicates_that_data_are == "Available") %>%
-  tabyl(subfield_groups, are_analysis_scripts_included_with_the_data) %>%
+  filter(data_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, data_scripts) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Scripts Available")
@@ -172,7 +173,7 @@ Select only the variables we're interested in
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 select_materials <- subfield_groups %>%
-  select(article_id_number, subfield_groups, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
+  select(article_id_number, subfield_groups, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
 ```
 
 Let's create some summary tables
@@ -180,40 +181,40 @@ Let's create some summary tables
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # reportedly available
 reportedly_available_materials <- select_materials %>%
-  filter(statement_indicates_that_materials_are == "Available") %>%
-  tabyl(subfield_groups, statement_indicates_that_materials_are) %>%
+  filter(materials_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, materials_statement_indicates) %>%
   mutate("Percent" = Available/(Available)*100) %>%
   select(subfield_groups, Number = Available, Percent) %>%
   mutate(Real_Stage = "Reportedly Available")
 
 # locatable materials
 locatable_materials <- select_materials %>%
-  filter(statement_indicates_that_materials_are == "Available") %>%
-  tabyl(subfield_groups, are_the_materials_located_at_the_working_page) %>%
+  filter(materials_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, materials_locatable) %>%
   mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Actually Locatable")
 
 # correct materials
 correct_materials <- select_materials %>%
-  filter(statement_indicates_that_materials_are == "Available") %>%
-  tabyl(subfield_groups, do_the_materials_correspond_to_what_is_reported_in_the_article) %>%
+  filter(materials_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, materials_correspond) %>%
   mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Correct Materials")
 
 # complete materials
 complete_materials <- select_materials %>%
-  filter(statement_indicates_that_materials_are == "Available") %>%
-  tabyl(subfield_groups, are_the_materials_complete) %>%
-  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available` + `Unclear whether or not all of the materials are available`)*100) %>%
+  filter(materials_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, materials_complete) %>%
+  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available` + `Unclear whether or not all the materials are available`)*100) %>%
   select(subfield_groups, Number = `Yes, all of the materials appear to be available`, Percent) %>%
   mutate(Real_Stage = "Complete Materials")
 
 # scripts available 
 material_scripts_available <- select_materials %>%
-  filter(statement_indicates_that_materials_are == "Available") %>%
-  tabyl(subfield_groups, are_analysis_scripts_included_with_the_materials) %>%
+  filter(materials_statement_indicates == "Available") %>%
+  tabyl(subfield_groups, materials_explanation) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(subfield_groups, Number = Yes, Percent) %>%
   mutate(Real_Stage = "Scripts Available")
