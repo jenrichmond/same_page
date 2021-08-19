@@ -87,7 +87,6 @@ dataplot1 <- final1A %>%
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-     geom_boxplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
   theme_classic() +
   labs(x = element_blank(), y = 'Open Data Score') +
   easy_remove_legend() + 
@@ -103,7 +102,6 @@ materialsplot1 <- final1A %>%
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-     geom_boxplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
   theme_classic() +
   labs(x = element_blank(), y = 'Open Materials Score') +
   easy_remove_legend()
@@ -177,7 +175,6 @@ dataplot2 <- final1B %>%
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-     geom_boxplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
   theme_classic() +
   labs(x = element_blank(), y = 'Open Data Score') +
   easy_remove_legend() +
@@ -192,7 +189,6 @@ materialsplot2 <- final1B %>%
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-     geom_boxplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups),outlier.shape = NA, alpha = .5, width = .1, colour = "black")+
   theme_classic() +
   labs(x = element_blank(), y = 'Open Materials Score') +
   easy_remove_legend()
