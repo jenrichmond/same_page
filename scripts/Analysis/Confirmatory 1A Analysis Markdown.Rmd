@@ -216,19 +216,25 @@ data_subfieldtime_descriptives <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-d3 <- data_subfieldtime_descriptives  %>%
+ data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
   geom_col(position = "dodge") +
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
                 width=.2, # narrower bars
-                position=position_dodge(.9)) + 
+                position=position_dodge(.9))  +
   theme_classic() + # white background
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(legend.title = element_blank()) + # remove legend title
   ggtitle('(c)')
+ 
+ final1A %>%
+   ggplot(aes(x = subfield_groups, y = total_data_score)) +
+    geom_jitter(width = 0.2) 
+
+d3
 
 (d1 | d2) / d3
 
