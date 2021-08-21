@@ -1,6 +1,8 @@
 ---
 title: "Exploratory 1A Analysis"
-output: html_document
+output:
+  html_document: default
+  word_document: default
 ---
 
 # Load packages 
@@ -106,7 +108,7 @@ data_scripts_available <- select_data %>%
 
 Let's bind all these statistics together
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data, complete_data, software_specified, data_codebook_available, data_scripts_available)%>%
   relocate(subfield_groups, .after = `Real_Stage`) %>%
   relocate(Number, .after = subfield_groups) %>%
@@ -121,6 +123,13 @@ all_data_stats <- all_data_stats %>%
                            Real_Stage == "Codebook Available" ~ 5,
                            Real_Stage == "Software Specified" ~ 6,
                            Real_Stage == "Scripts Available" ~ 7))
+
+data_summary <- all_data_stats %>%
+  relocate(`Real_Stage`, .after = subfield_groups) %>%
+  group_by(subfield_groups) %>%
+  select(-Stage) 
+
+data_summary
 
 ```
 
@@ -150,10 +159,10 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
                     guide=F) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7)) +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
   ylab("Percentage of Articles with Data Reportedly Available") +
-  theme(legend.position=c(.125, .16)) +
+  theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -161,6 +170,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
   theme(axis.line= element_line(), axis.title.x=element_blank(), 
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
+  
 
 data_plot
 
@@ -269,7 +279,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
   theme(axis.text.x = element_text(size=9)) +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
   ylab("Percentage of Articles with Materials Reportedly Available") +
-  theme(legend.position=c(.125, .16)) +
+  theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -294,7 +304,7 @@ ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = sub
                 vjust=.5),
             size=3,
             show.legend = F, position = position_dodge(width = 0.75)) +
-  scale_color_manual(values=c("#E69F00","#009E73", "#D55E00", "#0072B2"),
+  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
                      labels=c("Development",
                               "Social",
                               "Cognition",
@@ -310,7 +320,7 @@ ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = sub
   theme(axis.text.x = element_text(size=9)) +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
   ylab("Percentage of Articles with Materials Reportedly Available") +
-  theme(legend.position=c(.125, .16)) +
+  theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -318,4 +328,5 @@ ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = sub
   theme(axis.line= element_line(), axis.title.x=element_blank(), 
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
+
 ```

@@ -151,10 +151,10 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
                     guide=F) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7)) +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
   ylab("Percentage of Articles with Data Reportedly Available") +
-  theme(legend.position=c(.125, .16)) +
+  theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -265,10 +265,10 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
                     guide=F) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7)) +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
   ylab("Percentage of Articles with Materials Reportedly Available") +
-  theme(legend.position=c(.125, .16)) +
+  theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
