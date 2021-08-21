@@ -180,7 +180,7 @@ dataplot2 <- final1B %>%
   geom_point(position = position_jitter(width = .15), size = .8) +
     theme_classic() +
     scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,25)) +
   labs(x = element_blank(), y = 'Open Data Score') +
   easy_remove_legend() + 
   ggtitle('(c)')
