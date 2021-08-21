@@ -84,7 +84,7 @@ dates <- subfield_groups %>%
 
 # make sure subfield and timeperiod are factors 
 
-dates$subfield_groups <- as.factor(dates$subfield_groups)
+dates$subfield_groups <- fct_relevel(dates$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 dates$time_period <- fct_relevel(dates$time_period, c("2014-15", "2019-20"))
 
 levels(dates$time_period)
@@ -176,12 +176,14 @@ d1 <- data_subfield_descriptives %>%
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
-  theme_classic() + # white background
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   ggtitle('(a)')
+
 ```
 
 ### Time Period x Data Score
@@ -204,12 +206,15 @@ d2 <- data_timeperiod_descriptives %>%
   geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
-  theme_classic() + # white background
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC") +
   scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   ggtitle('(b)')
+
+d2
 ```
 
 ### Interaction between time and subfield - Data scores 
@@ -222,6 +227,8 @@ data_subfieldtime_descriptives <- dates %>%
             N = n(),
             stderr = SD/sqrt(N))
 
+data_subfieldtime_descriptives 
+
 d3 <- data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
   geom_col(position = "dodge") +
@@ -229,7 +236,8 @@ d3 <- data_subfieldtime_descriptives  %>%
                 size=.3, # thinner lines
                 width=.2, # narrower bars
                 position=position_dodge(.9)) + 
-  theme_classic() + # white background
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC")) +
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
@@ -237,8 +245,6 @@ d3 <- data_subfieldtime_descriptives  %>%
   ggtitle('(c)')
 
 (d1 | d2) / d3
-
-d3 + geom_point() + geom_jitter()
 
 ```
 
@@ -259,12 +265,13 @@ materials_subfield_descriptives
 # let's plot this
 
 m1 <- materials_subfield_descriptives %>%
-  ggplot(aes(x = reorder(subfield_groups, mean_materials_score), y = mean_materials_score, fill = subfield_groups)) +
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
   geom_col() +
   geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
-  theme_classic() + # white background
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
@@ -275,7 +282,7 @@ m1 <- materials_subfield_descriptives %>%
 
 ### Time Period x Materials Score
 
-```{r include=FALSE}
+```{r echo=FALSE}
 materials_timeperiod_descriptives <- dates %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
@@ -293,7 +300,8 @@ m2 <- materials_timeperiod_descriptives %>%
   geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
-  theme_classic() + # white background
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC")) +
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 9) + # change the size of the text
@@ -312,6 +320,8 @@ materials_subfieldtime_descriptives <- dates %>%
             N = n(),
             stderr = SD/sqrt(N))
 
+materials_subfieldtime_descriptives
+
 m3 <- materials_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
   geom_col(position = "dodge") +
@@ -319,7 +329,8 @@ m3 <- materials_subfieldtime_descriptives  %>%
                 size=.3, # thinner lines
                 width=.2, # narrower bars
                 position=position_dodge(.9)) + 
-  theme_classic() + # white background
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC")) +
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
@@ -327,8 +338,6 @@ m3 <- materials_subfieldtime_descriptives  %>%
   ggtitle('(c)')
 
 (m1 | m2) / m3
-
-m3 + geom_point() + geom_jitter()
 
 ```
 

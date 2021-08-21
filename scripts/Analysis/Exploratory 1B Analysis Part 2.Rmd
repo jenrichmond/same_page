@@ -69,7 +69,7 @@ final1A <- dates %>%
 
 # make sure subfield and timeperiod are factors 
 
-final1A$subfield_groups <- as.factor(final1A$subfield_groups)
+final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
 
 # check data types
@@ -87,10 +87,11 @@ dataplot1 <- final1A %>%
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-  theme_classic() +
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Data Score') +
   easy_remove_legend() + 
-  ggtitle('2014-15')
+  ggtitle('(a)')
 
 dataplot1
 ```
@@ -102,9 +103,11 @@ materialsplot1 <- final1A %>%
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-  theme_classic() +
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
-  easy_remove_legend()
+  easy_remove_legend() + 
+  ggtitle('(b)')
 
 materialsplot1
 ```
@@ -157,7 +160,7 @@ final1B <- dates %>%
 
 # make sure subfield and timeperiod are factors 
 
-final1B$subfield_groups <- as.factor(final1B$subfield_groups)
+final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
 
 # check data types
@@ -175,10 +178,12 @@ dataplot2 <- final1B %>%
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-  theme_classic() +
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) +
   labs(x = element_blank(), y = 'Open Data Score') +
-  easy_remove_legend() +
-  ggtitle('2019-20')
+  easy_remove_legend() + 
+  ggtitle('(c)')
 
 dataplot2
 ```
@@ -189,9 +194,11 @@ materialsplot2 <- final1B %>%
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
   geom_point(position = position_jitter(width = .15), size = .8) +
-  theme_classic() +
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
-  easy_remove_legend()
+  easy_remove_legend() + 
+  ggtitle('(d)')
 
 materialsplot2
 ```

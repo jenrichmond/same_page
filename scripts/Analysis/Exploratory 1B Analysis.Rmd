@@ -138,7 +138,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
                 vjust=.5),
             size=3,
             show.legend = F) +
-  scale_color_manual(values=c("#E69F00","#009E73", "#D55E00", "#0072B2"),
+  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
                      labels=c("Development",
                               "Social",
                               "Cognition",
@@ -252,7 +252,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
                 vjust=.5),
             size=3,
             show.legend = F, position = position_dodge(width = 0.75)) +
-  scale_color_manual(values=c("#E69F00","#009E73", "#D55E00", "#0072B2"),
+  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
                      labels=c("Development",
                               "Social",
                               "Cognition",
