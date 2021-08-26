@@ -114,20 +114,9 @@ all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data,
   relocate(Number, .after = subfield_groups) %>%
   relocate(Percent, .after = Number)
 
-# let's add a column that specifies the "stage" of each variable
-all_data_stats <- all_data_stats %>%
-  mutate(Stage = case_when(Real_Stage == "Reportedly Available" ~ 1,
-                           Real_Stage == "Actually Locatable" ~ 2,
-                           Real_Stage == "Correct Data" ~ 3,
-                           Real_Stage == "Complete Data" ~ 4,
-                           Real_Stage == "Codebook Available" ~ 5,
-                           Real_Stage == "Software Specified" ~ 6,
-                           Real_Stage == "Scripts Available" ~ 7))
-
 data_summary <- all_data_stats %>%
   relocate(`Real_Stage`, .after = subfield_groups) %>%
-  group_by(subfield_groups) %>%
-  select(-Stage) 
+  group_by(subfield_groups) 
 
 data_summary
 
@@ -136,11 +125,11 @@ data_summary
 Let's plot
 
 ```{r echo=FALSE}
-data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
+data_plot <- ggplot(all_data_stats, aes(y=Percent, group = subfield_groups, colour = subfield_groups)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(size=subfield_groups, colour=subfield_groups, x=Real_Stage)) +
-  geom_point(aes(x=Stage), size=8, shape=21, fill="white", position = position_dodge(width=0)) +
-  geom_text(aes(x=Stage,
+  geom_point(aes(x=Real_Stage), size=8, shape=21, fill="white", position = position_dodge(width=0)) +
+  geom_text(aes(x=Real_Stage,
                 label=Number,
                 hjust=.5,
                 vjust=.5),

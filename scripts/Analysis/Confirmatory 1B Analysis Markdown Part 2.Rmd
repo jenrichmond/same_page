@@ -56,7 +56,7 @@ alldata <- rbind(data1Aselect, data1Bselect)
 
 ## First factor: Subfield 
 
-```{r include=FALSE}
+```{r echo=FALSE}
 # let's let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
 subfield_groups <- alldata %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
@@ -71,11 +71,18 @@ subfield_groups <- alldata %>%
 # we can now delete the original subfield column
 subfield_groups <- subfield_groups %>%
   select(-subfield)
+
+# Subfield summary
+
+subfield_summary <- subfield_groups %>%
+    count(subfield_groups) 
+
+subfield_summary
 ```
 
 ## Second factor: Time period
 
-```{r include=FALSE}
+```{r echo=FALSE}
 dates <- subfield_groups %>%
   mutate(time_period = case_when(
     str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014|7-2014|8-2014|9-2014|10-2014|11-2014|12-2014|1-2015|2-2015|3-2015|4-2015|5-2015") ~ "2014-15",
@@ -88,6 +95,13 @@ dates$subfield_groups <- fct_relevel(dates$subfield_groups, c("Development", "So
 dates$time_period <- fct_relevel(dates$time_period, c("2014-15", "2019-20"))
 
 levels(dates$time_period)
+
+# Timeperiod summary
+
+timeperiod_summary <- dates %>%
+  count(time_period)
+
+timeperiod_summary
 ```
 
 # DATA ANOVA

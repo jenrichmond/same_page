@@ -34,7 +34,7 @@ data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
 ```
 
 ## First factor: Subfield
-```{r include=FALSE}
+```{r echo=FALSE}
 # first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
 subfield_groups <- data1A %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
@@ -49,11 +49,18 @@ subfield_groups <- data1A %>%
 # we can now delete the original subfield column
 subfield_groups <- subfield_groups %>%
   select(-subfield)
+
+# Subfield summary
+
+subfield_summary <- subfield_groups %>%
+    count(subfield_groups) 
+
+subfield_summary
 ```
 
 ## Second factor: Time 
 
-```{r include=FALSE}
+```{r echo=FALSE}
 # we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
 
 dates <- subfield_groups %>%
@@ -62,6 +69,13 @@ dates <- subfield_groups %>%
     str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
     str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
   relocate(time_period, .after = article_id_number)
+
+# Timeperiod summary
+
+timeperiod_summary <- dates %>%
+  count(time_period)
+
+timeperiod_summary
 
 ```
 

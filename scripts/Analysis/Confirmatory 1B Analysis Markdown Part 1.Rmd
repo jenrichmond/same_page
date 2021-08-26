@@ -33,7 +33,7 @@ data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
 ```
 
 ## First factor: Subfield
-```{r include=FALSE}
+```{r echo=FALSE}
 # first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
 subfield_groups <- data1B %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
@@ -48,17 +48,31 @@ subfield_groups <- data1B %>%
 # we can now delete the original subfield column
 subfield_groups <- subfield_groups %>%
   select(-subfield)
+
+# Subfield summary
+
+subfield_summary <- subfield_groups %>%
+    count(subfield_groups) 
+
+subfield_summary
 ```
 
 ## Second factor: Time 
 
-```{r include=FALSE}
+```{r echo=FALSE}
 dates <- subfield_groups %>%
   mutate(time_period = case_when(
     str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
     str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
     str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
   relocate(time_period, .after = article_id_number)
+
+# Timeperiod summary
+
+timeperiod_summary <- dates %>%
+  count(time_period)
+
+timeperiod_summary
 ```
 
 ## Selecting only relevant data
