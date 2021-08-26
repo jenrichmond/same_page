@@ -113,15 +113,6 @@ all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data,
   relocate(Number, .after = subfield_groups) %>%
   relocate(Percent, .after = Number)
 
-# let's add a column that specifies the "stage" of each variable
-all_data_stats <- all_data_stats %>%
-  mutate(Stage = case_when(Real_Stage == "Reportedly Available" ~ 1,
-                           Real_Stage == "Actually Locatable" ~ 2,
-                           Real_Stage == "Correct Data" ~ 3,
-                           Real_Stage == "Complete Data" ~ 4,
-                           Real_Stage == "Codebook Available" ~ 5,
-                           Real_Stage == "Software Specified" ~ 6,
-                           Real_Stage == "Scripts Available" ~ 7))
 
 ```
 
@@ -130,14 +121,8 @@ Let's plot
 ```{r echo=FALSE}
 data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
   coord_cartesian(ylim=c(0,100)) +
-  geom_line(aes(size=subfield_groups, colour=subfield_groups, x=Real_Stage)) +
-  geom_point(aes(x=Stage), size=8, shape=21, fill="white", position = position_dodge(width=0)) +
-  geom_text(aes(x=Stage,
-                label=Number,
-                hjust=.5,
-                vjust=.5),
-            size=3,
-            show.legend = F) +
+  geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
+  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
   scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
                      labels=c("Development",
                               "Social",
@@ -158,7 +143,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
-  guides(colour = guide_legend(override.aes = list(size = 2, shape = NA))) +
+  guides(colour = guide_legend(override.aes = list(size = 1, shape = NA))) +
   theme(axis.line= element_line(), axis.title.x=element_blank(), 
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
@@ -228,30 +213,16 @@ all_material_stats <- rbind(reportedly_available_materials, locatable_materials,
   relocate(Number, .after = subfield_groups) %>%
   relocate(Percent, .after = Number)
 
-# let's add a column that specifies the "stage" of each variable
-all_material_stats <- all_material_stats %>%
-  mutate(Stage = case_when(Real_Stage == "Reportedly Available" ~ 3,
-                           Real_Stage == "Actually Locatable" ~ 4,
-                           Real_Stage == "Correct Materials" ~ 5,
-                           Real_Stage == "Complete Materials" ~ 6,
-                           Real_Stage == "Scripts Available" ~ 7))
 ```
 
 Let's plot
 
 ```{r echo=FALSE}
-pointlocation <- c(1.28,2,3,4,5,1.1,2,3,4,4.95,.92,2.09,3,4,5.07,.74,1.92,3,4,5)
 
 materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
   coord_cartesian(ylim=c(0,100)) +
-  geom_line(aes(size=subfield_groups, colour=subfield_groups, x=Real_Stage)) +
-  geom_point(aes(x=Real_Stage), size=8, shape=21, fill="white", position = position_dodge(width = 0.75)) +
-  geom_text(aes(x=Real_Stage,
-                label=Number,
-                hjust=.5,
-                vjust=.5),
-            size=3,
-            show.legend = F, position = position_dodge(width = 0.75)) +
+  geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
+  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
   scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
                      labels=c("Development",
                               "Social",
@@ -272,7 +243,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
-  guides(colour = guide_legend(override.aes = list(size = 2, shape = NA))) +
+  guides(colour = guide_legend(override.aes = list(size = 1, shape = NA))) +
   theme(axis.line= element_line(), axis.title.x=element_blank(), 
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
