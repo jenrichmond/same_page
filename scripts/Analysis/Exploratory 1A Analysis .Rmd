@@ -166,22 +166,31 @@ Now let's generate a table that summarises some descriptives
 ```{r}
 
 data_percentages <- all_data_stats %>%
-  pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) 
+  pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
+  select(" " = Real_Stage, Development, Social, Cognition, Other)
 
 data_summary <- gt(data_percentages) %>%
-  cols_label(Real_Stage = "Open Data Practice") %>%
-      cols_move(columns = c(Development, Social, Cognition, Other),
-    after = `Real_Stage`) %>%
-  opt_table_font("Times New Roman") %>%
-  cell_text(color = "black", size = 12) 
+  tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  locations = cells_body()) %>%
+    tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"), 
+    color = NULL)), # setting the colour to NULL removes the borders entirely 
+      locations = cells_body()) %>%
+  tab_options(
+  table.border.bottom.width = px(0.5), table.border.bottom.color = "black",
+  table.border.top.width = px(0.5), table.border.top.color = "black", 
+  heading.border.bottom.width = px(0.5), heading.border.bottom.color ="black")
 
 data_summary
 
 data_summary %>%
-  gtsave(
-    "Table 2.html", inline_css = TRUE)
+  gtsave("Table 2.pdf")
 
-gtsave(data = data_summary, filename = "Table 2.html")
 
 ```
 
@@ -292,19 +301,31 @@ Now let's generate a table that summarises some descriptives
 
 materials_percentages <- all_material_stats %>%
   pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
-  select(`Open Materials Practice` = Real_Stage, Development, Social, Cognition, Other)
+  select(" " = Real_Stage, Development, Social, Cognition, Other)
 
 materials_summary <- gt(materials_percentages) %>%
   tab_style(style = list(
-  cell_text(color = "black", font = "Time New Roman", size = 12, align = "center")),
+  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
   locations = cells_body()) %>%
     tab_style(style = list(
-  cell_text(color = "black", font = "Time New Roman", size = 12, align = "center")),
-  locations = cells_column_labels())
+  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"),
+    color = "black", 
+    weight = px(0.5),
+    style = "solid")), 
+      locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"), 
+    color = NULL)), # setting the colour to NULL removes the internal borders entirely 
+      locations = cells_body())
 
 materials_summary
 
 materials_summary %>%
-  gtsave("Table 3.html", inline_css = TRUE)
+  gtsave("Table 3.pdf")
 
 ```
