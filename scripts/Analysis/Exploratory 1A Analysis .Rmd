@@ -14,6 +14,7 @@ library(here)
 library(janitor)
 library(gt)
 library(webshot)
+library(apa)
 ```
 
 # Read and clean data 
@@ -161,7 +162,7 @@ data_plot
 
 ```
 
-Now let's generate a table that summarises some descriptives
+Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
 
 ```{r}
 
@@ -171,10 +172,10 @@ data_percentages <- all_data_stats %>%
 
 data_summary <- gt(data_percentages) %>%
   tab_style(style = list(
-  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
   locations = cells_body()) %>%
     tab_style(style = list(
-  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
   locations = cells_column_labels()) %>%
   tab_style(style = list(
     cell_borders(
@@ -182,11 +183,23 @@ data_summary <- gt(data_percentages) %>%
     color = NULL)), # setting the colour to NULL removes the borders entirely 
       locations = cells_body()) %>%
   tab_options(
-  table.border.bottom.width = px(0.5), table.border.bottom.color = "black",
-  table.border.top.width = px(0.5), table.border.top.color = "black", 
-  heading.border.bottom.width = px(0.5), heading.border.bottom.color ="black")
+    table_body.border.bottom.color = "black", # bottom-most border
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black", 
+    table.width = pct(30)) 
 
 data_summary
+
+# I've done a bit of research and it looks like there is an issue with the current gt() package in that you can't change the weight of the borders
+
+# In case the issue is resolved, this is the code you would add to the above script to change the weight of the borders
+  #tab_options(
+    #table_body.border.bottom.width = 1, # bottom-most border
+    #column_labels.border.top.width = 1,
+    #column_labels.border.bottom.width = 1)
+
+
+# Let's save the gt as a pdf (This is the nicest format to screenshot into a word doc)
 
 data_summary %>%
   gtsave("Table 2.pdf")
@@ -295,7 +308,7 @@ materials_plot
 
 ```
 
-Now let's generate a table that summarises some descriptives
+Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
 
 ```{r}
 
@@ -305,25 +318,25 @@ materials_percentages <- all_material_stats %>%
 
 materials_summary <- gt(materials_percentages) %>%
   tab_style(style = list(
-  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
   locations = cells_body()) %>%
     tab_style(style = list(
-  cell_text(color = "black", font = "Times New Roman", size = 12, align = "center")),
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
   locations = cells_column_labels()) %>%
   tab_style(style = list(
     cell_borders(
-    sides = c("top", "bottom"),
-    color = "black", 
-    weight = px(0.5),
-    style = "solid")), 
-      locations = cells_column_labels()) %>%
-  tab_style(style = list(
-    cell_borders(
     sides = c("top", "bottom"), 
-    color = NULL)), # setting the colour to NULL removes the internal borders entirely 
-      locations = cells_body())
+    color = NULL)), # setting the colour to NULL removes the borders entirely 
+      locations = cells_body()) %>%
+  tab_options(
+    table_body.border.bottom.color = "black", # bottom-most border
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black", 
+    table.width = pct(30)) 
 
 materials_summary
+
+# Let's save this as a pdf
 
 materials_summary %>%
   gtsave("Table 3.pdf")

@@ -113,7 +113,6 @@ all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data,
   relocate(Number, .after = subfield_groups) %>%
   relocate(Percent, .after = Number)
 
-
 ```
 
 Let's plot
@@ -149,6 +148,50 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
         panel.grid.minor = element_blank()) 
 
 data_plot
+
+```
+Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
+
+```{r}
+
+data_percentages <- all_data_stats %>%
+  pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
+  select(" " = Real_Stage, Development, Social, Cognition, Other)
+
+data_summary <- gt(data_percentages) %>%
+  tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_body()) %>%
+    tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"), 
+    color = NULL)), # setting the colour to NULL removes the borders entirely 
+      locations = cells_body()) %>%
+  tab_options(
+    table_body.border.bottom.color = "black", # bottom-most border
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black", 
+    table.width = pct(30)) 
+
+data_summary
+
+# I've done a bit of research and it looks like there is an issue with the current gt() package in that you can't change the weight of the borders
+
+# In case the issue is resolved, this is the code you would add to the above script to change the weight of the borders
+  #tab_options(
+    #table_body.border.bottom.width = 1, # bottom-most border
+    #column_labels.border.top.width = 1,
+    #column_labels.border.bottom.width = 1)
+
+
+# Let's save the gt as a pdf (This is the nicest format to screenshot into a word doc)
+
+data_summary %>%
+  gtsave("Table 4.pdf")
+
 
 ```
 
@@ -249,5 +292,40 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
         panel.grid.minor = element_blank()) 
 
 materials_plot
+
+```
+
+Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
+
+```{r}
+
+materials_percentages <- all_material_stats %>%
+  pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
+  select(" " = Real_Stage, Development, Social, Cognition, Other)
+
+materials_summary <- gt(materials_percentages) %>%
+  tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_body()) %>%
+    tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"), 
+    color = NULL)), # setting the colour to NULL removes the borders entirely 
+      locations = cells_body()) %>%
+  tab_options(
+    table_body.border.bottom.color = "black", # bottom-most border
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black", 
+    table.width = pct(30)) 
+
+materials_summary
+
+# Let's save this as a pdf
+
+materials_summary %>%
+  gtsave("Table 5.pdf")
 
 ```
