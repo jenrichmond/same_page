@@ -73,6 +73,13 @@ timeperiod_summary <- dates %>%
   count(time_period)
 
 timeperiod_summary
+
+# Timeperiod and subfield summary
+
+timeperiod_subfield_summary <- dates %>%
+  tabyl(subfield_groups, time_period) 
+
+timeperiod_subfield_summary
 ```
 
 ## Selecting only relevant data
