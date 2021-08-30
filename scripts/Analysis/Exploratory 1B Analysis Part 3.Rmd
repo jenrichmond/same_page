@@ -1,0 +1,243 @@
+---
+title: "Exploratory 1B Analysis Part 3"
+output: html_document
+---
+Load packages 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+library(extrafont)
+library(here)
+library(janitor)
+library(patchwork)
+```
+
+Read and clean packages
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+subfield_groups <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+subfield_groups <- subfield_groups %>%
+  select(-subfield)
+```
+
+
+# DATA
+
+Select only variables we're interested in
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+select_data <- subfield_groups  %>%
+  select(article_id_number, subfield_groups, data_badge, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
+
+```
+
+Let's create some summary tables
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# reportedly available
+reportedly_available_data <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_statement_indicates) %>%
+  mutate("Percent" = Available/(Available + Unavailable)*100) %>%
+  select(Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable data
+locatable_data <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_locatable) %>%
+  mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct data 
+correct_data <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_correspond) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Data")
+
+# complete data
+complete_data <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_complete) %>%
+  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `Unclear whether or not all the data are available`)*100) %>%
+  select(Number = `Yes, all of the data appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Data")
+
+# software specified
+software_specified <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, software) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Software Specified")
+
+# codebook available 
+data_codebook_available <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_codebook) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Codebook Available")
+
+# scripts available 
+data_scripts_available <- select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_scripts) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+Let's bind all these statistics together
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data, complete_data, software_specified, data_codebook_available, data_scripts_available)
+
+all_data_stats <- all_data_stats %>%
+  mutate("Type" = "Data") 
+
+```
+
+Let's plot
+
+```{r}
+data_plot <- ggplot(all_data_stats, aes(y=Percent, x = Real_Stage, group = 1)) + geom_line(colour = "#FF6666", size = 1) + geom_point(size = 3, colour = "#FF6666") +
+  coord_cartesian(ylim=c(0,100)) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=7)) +
+  theme(axis.text.x = element_text(size=7)) +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
+  ylab("% of Articles Awarded with Open Data Badge") +
+  theme(axis.line= element_line(), axis.title.x=element_blank(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+
+data_plot
+```
+
+# MATERIALS
+
+Select only the variables we're interested in
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+select_materials <- subfield_groups %>%
+  select(article_id_number, subfield_groups, materials_badge, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
+```
+
+Let's create some summary tables
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# reportedly available
+reportedly_available_materials <- select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_statement_indicates) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable materials
+locatable_materials <- select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_locatable) %>%
+  mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct materials
+correct_materials <- select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_correspond) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Materials")
+
+# complete materials
+complete_materials <- select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_complete) %>%
+  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available` + `Unclear whether or not all the materials are available`)*100) %>%
+  select(Number = `Yes, all of the materials appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Materials")
+
+# scripts available 
+material_scripts_available <- select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_explanation) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+Let's bind all these statistics together
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+all_material_stats <- rbind(reportedly_available_materials, locatable_materials, correct_materials, complete_materials, material_scripts_available)
+
+all_material_stats <- all_material_stats %>%
+  mutate("Type" = "Materials") 
+
+```
+
+Combine data and materials stats together
+
+```{r}
+all_stats <- rbind(all_data_stats, all_material_stats)
+```
+
+Let's plot
+
+```{r}
+materials_plot <- ggplot(all_material_stats, aes(y=Percent, x = Real_Stage, group = 1)) + geom_line(colour = "#6699CC", size = 1) + geom_point(size = 3, colour = "#6699CC") +
+  coord_cartesian(ylim=c(0,100)) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=7)) +
+  theme(axis.text.x = element_text(size=7)) +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
+  ylab("% of Articles Awarded with Open Materials Badge") +
+  theme(axis.line= element_line(), axis.title.x=element_blank(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+
+data_plot /
+  materials_plot
+```
+
+Let's create a combined plot
+
+```{r}
+combined_plot <- ggplot(all_stats, aes(y=Percent, x = Real_Stage, group = 2)) + geom_line(size = 1) + geom_point(size = 3) +
+    scale_color_manual(values=c("#FF6666","#6699CC"),
+                     labels=c("Open Data Badge",
+                              "Open Materials Badge")) +
+  coord_cartesian(ylim=c(0,100)) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7)) +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
+  ylab("Percentage of Articles That Received an Open Science Badge") +
+  theme(axis.line= element_line(), axis.title.x=element_blank(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+
+combined_plot
+
+# I realised it's pretty hard to create a combined plot because the x-labels are different and the number of x-points is different between data and materials
+```
+
