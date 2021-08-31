@@ -1,0 +1,179 @@
+---
+title: "Reportedly Available x Subfield Analysis"
+output: html_document
+---
+# Load packages 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+library(extrafont)
+library(here)
+library(janitor)
+library(gt)
+library(webshot)
+library(apa)
+library(patchwork)
+```
+
+# DATA
+
+## 1A DATA
+
+Read and clean 1A data 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+A_subfield_groups <- data1A %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+A_subfield_groups <- A_subfield_groups %>%
+  select(-subfield)
+```
+
+Let's calculate the percentage of articles that had reportedly available data
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+A_reportedly_available_data <- A_subfield_groups %>%
+    tabyl(subfield_groups, data_statement_indicates_that_data_are) %>%
+  mutate("Percent" = Available/(Available + `No statement` + Unavailable)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Time = "2014-15")
+
+```
+
+## 1B DATA
+
+Read and clean 1B data
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+B_subfield_groups <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+B_subfield_groups <- B_subfield_groups %>%
+  select(-subfield)
+```
+
+Let's calculate the percentage of articles that had reportedly available materials
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+B_reportedly_available_data <- B_subfield_groups %>%
+    tabyl(subfield_groups, data_statement_indicates) %>%
+  mutate("Percent" = Available/(Available + Unavailable + `NA_`)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Time = "2019-20")
+
+```
+
+Let's combine the statistics
+
+```{r}
+all_data <- rbind(A_reportedly_available_data, B_reportedly_available_data)
+```
+
+Let's graph this
+
+```{r}
+all_data$subfield_groups <- fct_relevel(all_data$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+
+data <- all_data %>%
+  ggplot(aes(x = subfield_groups, y = Percent, fill = Time)) +
+  geom_col(position = "dodge") +
+  theme_classic() +
+  scale_fill_manual(values=c("#FF6666","#6699CC"),
+                     labels=c("2014-19",
+                              "2019-20")) +
+ theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=7)) +
+  theme(axis.text.x = element_text(size=9)) +
+  easy_labs(y = "Percentage of Articles with Reportedly\nAvailable Data") + 
+  easy_remove_x_axis(what = c("title")) +
+  theme(legend.title = element_blank()) + # remove legend title
+    scale_y_continuous(limits = c(0,100), expand = c(0,0)) 
+
+data
+```
+
+# MATERIALS
+
+# 1A MATERIALS
+
+Let's calculate the percentage of articles that had reportedly available materials
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+A_reportedly_available_materials <- A_subfield_groups %>%
+    tabyl(subfield_groups, statement_indicates_that_materials_are) %>%
+  mutate("Percent" = Available/(Available + `No statement`)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Time = "2014-15")
+
+```
+
+# 1B MATERIALS
+
+Let's calculate the percentage of articles that had reportedly available materials
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+B_reportedly_available_materials <- B_subfield_groups %>%
+    tabyl(subfield_groups, materials_statement_indicates) %>%
+  mutate("Percent" = Available/(Available + Unavailable + `NA_`)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Time = "2019-20")
+
+```
+
+Let's combine the statistics
+
+```{r}
+all_materials <- rbind(A_reportedly_available_materials, B_reportedly_available_materials)
+```
+
+Let's graph this
+
+```{r}
+all_materials$subfield_groups <- fct_relevel(all_materials$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+
+materials <- all_materials %>%
+  ggplot(aes(x = subfield_groups, y = Percent, fill = Time)) +
+  geom_col(position = "dodge") +
+  theme_classic() +
+  scale_fill_manual(values=c("#FF6666","#6699CC"),
+                     labels=c("2014-19",
+                              "2019-20")) +
+ theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=7)) +
+  theme(axis.text.x = element_text(size=9)) +
+  easy_labs(y = "Percentage of Articles with Reportedly\nAvailable Materials") + 
+  easy_remove_x_axis(what = c("title")) +
+  theme(legend.title = element_blank()) + # remove legend title
+    scale_y_continuous(limits = c(0,100), expand = c(0,0)) 
+
+materials
+
+data /
+  materials + plot_layout(guides='collect') &
+theme(legend.position='right')
+
+```
