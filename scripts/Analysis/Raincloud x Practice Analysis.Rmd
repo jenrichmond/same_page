@@ -1,0 +1,169 @@
+---
+title: "Raincloud x Practices"
+output: html_document
+---
+Load Packages
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(janitor)
+library(here)
+library(rstatix)
+library(apa)
+library(ez)
+library(afex)
+library(papaja)
+library(patchwork)
+library(jmv)
+library(raincloudplots)
+library(ggeasy)
+```
+
+# 1A PLOTS
+
+## Read in data
+```{r message=FALSE, warning=FALSE, include=FALSE}
+options(scipen=999) # remove scientific notation
+
+data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+```
+
+## First factor: Subfield
+```{r include=FALSE}
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+subfield_groups <- data1A %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+subfield_groups <- subfield_groups %>%
+  select(-subfield)
+```
+
+## Second factor: Time 
+
+```{r include=FALSE}
+# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
+
+dates <- subfield_groups %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
+    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
+    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
+  relocate(time_period, .after = article_id_number)
+
+```
+
+## Select relevant data 
+
+```{r message=FALSE, include=FALSE}
+A_data <- dates %>%
+  select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
+
+# make sure subfield and timeperiod are factors 
+
+A_data$subfield_groups <- fct_relevel(A_data$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+
+# check data types
+
+glimpse(final1A)
+```
+
+Let's create some summary tables
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# reportedly available
+A_reportedly_available_data <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, data_statement_indicates_that_data_are) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable data
+A_locatable_data <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, are_the_data_located_at_the_working_page) %>%
+  mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct data 
+A_correct_data <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, does_the_data_correspond_to_what_is_reported_in_the_article) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Data")
+
+# complete data
+A_complete_data <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, are_the_data_complete) %>%
+  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `No, not all of the data are available` + `Unclear whether or not all of the data are available`)*100) %>%
+  select(subfield_groups, Number = `Yes, all of the data appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Data")
+
+# software specified
+A_software_specified <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, software) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Software Specified")
+
+# codebook available 
+A_data_codebook_available <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Codebook Available")
+
+# scripts available 
+A_data_scripts_available <- A_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, are_analysis_scripts_included_with_the_data) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+Let's bind all these statistics together
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+A_data_stats <- rbind(A_reportedly_available_data, A_locatable_data, A_correct_data, A_complete_data, A_software_specified, A_data_codebook_available, A_data_scripts_available)
+```
+
+# 1A Data Plot
+
+```{r}
+
+# Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
+source("R_rainclouds copy.R")
+
+A_wider_data_stats <- A_data_stats %>%
+  pivot_wider(names_from = "Real_Stage", values_from = "Percent") %>%
+  group_by(subfield_groups)
+
+dataplot1 <- A_data_stats %>% 
+  ggplot(aes(x = subfield_groups, y = Reportedly Available`, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
+  geom_point(position = position_jitter(width = .15), size = .8) +
+    scale_y_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
+  ylab("Percentage of Articles Awarded an Open Data Badge") +
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+  labs(x = element_blank(), y = 'Open Data Score') +
+  easy_remove_legend() + 
+  ggtitle('(a)')
+
+dataplot1
+
+# I realised that because this plot only has one point at each variable, it probably won't work. Let's stick with the rain cloud plot that we have
+```
