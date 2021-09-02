@@ -68,10 +68,6 @@ A_data <- dates %>%
 # make sure subfield and timeperiod are factors 
 
 A_data$subfield_groups <- fct_relevel(A_data$subfield_groups, c("Development", "Social", "Cognition", "Other"))
-
-# check data types
-
-glimpse(final1A)
 ```
 
 Let's create some summary tables
@@ -145,16 +141,16 @@ A_data_stats <- rbind(A_reportedly_available_data, A_locatable_data, A_correct_d
 ```{r}
 
 # Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
-source("R_rainclouds copy.R")
+source("R_rainclouds.R")
 
 A_wider_data_stats <- A_data_stats %>%
   pivot_wider(names_from = "Real_Stage", values_from = "Percent") %>%
   group_by(subfield_groups)
 
 dataplot1 <- A_data_stats %>% 
-  ggplot(aes(x = subfield_groups, y = Reportedly Available`, fill = subfield_groups)) +
+  ggplot(aes(x = subfield_groups, y = Real_Stage, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
-  geom_point(position = position_jitter(width = .15), size = .8) +
+  geom_point(aes(y = Percent), position = position_jitter(width = .15), size = .8) +
     scale_y_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
   ylab("Percentage of Articles Awarded an Open Data Badge") +
     theme_classic() +

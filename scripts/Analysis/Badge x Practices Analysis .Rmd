@@ -235,7 +235,7 @@ combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colou
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
     scale_color_manual(values=c("#FF6666","#6699CC"),
                      labels=c("2014-15",
-                              "2014-15")) +
+                              "2019-20")) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
   theme(axis.text.x = element_text(size=7)) +
@@ -243,7 +243,7 @@ combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colou
   ylab("Percentage of Articles That Received an Open Data Badge") +
     theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
-  theme(legend.text = element_text(size = 8)) +
+  theme(legend.text = element_text(size = 9)) +
   theme(legend.key.size = unit(1, "cm")) +
   theme(axis.line= element_line(), axis.title.x=element_blank(), 
         panel.background = element_blank(), 
@@ -304,7 +304,7 @@ A_material_scripts_available <- A_select_materials %>%
   tabyl(did_the_article_receive_a_badge_for_open_materials, are_analysis_scripts_included_with_the_materials) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Scripts Available")
+  mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
 ```
 
 Let's bind all these statistics together
@@ -367,7 +367,7 @@ B_material_scripts_available <- B_select_materials %>%
   tabyl(materials_badge, materials_explanation) %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Scripts Available")
+  mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
 ```
 
 Let's bind all these statistics together
@@ -394,15 +394,15 @@ combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Ti
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
     scale_color_manual(values=c("#FF6666","#6699CC"),
                      labels=c("2014-15",
-                              "2014-15")) +
+                              "2019-20")) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=7)) +
-  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
+  theme(axis.text.x = element_text(size=8)) +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
   ylab("Percentage of Articles That Received an Open Materials Badge") +
     theme(legend.position=c(.125, .3)) +
   theme(legend.title=element_blank()) +
-  theme(legend.text = element_text(size = 8)) +
+  theme(legend.text = element_text(size = 9)) +
   theme(legend.key.size = unit(1, "cm")) +
   theme(axis.line= element_line(), axis.title.x=element_blank(), 
         panel.background = element_blank(), 
