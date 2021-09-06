@@ -123,10 +123,10 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
   scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
-                     labels=c("Development",
-                              "Social",
-                              "Cognition",
-                              "Other")) +
+                     labels=c("Development (n = 24)",
+                              "Social (n = 39)",
+                              "Cognition (n = 53)",
+                              "Other (n = 27)")) +
   scale_size_manual(name= "subfield_groups",
                     values=c(2,
                              2,
@@ -267,10 +267,10 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
   scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
-                     labels=c("Development",
-                              "Social",
-                              "Cognition",
-                              "Other")) +
+                     labels=c("Development (n = 16)",
+                              "Social (n = 32)",
+                              "Cognition (n = 49)",
+                              "Other (n = 21)")) +
   scale_size_manual(name= "subfield_groups",
                     values=c(2,
                              2,

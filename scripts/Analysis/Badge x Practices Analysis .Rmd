@@ -234,8 +234,8 @@ combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colou
   geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
     scale_color_manual(values=c("#FF6666","#6699CC"),
-                     labels=c("2014-15",
-                              "2019-20")) +
+                     labels=c("2014-15 (n = 46)",
+                              "2019-20 (n = 133)")) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
   theme(axis.text.x = element_text(size=7)) +
@@ -393,8 +393,8 @@ combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Ti
   geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
     scale_color_manual(values=c("#FF6666","#6699CC"),
-                     labels=c("2014-15",
-                              "2019-20")) +
+                     labels=c("2014-15 (n = 38)",
+                              "2019-20 (n = 107)")) +
   theme(axis.text.y = element_text(size=9),
         axis.title.y = element_text(size=9)) +
   theme(axis.text.x = element_text(size=8)) +
