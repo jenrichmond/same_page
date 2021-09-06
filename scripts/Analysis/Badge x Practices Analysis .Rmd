@@ -13,6 +13,7 @@ library(gt)
 library(webshot)
 library(apa)
 library(patchwork)
+library(ggeasy)
 ```
 
 
@@ -242,7 +243,7 @@ combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colou
         axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
   easy_labs(y = "Percentage of Articles That Received an Open Data Badge", x = "Data Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
-    theme(legend.position=c(.125, .3)) +
+    theme(legend.position=c(0.15, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 9)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -402,7 +403,7 @@ combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Ti
         axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
   easy_labs(y = "Percentage of Articles That Received an Open Materials Badge", x = "Material Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
-    theme(legend.position=c(.125, .3)) +
+    theme(legend.position=c(.15, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 9)) +
   theme(legend.key.size = unit(1, "cm")) +
