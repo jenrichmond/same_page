@@ -1,0 +1,106 @@
+---
+title: "Subfield x Time"
+output: html_document
+---
+# Load packages 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+library(extrafont)
+library(here)
+library(janitor)
+library(gt)
+library(webshot)
+library(apa)
+library(patchwork)
+library(ggeasy)
+```
+
+
+# 1A DATA
+
+Read and clean 1A data 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+A_subfield_groups <- data1A %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+A_subfield_groups <- A_subfield_groups %>%
+  select(-subfield)
+```
+
+Summary Statistics 
+
+```{r}
+A_summary <- A_subfield_groups %>%
+  tabyl(subfield_groups) 
+
+A_summary <- A_summary %>%
+  mutate("Time" = "2014-15") 
+
+```
+
+# 1B DATA
+
+Read and clean 1B data
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+
+# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+B_subfield_groups <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+B_subfield_groups <- B_subfield_groups %>%
+  select(-subfield)
+```
+
+Summary Statistics 
+
+```{r}
+B_summary <- B_subfield_groups %>%
+  tabyl(subfield_groups) 
+
+B_summary <- B_summary %>%
+  mutate("Time" = "2019-20") 
+
+```
+
+Combine Statistics 
+
+```{r}
+combined_stats <- rbind(A_summary, B_summary)
+```
+
+# Boxplot
+
+```{r}
+boxplot <- ggplot(combined_stats, aes(Time, percent, fill = subfield_groups)) +
+  geom_bar(position="stack", stat="identity")
+
+boxplot
+
+```
+
+

@@ -18,6 +18,7 @@ library(jmv)
 library(raincloudplots)
 source("R_rainclouds.R")
 library(ggeasy)
+library(ggdist)
 ```
 
 # 1A PLOTS
@@ -85,8 +86,14 @@ glimpse(final1A)
 
 dataplot1 <- final1A %>% 
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
-  geom_point(position = position_jitter(width = .15), size = .8) +
+  geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.5, alpha = 0.5) +
+  gghalves::geom_half_point(
+    ## draw jitter on the left
+    side = "l", 
+    ## control range of jitter
+    range_scale = .9, 
+    ## add some transparency
+    alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
     scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Data Score') +
@@ -102,16 +109,44 @@ dataplot1
 materialsplot1 <- final1A %>% 
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
-  geom_point(position = position_jitter(width = .15), size = .8) +
+  geom_point(
+    size = 1.3,
+    alpha = .3,
+    position = position_jitter(
+      seed = 1, width = .1
+    )
+  ) + 
     theme_classic() +
     scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
   easy_remove_legend() + 
   ggtitle('(b)')
 
+
 materialsplot1
 ```
 
+# 1A Materials Plot
+
+```{r}
+materialsplot3 <- final1A %>% 
+  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.5, alpha = 0.5) +
+  gghalves::geom_half_point(
+    ## draw jitter on the left
+    side = "l", 
+    ## control range of jitter
+    range_scale = .9, 
+    ## add some transparency
+    alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
+    theme_classic() +
+    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend() + 
+  ggtitle('(b)')
+
+materialsplot3
+```
 # 1B PLOTS
 
 ## Read in data
@@ -176,8 +211,14 @@ glimpse(final1B)
 
 dataplot2 <- final1B %>% 
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
-  geom_point(position = position_jitter(width = .15), size = .8) +
+  geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.5, alpha = 0.5) +
+  gghalves::geom_half_point(
+    ## draw jitter on the left
+    side = "l", 
+    ## control range of jitter
+    range_scale = .9, 
+    ## add some transparency
+    alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
     scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,25)) +
@@ -187,13 +228,19 @@ dataplot2 <- final1B %>%
 
 dataplot2
 ```
-# 1A Materials Plot
+# 1B Materials Plot
 
 ```{r}
 materialsplot2 <- final1B %>% 
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = .2, y = 0),adjust =2, alpha = 0.5) +
-  geom_point(position = position_jitter(width = .15), size = .8) +
+  geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.5, alpha = 0.5) +
+  gghalves::geom_half_point(
+    ## draw jitter on the left
+    side = "l", 
+    ## control range of jitter
+    range_scale = .9, 
+    ## add some transparency
+    alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
     scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
@@ -206,7 +253,7 @@ materialsplot2
 # PRINT PLOTS
 
 ```{r}
-(dataplot1 | materialsplot1) / 
+(dataplot1 | materialsplot3) / 
 (dataplot2 | materialsplot2)
 ```
 

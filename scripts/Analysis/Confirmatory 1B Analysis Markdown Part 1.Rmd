@@ -194,7 +194,7 @@ d1 <- data_subfield_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
@@ -224,7 +224,7 @@ d2 <- data_timeperiod_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33")) +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
   scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
@@ -250,7 +250,7 @@ d3 <- data_subfieldtime_descriptives  %>%
                 width=.2, # narrower bars
                 position=position_dodge(.9)) + 
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33")) +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
@@ -284,7 +284,7 @@ m1 <- materials_subfield_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
@@ -314,7 +314,7 @@ m2 <- materials_timeperiod_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33")) +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
@@ -343,7 +343,7 @@ m3 <- materials_subfieldtime_descriptives  %>%
                 width=.2, # narrower bars
                 position=position_dodge(.9)) + 
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33")) +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
   scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
