@@ -10,6 +10,7 @@ library(tidyverse)
 library(extrafont)
 library(here)
 library(janitor)
+library(ggeasy)
 ```
 
 Read and clean packages
@@ -122,7 +123,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
-  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
+  scale_color_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
                      labels=c("Development (n = 24)",
                               "Social (n = 39)",
                               "Cognition (n = 53)",
@@ -139,7 +140,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
         axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
   easy_labs(y = "Percentage of Articles with Data Reportedly Available", x = "Data Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
-  theme(legend.position=c(.125, .3)) +
+  theme(legend.position=c(.2, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -151,6 +152,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
 data_plot
 
 ```
+
 Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
 
 ```{r eval=FALSE, include=FALSE}
@@ -267,7 +269,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
-  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
+  scale_color_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
                      labels=c("Development (n = 16)",
                               "Social (n = 32)",
                               "Cognition (n = 49)",
@@ -284,7 +286,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
         axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
   easy_labs(y = "Percentage of Articles with Materials Reportedly Available", x = "Material Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
-  theme(legend.position=c(.125, .3)) +
+  theme(legend.position=c(.2, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +

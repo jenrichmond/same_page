@@ -84,8 +84,13 @@ glimpse(final1A)
 
 # Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
 
-dataplot1 <- final1A %>% 
-  ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
+# sample size
+sample_size_data_A = final1A %>% group_by(subfield_groups) %>% summarize(num=n(), total_data_score)
+
+dataplot1 <- final1A %>%  
+  left_join(sample_size_data_A) %>%
+  mutate(myaxis = paste0(subfield_groups, "\n", "n=", num)) %>%
+  ggplot(aes(x = myaxis, y = total_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.5, alpha = 0.5) +
   gghalves::geom_half_point(
     ## draw jitter on the left
@@ -95,7 +100,7 @@ dataplot1 <- final1A %>%
     ## add some transparency
     alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Data Score') +
   easy_remove_legend() + 
   ggtitle('(a)')
@@ -129,8 +134,13 @@ materialsplot1
 # 1A Materials Plot
 
 ```{r}
-materialsplot3 <- final1A %>% 
-  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+# sample size
+sample_size_materials_A = final1A %>% group_by(subfield_groups) %>% summarize(num=n())
+
+materialsplot3 <- final1A %>%  
+  left_join(sample_size_materials_A) %>%
+  mutate(myaxis = paste0(subfield_groups, "\n", "n=", num)) %>%
+  ggplot(aes(x = myaxis, y = total_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.5, alpha = 0.5) +
   gghalves::geom_half_point(
     ## draw jitter on the left
@@ -140,7 +150,7 @@ materialsplot3 <- final1A %>%
     ## add some transparency
     alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
   easy_remove_legend() + 
   ggtitle('(b)')
@@ -220,7 +230,7 @@ dataplot2 <- final1B %>%
     ## add some transparency
     alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,25)) +
   labs(x = element_blank(), y = 'Open Data Score') +
   easy_remove_legend() + 
@@ -242,7 +252,7 @@ materialsplot2 <- final1B %>%
     ## add some transparency
     alpha = .3, position = position_nudge(x = -0.05, y = 0)) +
     theme_classic() +
-    scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
   easy_remove_legend() + 
   ggtitle('(d)')

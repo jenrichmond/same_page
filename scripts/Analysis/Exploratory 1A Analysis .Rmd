@@ -15,6 +15,7 @@ library(janitor)
 library(gt)
 library(webshot)
 library(apa)
+library(ggeasy)
 ```
 
 # Read and clean data 
@@ -64,7 +65,7 @@ total_reportedly_available_data$subfield_groups <- fct_relevel(total_reportedly_
 data_reportedly_available <- ggplot(total_reportedly_available_data, aes(y=Percent, fill = subfield_groups)) +
   geom_col(aes(x = subfield_groups)) +
   theme_classic() +
-  scale_fill_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
                      labels=c("Development",
                               "Social",
                               "Cognition",
@@ -154,7 +155,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent, group = subfield_groups, colo
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
-  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
+  scale_color_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
                      labels=c("Development (n = 9)",
                               "Social (n = 28) ",
                               "Cognition (n = 24)",
@@ -171,7 +172,7 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent, group = subfield_groups, colo
         axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
   easy_labs(y = "Percentage of Articles with Data Reportedly Available", x = "Data Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
-  theme(legend.position=c(.125, .3)) +
+  theme(legend.position=c(.2, .3)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
@@ -302,7 +303,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
   geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
-  scale_color_manual(values=c("#FF6666","#6699CC", "#FFCC33", "#00CC99"),
+  scale_color_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
                      labels=c("Development (n = 10)",
                               "Social (n = 33)",
                               "Cognition (n = 36)",
@@ -319,7 +320,7 @@ materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_gr
         axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
   easy_labs(y = "Percentage of Articles with Materials Reportedly Available", x = "Material Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
-  theme(legend.position=c(.125, .3)) +
+  theme(legend.position=c(.2, .25)) +
   theme(legend.title=element_blank()) +
   theme(legend.text = element_text(size = 8)) +
   theme(legend.key.size = unit(1, "cm")) +
