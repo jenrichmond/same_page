@@ -180,6 +180,8 @@ data_subfield_descriptives <- dates %>%
             N = n(),
             stderr = SD/sqrt(N))
 
+data_subfield_descriptives$subfield_groups <- fct_relevel(data_subfield_descriptives$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+
 data_subfield_descriptives
 
 # let's plot this
@@ -191,6 +193,7 @@ d1 <- data_subfield_descriptives %>%
                 size=.3, # thinner lines
                 width=.2) + # narrower bars
     theme_classic() +
+    scale_x_discrete(limits=c("Development", "Social", "Cognition", "Other")) +
     scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
@@ -228,7 +231,6 @@ d2 <- data_timeperiod_descriptives %>%
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   ggtitle('(b)')
 
-d2
 ```
 
 ### Interaction between time and subfield - Data scores 
