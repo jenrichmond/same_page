@@ -22,6 +22,7 @@ library(ggdist)
 library(ggbeeswarm)
 library(gghalves)
 library(ggridges)
+set.seed(1)
 ```
 
 # 1A PLOTS
@@ -82,6 +83,26 @@ count_final1A <- final1A %>%
   count(subfield_groups, total_data_score)
 ```
 
+
+# 1A Materials Plot
+
+```{r}
+
+materialsplot1 <- final1A %>%  
+  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
+  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
+    theme_classic() +
+    theme(axis.title.y = element_text(size=9)) +
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend() + 
+  ggtitle('(b)')
+
+materialsplot1
+
+```
 # 1A Data Plot
 
 ```{r}
@@ -103,27 +124,6 @@ dataplot1 <- final1A %>%
 dataplot1
 
 ```
-
-# 1A Materials Plot
-
-```{r}
-
-materialsplot1 <- final1A %>%  
-  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
-  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
-    theme_classic() +
-    theme(axis.title.y = element_text(size=9)) +
-  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
-  labs(x = element_blank(), y = 'Open Materials Score') +
-  easy_remove_legend() + 
-  ggtitle('(b)')
-
-materialsplot1
-
-```
-
 
 # 1B PLOTS
 
