@@ -179,6 +179,9 @@ final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st 
 # check data types
 
 glimpse(final1B)
+
+count_final1B <- final1B %>%
+  count(subfield_groups, total_materials_score)
 ```
 
 # 1B Data Plot
