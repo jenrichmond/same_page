@@ -1,43 +1,38 @@
 ---
-title: "Exploratory 1B Analysis Part 2"
+title: "Study 1B Exploratory Analysis - Raincloud Plots"
 output: html_document
 ---
 
-Load Packages
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Load packages
+
 library(tidyverse)
 library(janitor)
 library(here)
-library(rstatix)
-library(apa)
-library(ez)
-library(afex)
-library(papaja)
 library(patchwork)
-library(jmv)
-library(raincloudplots)
 source("R_rainclouds.R")
 library(ggeasy)
-library(ggdist)
-library(ggbeeswarm)
 library(gghalves)
-library(ggridges)
 set.seed(1)
 ```
 
-# 1A PLOTS
+# Study 1A Plots (2014-15)
 
-## Read in data
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 options(scipen=999) # remove scientific notation
 
+## Read in data
+
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+
+# Note: you will need to change the location of the file, depending on where you have saved it
 ```
 
-## First factor: Subfield
+
 ```{r include=FALSE}
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
-subfield_groups <- data1A %>%
+# Assign articles to subfield groups
+
+subfield_groups_data <- data1A %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
                                      subfield == "Health Psychology" ~ "Other",
@@ -47,67 +42,30 @@ subfield_groups <- data1A %>%
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
-# we can now delete the original subfield column
-subfield_groups <- subfield_groups %>%
+# Delete the original subfield column
+subfield_groups_data <- subfield_groups_data %>%
   select(-subfield)
 ```
 
-## Second factor: Time 
 
-```{r include=FALSE}
-# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
-
-dates <- subfield_groups %>%
-  mutate(time_period = case_when(
-    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
-    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
-    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
-  relocate(time_period, .after = article_id_number)
-
-```
+```{r message=FALSE, include=FALSE}
 
 ## Select relevant data 
 
-```{r message=FALSE, include=FALSE}
-final1A <- dates %>%
-  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+final1A <- subfield_groups_data %>%
+  select(article_id_number, subfield_groups, total_data_score, total_materials_score)
 
-# make sure subfield and timeperiod are factors 
+# Setting the subfield variable as a factor
 
 final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
-final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
-
-# check data types
-
-count_final1A <- final1A %>%
-  count(subfield_groups, total_data_score)
-```
-
-
-# 1A Materials Plot
-
-```{r}
-
-materialsplot1 <- final1A %>%  
-  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
-  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
-    theme_classic() +
-    theme(axis.title.y = element_text(size=9)) +
-  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
-  labs(x = element_blank(), y = 'Open Materials Score') +
-  easy_remove_legend() + 
-  ggtitle('(b)')
-
-materialsplot1
 
 ```
-# 1A Data Plot
 
-```{r}
+## Data Plot
 
-# Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
+```{r echo=FALSE}
+
+# Note: We tried using the raincloud package function, but it only allowed us to compare two subfields at a time
 
 dataplot1 <- final1A %>%  
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
@@ -125,17 +83,40 @@ dataplot1
 
 ```
 
-# 1B PLOTS
+## Materials Plot
 
+```{r echo=FALSE}
+
+materialsplot1 <- final1A %>%  
+  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
+  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
+    theme_classic() +
+    theme(axis.title.y = element_text(size=9)) +
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend() + 
+  ggtitle('(b)')
+
+materialsplot1
+
+```
+
+
+# Study 1B Plots (2019-20)
+
+
+```{r include=FALSE}
 ## Read in data
 
-```{r}
 data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
 ```
 
-## First factor: Subfield
+
 ```{r include=FALSE}
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+# Assign articles to subfield groups
+
 subfield_groups_materials <- data1B %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
@@ -146,49 +127,28 @@ subfield_groups_materials <- data1B %>%
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
-# we can now delete the original subfield column
+# Delete the original subfield column
 subfield_groups_materials <- subfield_groups_materials %>%
   select(-subfield)
 ```
 
-## Second factor: Time 
 
 ```{r include=FALSE}
-# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
-
-dates <- subfield_groups_materials %>%
-  mutate(time_period = case_when(
-    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
-    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
-    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
-  relocate(time_period, .after = article_id_number)
-
-```
-
 ## Select relevant data 
 
-```{r}
-final1B <- dates %>%
-  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+final1B <- subfield_groups_materials %>%
+  select(article_id_number, subfield_groups, total_data_score, total_materials_score)
 
-# make sure subfield and timeperiod are factors 
+# Setting the subfield variable as a factor
 
 final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
-final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020", "2nd half 2020"))
 
-# check data types
-
-glimpse(final1B)
-
-count_final1B <- final1B %>%
-  count(subfield_groups, total_materials_score)
 ```
 
-# 1B Data Plot
+## Data Plot
 
-```{r}
+```{r echo=FALSE}
 
-# Note: I tried using raincloud package function, but it only allowed me to compare two subfields at a time
 
 dataplot2 <- final1B %>%  
   ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
@@ -204,9 +164,10 @@ dataplot2 <- final1B %>%
 
 dataplot2
 ```
-# 1B Materials Plot
 
-```{r}
+## Materials Plot
+
+```{r echo=FALSE}
 
 materialsplot2 <- final1B %>%  
   ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
@@ -223,9 +184,9 @@ materialsplot2 <- final1B %>%
 materialsplot2
 ```
 
-# PRINT PLOTS
+# Figure 8
 
-```{r}
+```{r echo=FALSE}
 (dataplot1 | materialsplot1) / 
 (dataplot2 | materialsplot2)
 ```

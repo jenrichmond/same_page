@@ -1,25 +1,45 @@
 ---
-title: "Exploratory 1B Analysis"
-output: html_document
+title: "Supplementary Figures (2019-20)"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-Load packages 
+### The following figure illustrates the proportion of *Psychological Science* articles, published between July 2019 and December 2020, that  met a series of data sharing criteria, of those that reported having openly accessible data. 
+
+### The criteria are as follows:
+
+##### Reportedly Available: Data was reported to be available in the article
+##### Actually Locatable: Data was actually located at the reported URL link
+##### Correct Data: Data corresponded to what was reported in the article
+##### Complete Data: The full set of data were available
+##### Codebook Available: A codebook that defined what each variable in the dataset referred to, was available with the data
+##### Software Specified: The software that was used to analyse the data, was specified
+##### Scripts Available: Analysis scripts or code were available with the data
+
+
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Load packages 
 
 library(tidyverse)
 library(extrafont)
 library(here)
 library(janitor)
 library(ggeasy)
+
 ```
 
-Read and clean packages
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
+# Read and clean data
+
 data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
 
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+# Note: you will need to change the location of the file, depending on where you have saved it
+
+# Assign articles to subfield groups
 subfield_groups <- data1B %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
@@ -30,25 +50,28 @@ subfield_groups <- data1B %>%
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
-# we can now delete the original subfield column
+# Delete the original subfield column
 subfield_groups <- subfield_groups %>%
   select(-subfield)
 ```
 
 
-# DATA
-
-Select only variables we're interested in
-
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+
+### DATA
+
+# Select only relevant data
+
 select_data <- subfield_groups  %>%
   select(article_id_number, subfield_groups, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
 
 ```
 
-Let's create some summary tables
+
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
 # reportedly available
 reportedly_available_data <- select_data %>%
   filter(data_statement_indicates == "Available") %>%
@@ -106,9 +129,10 @@ data_scripts_available <- select_data %>%
   mutate(Real_Stage = "Scripts Available")
 ```
 
-Let's bind all these statistics together
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bind statistics together
+
 all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data, complete_data, software_specified, data_codebook_available, data_scripts_available)%>%
   relocate(subfield_groups, .after = `Real_Stage`) %>%
   relocate(Number, .after = subfield_groups) %>%
@@ -116,9 +140,10 @@ all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data,
 
 ```
 
-Let's plot
 
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
+# Plot 
+
 data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
@@ -149,13 +174,16 @@ data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = subfield_groups, col
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
 
-data_plot
+print(data_plot)
 
 ```
 
-Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
 
 ```{r eval=FALSE, include=FALSE}
+
+# Summary table
+
+# This table illustrates the number of articles (as opposed to the proportion) that met each data sharing criteria.
 
 data_percentages <- all_data_stats %>%
   pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
@@ -189,27 +217,33 @@ data_summary
     #column_labels.border.top.width = 1,
     #column_labels.border.bottom.width = 1)
 
-
-# Let's save the gt as a pdf (This is the nicest format to screenshot into a word doc)
-
-data_summary %>%
-  gtsave("Table 4.pdf")
-
-
 ```
 
-# MATERIALS
+### The following figure illustrates the proportion of *Psychological Science* articles, published between July 2019 and December 2020, that met a series of materials sharing criteria, of those that reported having openly accessible materials. 
 
-Select only the variables we're interested in
+### The criteria are as follows:
+
+##### Reportedly Available: Materials were reported to be available in the article
+##### Actually Locatable: Materials were actually located at the reported URL link
+##### Correct Materials: Materials corresponded to what was reported in the article
+##### Complete Materials: The full set of materials were available
+##### Scripts Available/Explanation Provided: Scripts or code that were used to generate or operate the materials were available, or an explanation of how the materials were used in the study was available
+
+
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+## MATERIALS
+
+# Select only relevant data
+
 select_materials <- subfield_groups %>%
   select(article_id_number, subfield_groups, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
 ```
 
-Let's create some summary tables
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
 # reportedly available
 reportedly_available_materials <- select_materials %>%
   filter(materials_statement_indicates == "Available") %>%
@@ -251,9 +285,9 @@ material_scripts_available <- select_materials %>%
   mutate(Real_Stage = "Scripts Available")
 ```
 
-Let's bind all these statistics together
-
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bind statistics together
+
 all_material_stats <- rbind(reportedly_available_materials, locatable_materials, correct_materials, complete_materials, material_scripts_available)%>%
   relocate(subfield_groups, .after = `Real_Stage`) %>%
   relocate(Number, .after = subfield_groups) %>%
@@ -261,9 +295,10 @@ all_material_stats <- rbind(reportedly_available_materials, locatable_materials,
 
 ```
 
-Let's plot
 
-```{r echo=FALSE}
+
+```{r echo=FALSE, warning=FALSE}
+# Plot
 
 materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
   coord_cartesian(ylim=c(0,100)) +
@@ -300,9 +335,10 @@ materials_plot
 ```
 
 
-Now let's generate a table that summarises the number of articles in each category as opposed to the percentage
-
 ```{r eval=FALSE, include=FALSE}
+# Summary table
+
+# This table illustrates the number of articles (as opposed to the proportion) that met each data sharing criteria.
 
 materials_percentages <- all_material_stats %>%
   pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
@@ -327,10 +363,5 @@ materials_summary <- gt(materials_percentages) %>%
     table.width = pct(30)) 
 
 materials_summary
-
-# Let's save this as a pdf
-
-materials_summary %>%
-  gtsave("Table 5.pdf")
 
 ```

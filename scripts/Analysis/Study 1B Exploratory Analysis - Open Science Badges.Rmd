@@ -1,31 +1,28 @@
 ---
-title: "Data Badge x Practices Analysis"
+title: "Study 1B Exploratory Analysis - Open Science Badges"
 output: html_document
 ---
-# Load packages 
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Load packages 
 library(tidyverse)
-library(extrafont)
-library(here)
 library(janitor)
-library(gt)
-library(webshot)
-library(apa)
+library(here)
 library(patchwork)
 library(ggeasy)
 ```
 
+# Open Data Badge Plot
 
-# 1A DATA
-
-Read and clean 1A data 
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Read and clean 1A data
 
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
 
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+# Note: you will need to change the location of the file, depending on where you have saved it
+
+# Assign articles to subfield groups
 A_subfield_groups <- data1A %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
@@ -36,23 +33,24 @@ A_subfield_groups <- data1A %>%
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
-# we can now delete the original subfield column
+# Delete the original subfield column
 A_subfield_groups <- A_subfield_groups %>%
   select(-subfield)
 ```
 
 
-Select only variables we're interested in
-
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Select only relevant variables
+
 A_select_data <- A_subfield_groups  %>%
   select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
 
 ```
 
-Let's create some summary tables
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
 # reportedly available
 A_reportedly_available_data <- A_select_data %>%
   filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
@@ -110,24 +108,24 @@ A_data_scripts_available <- A_select_data %>%
   mutate(Real_Stage = "Scripts Available")
 ```
 
-Let's bind all these statistics together
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Bind all statistics together
+
 A_data_stats <- rbind(A_reportedly_available_data, A_locatable_data, A_correct_data, A_complete_data, A_software_specified, A_data_codebook_available, A_data_scripts_available)
 
 A_data_stats <- A_data_stats %>%
   mutate("Time" = "2014-15") 
 ```
 
-# 1B DATA
-
-Read and clean 1B data
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
+# Read and clean 1B data
+
 data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
 
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+# Assign articles to subfield groups
 B_subfield_groups <- data1B %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
@@ -138,22 +136,24 @@ B_subfield_groups <- data1B %>%
                                      TRUE ~ as.character(subfield))) %>%
   relocate(subfield_groups, .after = subfield)
 
-# we can now delete the original subfield column
+# Delete the original subfield column
 B_subfield_groups <- B_subfield_groups %>%
   select(-subfield)
 ```
 
-Select only variables we're interested in
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Select only relevant variables
+
 B_select_data <- B_subfield_groups  %>%
   select(article_id_number, subfield_groups, data_badge, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
 
 ```
 
-Let's create some summary tables
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
 # reportedly available
 B_reportedly_available_data <- B_select_data %>%
   filter(data_badge == "Yes") %>%
@@ -211,9 +211,9 @@ B_data_scripts_available <- B_select_data %>%
   mutate(Real_Stage = "Scripts Available")
 ```
 
-Let's bind all these statistics together
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bind all statistics together
 B_data_stats <- rbind(B_reportedly_available_data, B_locatable_data, B_correct_data, B_complete_data, B_software_specified, B_data_codebook_available, B_data_scripts_available)
 
 B_data_stats <- B_data_stats %>%
@@ -221,15 +221,17 @@ B_data_stats <- B_data_stats %>%
 
 ```
 
-Combine 1A and 1B stats together
 
-```{r}
+```{r include=FALSE}
+# Combine 1A and 1B stats together
+
 all_data_stats <- rbind(A_data_stats, B_data_stats)
 ```
 
-Let's create a combined plot
 
-```{r}
+```{r echo=FALSE}
+# Plot combined data
+
 combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colour = Time)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
@@ -255,19 +257,22 @@ combined_data_plot
 
 ```
 
-# 1A MATERIALS
+# Open Materials Badge Plot
 
-Select only the variables we're interested in
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# 1A MATERIALS
+
+# Select only relevant variables
+
 A_select_materials <- A_subfield_groups %>%
   select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
 ```
 
 
-Let's create some summary tables
-
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
 # reportedly available
 A_reportedly_available_materials <- A_select_materials %>%
   filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
@@ -309,9 +314,10 @@ A_material_scripts_available <- A_select_materials %>%
   mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
 ```
 
-Let's bind all these statistics together
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bind all statistics
+
 A_material_stats <- rbind(A_reportedly_available_materials, A_locatable_materials, A_correct_materials, A_complete_materials, A_material_scripts_available)
 
 A_material_stats <- A_material_stats %>%
@@ -319,18 +325,20 @@ A_material_stats <- A_material_stats %>%
 
 ```
 
-# 1B MATERIALS
-
-Select only the variables we're interested in
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# 1B MATERIALS
+
+# Select only relevant variables
+
 B_select_materials <- B_subfield_groups %>%
   select(article_id_number, subfield_groups, materials_badge, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
 ```
 
-Let's create some summary tables
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
 # reportedly available
 B_reportedly_available_materials <- B_select_materials %>%
   filter(materials_badge == "Yes") %>%
@@ -372,24 +380,25 @@ B_material_scripts_available <- B_select_materials %>%
   mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
 ```
 
-Let's bind all these statistics together
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bind all statistics
+
 B_material_stats <- rbind(B_reportedly_available_materials, B_locatable_materials, B_correct_materials, B_complete_materials, B_material_scripts_available)
 
 B_material_stats <- B_material_stats %>%
   mutate("Time" = "2019-20") 
 ```
 
-Combine 1A and 1B stats together
 
-```{r}
+```{r include=FALSE}
+# Combine 1A and 1B stats together
 all_material_stats <- rbind(A_material_stats, B_material_stats)
 ```
 
-Let's create a combined plot
 
-```{r}
+```{r echo=FALSE}
+# Plot combined data 
 combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Time, colour = Time)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=Time, x=Real_Stage), size = 1) +

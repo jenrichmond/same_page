@@ -118,7 +118,7 @@ renamed_data <- renamed_data %>%
 
 # Import existing 1B master dataset-----
 
-data1B <- read_csv(here("data_files", "master_dataset_1B.csv"))
+data1B <- read_csv(here("data_files", "cleaned_dataset_1B.csv"))
 
 # Add newly coded articles to existing articles-----
 
@@ -149,7 +149,7 @@ master_dups <- rbind(data1B_nodups, dup_recoded)
 # Write .csv-----
 
 # let's write this dataset into a .csv file
-master_dups %>% write_csv(here::here("data_files", "recoded_master_dataset_1B.csv"))
+master_dups %>% write_csv(here::here("data_files", "master_dataset_1B.csv"))
 
 
 

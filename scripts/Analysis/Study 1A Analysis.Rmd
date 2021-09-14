@@ -1,5 +1,5 @@
 ---
-title: "Study 1A Analysis"
+title: "Study 1A Analysis Output"
 output:
   html_document: default
   word_document: default
@@ -27,11 +27,13 @@ library(report)
 options(scipen=999) # remove scientific notation
 
 data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+
+# Note: you will need to change the location of the file, depending on where you have saved it
 ```
 
 ## First factor: Subfield
 ```{r echo=FALSE}
-# first, let's collapse the subfields into 4 main groups: developmental, cognition, social and 'other'
+# Assign articles to a subfield group
 subfield_groups <- data1A %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
@@ -57,7 +59,7 @@ subfield_summary
 ## Second factor: Time 
 
 ```{r echo=FALSE}
-# we want to group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
+# Group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
 
 dates <- subfield_groups %>%
   mutate(time_period = case_when(
@@ -82,7 +84,7 @@ timeperiod_summary
 final1A <- dates %>%
   select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
 
-# make sure subfield and timeperiod are factors 
+# Setting subfield and timeperiod varaibles as factors 
 
 final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
@@ -91,8 +93,7 @@ final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd 
 
 # DATA ANOVA Analysis 
 
-```{r echo=FALSE}
-# We decided to use Type II ANOVA tests because this appears to be the more conservative test out of Type I, II and III tests, and is most appropriate for our findings
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 data_aov <- aov_ez(
   data = final1A, dv = "total_data_score", 
@@ -112,7 +113,7 @@ Our two-way between-subjects ANOVA generated a significant main effect of time p
 
 # MATERIALS ANOVA Analysis 
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_aov <- aov_ez(
   data = final1A, dv = "total_materials_score", 
   id = "article_id_number", 
@@ -143,7 +144,7 @@ data_subfield_descriptives <- final1A %>%
 
 data_subfield_descriptives
 
-# let's plot this
+# Plot
 
 d1 <- data_subfield_descriptives %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
@@ -173,7 +174,7 @@ data_timeperiod_descriptives <- final1A %>%
 
 data_timeperiod_descriptives
 
-# let's plot this
+# Plot
 
 d2 <- data_timeperiod_descriptives %>%
   ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
@@ -193,7 +194,7 @@ d2 <- data_timeperiod_descriptives %>%
 
 ### Interaction between time and subfield - Data scores 
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_subfieldtime_descriptives <- final1A %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
@@ -202,6 +203,8 @@ data_subfieldtime_descriptives <- final1A %>%
             stderr = SD/sqrt(N))
 
 data_subfieldtime_descriptives
+
+# Plot
 
 d3 <- data_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
@@ -236,7 +239,7 @@ materials_subfield_descriptives <- final1A %>%
 
 materials_subfield_descriptives
 
-# let's plot this
+# Plot
 
 m1 <- materials_subfield_descriptives %>%
   ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
@@ -266,7 +269,7 @@ materials_timeperiod_descriptives <- final1A %>%
 
 materials_timeperiod_descriptives
 
-# let's plot this
+# Plot
 
 m2 <- materials_timeperiod_descriptives %>%
   ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
@@ -286,7 +289,7 @@ m2 <- materials_timeperiod_descriptives %>%
 
 ### Interaction between time and subfield - Materials Score
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_subfieldtime_descriptives <- final1A %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
@@ -295,6 +298,8 @@ materials_subfieldtime_descriptives <- final1A %>%
             stderr = SD/sqrt(N))
 
 materials_subfieldtime_descriptives 
+
+# Plot
 
 m3 <- materials_subfieldtime_descriptives  %>%
   ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
