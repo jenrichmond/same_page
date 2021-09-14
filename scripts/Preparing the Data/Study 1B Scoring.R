@@ -1,29 +1,20 @@
 # Load packages
-library(qualtRics)
 library(tidyverse)
 library(janitor)
-library(ggplot2)
-library(grid)
-library(cowplot)
-library(httr)
-library(extrafont)
 library(here)
 library(Hmisc)
-library(dplyr)
 
-# Read and clean data -----
+# Read and clean dataset -----
 
-# read in 1B data from csv
+data1B <- read_csv(here("data_files", "master_dataset_1B.csv"))
 
-data1B <- read_csv(here("data_files", "recoded_master_dataset_1B.csv"))
-
-# remove non-empirical articles 
+# Remove non-empirical articles 
 data1B_empirical <- data1B %>%
   filter(no_of_experiments != "0")
 
-# SUBFIELD SCORING -------
+# SUBFIELD ASSIGNMENT -------
 
-# Let's assign each article to a subfield
+# Assign each article to a subfield
 
 subfield_test <- data1B_empirical %>%
   mutate(subfield = case_when("Animals" == participants ~ "Behavioural Neuroscience", 
@@ -36,12 +27,12 @@ subfield_test <- data1B_empirical %>%
   relocate(subfield, .after = no_of_experiments)
 
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
-# let's assign these 'other' articles to a subfield manually
+# The senior coder assigned these 'other' articles to a subfield manually
 na_articles <- subfield_test %>%
   filter(is.na(subfield)) %>%
   select(coder_name:subfield, topic_other)
 
-# Christina assessed all 17 NA cases, and decided upon a subfield for each case
+# The senior coder assessed all 17 NA cases, and decided upon a subfield for each case
 psyc_subfield <- subfield_test %>%
   mutate(subfield = case_when("2020-31-1-65" == article_id_number ~ "Cognition",
                               "2019-30-8-1123" == article_id_number ~ "Cognition",
@@ -62,43 +53,17 @@ psyc_subfield <- subfield_test %>%
                               "2020-31-10-1222" == article_id_number ~ "Social Psychology", 
                               TRUE ~ as.character(subfield))) # this line of code keeps the existing subfield values (that didn't need to be assigned manually), rather than replacing them with NAs  
 
-# let's check that all articles have been assigned to a subfield
-na_articles_check <- psyc_subfield %>%
-  filter(is.na(subfield))
-  
-# let's summarise the articles by subfield
+# OPEN DATA SCORES -------
 
-count_subfield <- psyc_subfield %>%
-  tabyl(subfield)
-
-count_subfield %>%
-  ggplot(aes(x = reorder(subfield, n), y = n, fill = subfield)) +
-  geom_col() +
-  coord_flip() +
-  theme_classic() +
-  labs(x = "subfield", y = "count of articles") +
-  scale_y_continuous(expand = c(0,0), limits = c(0,100)) + # makes bars sit on the axis
-  easy_remove_legend() 
-
-subfield_summary <- psyc_subfield %>%
-  select(article_id_number, subfield)
-
-# DATA SCORING -------
-
-# scoring
-# low items = 1
-# med items = 2
-# high items = 5
-
-#First we need to change data_page_no to a character variable (from a numeric variable)
+# Change data_page_no to a character variable (from a numeric variable)
 psyc_subfield <- transform(psyc_subfield, "data_page_no" = as.character(data_page_no))
 
-# Next we need to make the relevant data long
+# Make the relevant data long
 data_scoring <- psyc_subfield %>%
-  select(article_id_number, subfield, data_badge, software, data_statement_present, data_statement_indicates, data_accessible, dataset_URL_working, data_locatable, data_downloadable, data_correspond, data_complete, data_codebook, data_scripts) %>%
+  select(article_id_number, subfield, software, data_statement_present, data_statement_indicates, data_accessible, dataset_URL_working, data_locatable, data_downloadable, data_correspond, data_complete, data_codebook, data_scripts) %>%
   pivot_longer(names_to = "question", values_to = "response", software:data_scripts)
 
-# Now let's assign scores for openness of data
+# Assign scores to data sharing variables 
 data_scored_for_data <- data_scoring %>%
   mutate(data_score = case_when(question == "software" & response == "No" ~ 0, 
                                 question == "software" & response == "Yes" ~ 1, 
@@ -129,55 +94,20 @@ data_scored_for_data <- data_scoring %>%
                                 question == "data_scripts" & response == "Yes" ~ 5)) %>%
   mutate(data_score = coalesce(data_score, 0))
 
-# Let's create a single open data score for each article 
+# Calculate the Open Data Score for each article
 
 open_data_score_summary <- data_scored_for_data %>%
-  group_by(article_id_number, data_badge, subfield) %>% 
+  group_by(article_id_number, subfield) %>% 
   summarise(total_data_score = sum(data_score))
 
-# plot distribution across all articles
+# OPEN MATERIALS SCORE -----
 
-open_data_score_summary %>%
-  ggplot(aes(x = total_data_score)) +
-  geom_histogram() 
-
-# plot distribution separately for badge vs not
-
-open_data_score_summary %>%
-  ggplot(aes(x = total_data_score)) +
-  geom_histogram()  +
-  facet_wrap(~ data_badge)
-
-summary(open_data_score_summary)
-
-open_data_score_summary %>%
-  tabyl(total_data_score)
-
-# Christina checking why a few articles received a data badge, but a score of 0, 1 or 2 
-data_investigation <- open_data_score_summary %>%
-  filter(data_badge == "Yes" & total_data_score %in% c("0", "1", "2", "4"))
-
-# 2020-31-2-193 
-# 2020-31-7-881
-# 2019-30-8-1218 
-
-# Christina checking why a few articles didn't receive a badge, but received a score of 24  
-data_investigation_1 <- open_data_score_summary %>%
-  filter(data_badge == "No" & total_data_score == "24")
-
-# 2019-30-7-1016 - correctly coded 
-# 2020-31-6-634 - correctly coded 
-
-# ALL 5 of these articles have been correctly coded, ok to proceed
-
-# MATERIAL SCORING -----
-
-# Let's make the relevant data long
+# Make the relevant data long
 materials_scoring <- psyc_subfield %>%
-  select(article_id_number, subfield, materials_badge, materials_statement_present, materials_statement_indicates, materials_accessible, materials_URL_working, materials_locatable, materials_downloadable, materials_correspond, materials_complete, materials_explanation) %>%
+  select(article_id_number, subfield, materials_statement_present, materials_statement_indicates, materials_accessible, materials_URL_working, materials_locatable, materials_downloadable, materials_correspond, materials_complete, materials_explanation) %>%
   pivot_longer(names_to = "question", values_to = "response", materials_statement_present:materials_explanation)
 
-# And let's score the data
+# Assign scores to materials sharing variables 
 data_scored_for_materials <- materials_scoring %>%
   mutate(materials_score = case_when(question == "materials_statement_present" & response =="No" ~ 0,
                                      question == "materials_statement_present"  &  response == "Yes" ~ 1, 
@@ -204,59 +134,37 @@ data_scored_for_materials <- materials_scoring %>%
                                      question == "materials_explanation" & response == "Yes" ~ 5))  %>%
   mutate(materials_score = coalesce(materials_score, 0))
 
-# This code edits the materials accessible score from 2 to 1 for articleID 2019-30-8-1123, this case was requiring permission
-
+# This code edits the materials accessible score from 2 to 1 for articleID 2019-30-8-1123, as this case was requiring permission to access the materials
 data_scored_for_materials <- data_scored_for_materials %>%
   mutate(materials_score = case_when(article_id_number == "2019-30-8-1123" & question == "materials_accessible" & response == "Other (please specify):" ~ 1, 
                                      TRUE ~ as.numeric(materials_score)))
 
-# Let's create a single open materials score for each article 
+# Calculate the Open Materials Score for each article
 
 open_materials_score_summary <- data_scored_for_materials %>%
-  group_by(article_id_number, materials_badge, subfield) %>% 
+  group_by(article_id_number, subfield) %>% 
   summarise(total_materials_score = sum(materials_score))
 
-# plot distribution across all articles
-
-open_materials_score_summary %>%
-  ggplot(aes(x = total_materials_score)) +
-  geom_histogram() 
-
-# plot distribution separately for badge vs not
-
-open_materials_score_summary %>%
-  ggplot(aes(x = total_materials_score)) +
-  geom_histogram()  +
-  facet_wrap(~ materials_badge)
-
-summary(open_materials_score_summary)
-
-open_materials_score_summary %>%
-  tabyl(total_materials_score)
-
-# Now let's create a new dataframe that combines subfield, open data score and open material score based on article ID
+# Create a new dataframe that summarises each article's subfield-assignment, Open Data Score and Open Materials Score 
 
 overall_summary <- left_join(open_materials_score_summary, open_data_score_summary, by ="article_id_number") 
 
 overall_summary <- overall_summary %>%
   select(article_id_number, 
          subfield = subfield.x,
-         materials_badge,
          total_materials_score, 
-         data_badge,
          total_data_score)
 
-# And let's create another dataframe that combines ALL data: collected data + subfield + data score + material score
+# Create another dataframe that combines ALL data: collected data + subfield + data score + material score
 
 scores <- overall_summary %>%
-  select(article_id_number, total_data_score, total_materials_score) %>%
-  select(-materials_badge)
+  select(article_id_number, total_data_score, total_materials_score) 
 
 total_summary <- left_join(psyc_subfield, scores, by = "article_id_number") %>%
-  select(-materials_badge.y) %>%
-  select(coder_name:total_materials_score, materials_badge = materials_badge.x)
+  select(coder_name:total_materials_score)
 
 # Export dataset as a csv. -----
 
 total_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1B.csv"))
+# When you re-run this script to write a csv. maybe call it something else to make sure all the data matches the old script (because we renamed the master_dataset_1B script)
 

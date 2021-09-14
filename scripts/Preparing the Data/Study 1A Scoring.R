@@ -9,7 +9,7 @@ library(Hmisc)
 master_dataset_1A <- read_csv(here("data_files", "master_dataset_1A.csv")) 
   # Note: you will need to change the location of the file, depending on where you have saved it
 
-# remove non-empirical articles 
+# Remove non-empirical articles 
 master_dataset_1A_empirical <- master_dataset_1A %>%
   filter(no_of_experiments != "0")
 
@@ -28,7 +28,7 @@ subfield_test <- master_dataset_1A_empirical %>%
   relocate(subfield, .after = no_of_experiments)
 
 # Some articles wouldn't have been assigned to a subfield with the previous function, as they would have fallen into the 'other' category 
-# Assign these 'other' articles to a subfield manually
+# The senior coder assigned these 'other' articles to a subfield manually
 na_articles <- subfield_test %>%
   filter(is.na(subfield)) %>%
   select(coder_name:subfield, topic_other)
@@ -80,7 +80,7 @@ psyc_subfield_clean <- subset(psyc_subfield, article_id_number != "1-5-2015")
 # Make the relevant data long
 
 data_scoring <- psyc_subfield_clean %>%
-  select(article_id_number, subfield, did_the_article_receive_a_badge_for_open_data, software, does_the_article_state_whether_or_not_the_data_are_available, data_statement_indicates_that_data_are, how_are_data_accessible, does_the_data_url_go_to_a_working_page, are_the_data_located_at_the_working_page, can_the_data_be_downloaded, does_the_data_correspond_to_what_is_reported_in_the_article, are_the_data_complete, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data) %>%
+  select(article_id_number, subfield, software, does_the_article_state_whether_or_not_the_data_are_available, data_statement_indicates_that_data_are, how_are_data_accessible, does_the_data_url_go_to_a_working_page, are_the_data_located_at_the_working_page, can_the_data_be_downloaded, does_the_data_correspond_to_what_is_reported_in_the_article, are_the_data_complete, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data) %>%
   pivot_longer(names_to = "question", values_to = "response", software:are_analysis_scripts_included_with_the_data)
 
 
@@ -115,7 +115,7 @@ data_scored_for_data <- data_scoring %>%
                                 question == "are_analysis_scripts_included_with_the_data" & response == "Yes" ~ 5)) %>%
   mutate(data_score = coalesce(data_score, 0))
 
-# Calculate Open Data Score for each article 
+# Calculate the Open Data Score for each article 
 
 open_data_score_summary <- data_scored_for_data %>%
   group_by(article_id_number, subfield) %>% 
@@ -126,7 +126,7 @@ open_data_score_summary <- data_scored_for_data %>%
 # Make the relevant data long 
 
 materials_scoring <- psyc_subfield_clean %>%
-  select(article_id_number, subfield, did_the_article_receive_a_badge_for_open_materials, does_the_article_state_whether_or_not_any_research_materials_are_available, statement_indicates_that_materials_are, how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_the_materials_are_available, does_the_materials_url_go_to_a_working_page, are_the_materials_located_at_the_working_page, can_the_materials_be_downloaded, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_data) %>%
+  select(article_id_number, subfield, does_the_article_state_whether_or_not_any_research_materials_are_available, statement_indicates_that_materials_are, how_are_materials_accessible_please_only_fill_out_this_question_and_the_questions_below_if_the_articles_statement_indicates_that_the_materials_are_available, does_the_materials_url_go_to_a_working_page, are_the_materials_located_at_the_working_page, can_the_materials_be_downloaded, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_data) %>%
   pivot_longer(names_to = "question", values_to = "response", does_the_article_state_whether_or_not_any_research_materials_are_available:are_analysis_scripts_included_with_the_data)
 
 # Assign scores to materials sharing variables 
@@ -157,7 +157,7 @@ data_scored_for_materials <- materials_scoring %>%
                                      question == "are_analysis_scripts_included_with_the_data" & response == "Yes" ~ 5)) %>%
   mutate(materials_score = coalesce(materials_score, 0))
 
-# # Calculate Open Materials Score for each article
+# Calculate the Open Materials Score for each article
 
 open_materials_score_summary <- data_scored_for_materials %>%
   group_by(article_id_number, subfield) %>% 

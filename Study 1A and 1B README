@@ -1,0 +1,65 @@
+This file explains how each script should be used to reproduce the analyses and the results of this study. 
+
+Study 1A
+
+Assigning and Scoring the Articles
+
+The first step in running the analyses of Study 1A, is to assign each article to a subfield and to award each article with an Open Data and Open Materials Score. For this task, you will need:
+  The dataset titled "master_dataset_1A.csv" 
+  The script titled "Study 1A Scoring.R" 
+  
+To start, you will need to save the dataset on your machine. Then, open "Study 1A Scoring.R". In line 9 of this script, you will need to change the location of the "master_dataset_1A.csv" file to where you have saved it on your machine. Once you have made this change, simply run the script. In line 185, you are required to save the new scored dataset onto your machine. Again, change the location to where you would like the new file, titled "scored_master_dataset_1A.csv", to be saved. 
+
+Running the Analyses
+
+Once you have scored the articles, you can carry out the corresponding analyses. Open the script titled "Study 1A Analysis.Rmd". In line 29 of the script, you will need to change the location of the "scored_master_dataset_1A.csv" file to where you have saved it. This script runs the ANOVA analyses described and the article, generates Figure 2 and 3, and also runs the corresponding *t*-tests. 
+
+The file titled "Study 1A Analysis Output.pdf" contains the output of "Study 1A Analysis.Rmd" in a PDF format.
+
+Study 1B
+
+Assigning and Scoring the Articles
+
+As in Study 1A, the first step is to assign each article to a subfield, and to award each article with an Open Data and Open Materials Score. For this task, you will need:
+  The dataset titled "master_dataset_1B.csv" 
+  The script titled "Study 1B Scoring.R" 
+  
+To start, you will need to save the dataset on your machine. Then, open "Study 1B Scoring.R". In line 9 of this script, you will need to change the location of the "master_dataset_1B.csv" file to where you have saved it on your machine. Once you have made this change, simply run the script. In line 168, you are required to save the new scored dataset onto your machine. Again, change the location to where you would like the new file, titled "scored_master_dataset_1B.csv", to be saved. 
+
+Running the Confirmatory Analyses 
+
+Articles Published Between 2019-20
+
+To run the confirmatory analyses for articles published between 2019-20, open the script titled "Study 1B Confirmatory Analysis (2019-20).Rmd". In line 28 of the script, you will need to change the location of the "scored_master_dataset_1B.csv" file to where you have saved it on your machine. This script runs the 2019-20 ANOVA analyses, generates Figure 4 and 5, and also runs the corresponding *t*-tests. 
+
+The file titled "Study 1B Confirmatory Analysis (2019-20) Output.pdf" contains the output of "Study 1B Confirmatory Analysis (2019-20).Rmd" in a PDF format.
+
+Articles Published in 2014-15 vs. 2019-20
+
+To run the confirmatory analyses for articles published in 2014-15 vs. 2019-20, open the script titled "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20).Rmd". In line 29 and 42 of the script, you will need to change the location of the "scored_master_dataset_1A.csv" file and of the "scored_master_dataset_1B.csv" file to where you have saved them, respectively. This script runs the 2014-15 vs. 2019-20 ANOVA analyses, generates Figure 6 and 7, and also runs the corresponding *t*-tests. 
+
+The file titled "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20) Output.pdf" contains the output of "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20).Rmd" in a PDF format.
+
+Running the Exploratory Analyses 
+
+Raincloud plots
+
+To generate the raincloud plots illustrated in Figure 8, you will need the datasets titled "scored_master_dataset_1A.csv" and "scored_master_dataset_1B.csv". Open the script titled "Study 1B Exploratory Analysis - Raincloud Plots.Rmd". In line 26 of the script, you will need to change the location of the "scored_master_dataset_1A.csv" file to where you have saved it on your machine. Similarly, in line 113, you will need to change the location of the "scored_master_dataset_1B.csv" file to where you have saved it. Then, simply run the script. 
+
+The file titled "Study 1B Exploratory Analysis - Raincloud Plots Output.pdf" contains the output of "Study 1B Exploratory Analysis - Raincloud Plots.Rmd" in a PDF format.
+
+Open Science Badges 
+
+To generate Figure 9 and 10, you will need the datasets titled "scored_master_dataset_1A.csv" and "scored_master_dataset_1B.csv". Open the script titled "Study 1B Exploratory Analysis - Open Science Badges.Rmd". In line 21 of the script, you will need to change the location of the "scored_master_dataset_1A.csv" file to where you have saved it on your machine. Similarly, in line 126, you will need to change the location of the "scored_master_dataset_1B.csv" file to where you have saved it. Then, simply run the script. 
+
+The file titled "Study 1B Exploratory Analysis - Open Science Badges Output.pdf" contains the output of "Study 1B Exploratory Analysis - Open Science Badges.Rmd" in a PDF format.
+
+Supplementary Figures 
+
+We created four supplementary figures that weren't included in the study. The first two illustrated the percentage of articles, of those that had reported having openly accessible data and materials between 2014-15, that met a series of data and material sharing criteria, respectively. To generate these figures you will need the dataset titled "scored_master_dataset_1A.csv" and the script titled "Supplementary Figures (2014-15).Rmd". Once you have opened the script, you will need to change the location of the "scored_master_dataset_1A.csv" file, in line 38, to where you have saved it on your machine. Then, simply run the script.
+
+The file titled "Supplementary Figures (2014-15) Output.pdf" contains the supplementary figures in a PDF format. This file also contains definitions of each data and material sharing criterion. 
+
+The remaining two figures illustrated the percentage of articles, of those that had reported having openly accessible data and materials between 2019-20, that met the same series of data and material sharing criteria, respectively. To generate these figures you will need the dataset titled "scored_master_dataset_1B.csv" and the script titled "Supplementary Figures (2019-20).Rmd". Once you have opened the script, you will need to change the location of the "scored_master_dataset_1A.csv" file, in line 38, to where you have saved it on your machine. Then, simply run the script.
+
+The file titled "Supplementary Figures (2019-20) Output.pdf" contains the supplementary figures in a PDF format. This file also contains definitions of each data and material sharing criterion. 
