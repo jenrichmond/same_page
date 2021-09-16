@@ -35,7 +35,7 @@ library(ggeasy)
 
 # Read and clean data 
 
-data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+data1A <- read_csv(here("data_files", "Scored Study 1A Master Dataset.csv"))
 
 # Note: you will need to change the location of the file, depending on where you have saved it
 

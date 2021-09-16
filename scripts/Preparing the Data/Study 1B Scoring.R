@@ -6,7 +6,7 @@ library(Hmisc)
 
 # Read and clean dataset -----
 
-data1B <- read_csv(here("data_files", "master_dataset_1B.csv"))
+data1B <- read_csv(here("data_files", "Study 1B Master Dataset.csv"))
 
 # Remove non-empirical articles 
 data1B_empirical <- data1B %>%
@@ -30,7 +30,7 @@ subfield_test <- data1B_empirical %>%
 # The senior coder assigned these 'other' articles to a subfield manually
 na_articles <- subfield_test %>%
   filter(is.na(subfield)) %>%
-  select(coder_name:subfield, topic_other)
+  select(article_id_number:subfield, topic_other)
 
 # The senior coder assessed all 17 NA cases, and decided upon a subfield for each case
 psyc_subfield <- subfield_test %>%
@@ -98,7 +98,7 @@ data_scored_for_data <- data_scoring %>%
 
 open_data_score_summary <- data_scored_for_data %>%
   group_by(article_id_number, subfield) %>% 
-  summarise(total_data_score = sum(data_score))
+  summarise(open_data_score = sum(data_score))
 
 # OPEN MATERIALS SCORE -----
 
@@ -143,7 +143,7 @@ data_scored_for_materials <- data_scored_for_materials %>%
 
 open_materials_score_summary <- data_scored_for_materials %>%
   group_by(article_id_number, subfield) %>% 
-  summarise(total_materials_score = sum(materials_score))
+  summarise(open_materials_score = sum(materials_score))
 
 # Create a new dataframe that summarises each article's subfield-assignment, Open Data Score and Open Materials Score 
 
@@ -151,20 +151,18 @@ overall_summary <- left_join(open_materials_score_summary, open_data_score_summa
 
 overall_summary <- overall_summary %>%
   select(article_id_number, 
-         subfield = subfield.x,
-         total_materials_score, 
-         total_data_score)
+         subfield = subfield.x, 
+         open_data_score,
+         open_materials_score)
 
 # Create another dataframe that combines ALL data: collected data + subfield + data score + material score
 
 scores <- overall_summary %>%
-  select(article_id_number, total_data_score, total_materials_score) 
+  select(article_id_number, open_data_score, open_materials_score) 
 
 total_summary <- left_join(psyc_subfield, scores, by = "article_id_number") %>%
-  select(coder_name:total_materials_score)
+  select(article_id_number:open_materials_score)
 
 # Export dataset as a csv. -----
 
-total_summary %>% write_csv(here::here("data_files", "scored_master_dataset_1B.csv"))
-# When you re-run this script to write a csv. maybe call it something else to make sure all the data matches the old script (because we renamed the master_dataset_1B script)
-
+total_summary %>% write_csv(here::here("data_files", "Scored Study 1B Master Dataset.csv"))

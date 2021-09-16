@@ -5,7 +5,7 @@ output:
   word_document: default
 ---
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 ## Load Packages
 
 library(tidyverse)
@@ -25,7 +25,7 @@ library(report)
 
 options(scipen=999) # remove scientific notation
 
-data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+data1B <- read_csv(here("data_files", "Scored Study 1B Master Dataset.csv"))
 
 # Note: you will need to change the location of the file, depending on where you have saved it
 ```
@@ -85,7 +85,7 @@ timeperiod_subfield_summary
 #
 # Select only relevant data
 final1B <- dates %>%
-  select(article_id_number, subfield_groups, time_period, total_data_score, total_materials_score)
+  select(article_id_number, subfield_groups, time_period, open_data_score, open_materials_score)
 
 # Set subfield and timeperiod variables as factors 
 
@@ -99,7 +99,7 @@ final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 data_aov <- aov_ez(
-  data = final1B, dv = "total_data_score", 
+  data = final1B, dv = "open_data_score", 
   id = "article_id_number", 
   between = c("time_period", "subfield_groups"), 
   type = "2")
@@ -119,7 +119,7 @@ Our two-way between-subjects ANOVA generated a significant main effect of time p
 ```{r echo=FALSE}
 
 materials_aov <- aov_ez(
-  data = final1B, dv = "total_materials_score", 
+  data = final1B, dv = "open_materials_score", 
   id = "article_id_number", 
   between = c("time_period", "subfield_groups"), 
   type = "2")
@@ -142,8 +142,8 @@ Our two-way between-subjects ANOVA generated a significant main effect of subfie
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_subfield_descriptives <- final1B %>%
   group_by(subfield_groups) %>%
-  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
-            SD = sd(total_data_score, na.rm = TRUE),
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -174,8 +174,8 @@ d1 <- data_subfield_descriptives %>%
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_timeperiod_descriptives <- final1B %>%
   group_by(time_period) %>%
-  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
-            SD = sd(total_data_score, na.rm = TRUE),
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -203,8 +203,8 @@ d2 <- data_timeperiod_descriptives %>%
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_subfieldtime_descriptives <- final1B %>%
   group_by(subfield_groups, time_period) %>%
-  summarise(mean_data_score = mean(total_data_score, na.rm = TRUE),
-            SD = sd(total_data_score, na.rm = TRUE),
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -238,8 +238,8 @@ d3 <- data_subfieldtime_descriptives  %>%
 ```{r echo=FALSE}
 materials_subfield_descriptives <- final1B %>%
   group_by(subfield_groups) %>%
-  summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
-            SD = sd(total_data_score, na.rm = TRUE),
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -268,8 +268,8 @@ m1 <- materials_subfield_descriptives %>%
 ```{r echo=FALSE}
 materials_timeperiod_descriptives <- final1B %>%
   group_by(time_period) %>%
-  summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
-            SD = sd(total_materials_score, na.rm = TRUE),
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -298,8 +298,8 @@ m2 <- materials_timeperiod_descriptives %>%
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_subfieldtime_descriptives <- final1B %>%
   group_by(subfield_groups, time_period) %>%
-  summarise(mean_materials_score = mean(total_materials_score, na.rm = TRUE),
-            SD = sd(total_materials_score, na.rm = TRUE),
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
 
@@ -336,7 +336,7 @@ m3 <- materials_subfieldtime_descriptives  %>%
 devcog_data <- final1B %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
-ttest1 <- t_test(total_data_score ~ subfield_groups, devcog_data, paired = FALSE)
+ttest1 <- t_test(open_data_score ~ subfield_groups, devcog_data, paired = FALSE)
 
 report(ttest1)
 ```
@@ -347,7 +347,7 @@ report(ttest1)
 devsocial_data <- final1B %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
-ttest2 <- t_test(total_data_score ~ subfield_groups, devsocial_data, paired = FALSE)
+ttest2 <- t_test(open_data_score ~ subfield_groups, devsocial_data, paired = FALSE)
 
 report(ttest2)
 ```
@@ -358,7 +358,7 @@ report(ttest2)
 devother_data <- final1B %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
-ttest3 <- t_test(total_data_score ~ subfield_groups, devother_data, paired = FALSE)
+ttest3 <- t_test(open_data_score ~ subfield_groups, devother_data, paired = FALSE)
 
 report(ttest3)
 ```
@@ -371,7 +371,7 @@ report(ttest3)
 devcog_materials <- final1B %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
-ttest4 <- t_test(total_materials_score ~ subfield_groups, devcog_materials, paired = FALSE)
+ttest4 <- t_test(open_materials_score ~ subfield_groups, devcog_materials, paired = FALSE)
 
 report(ttest4)
 ```
@@ -382,7 +382,7 @@ report(ttest4)
 devsocial_materials <- final1B %>%
   filter(subfield_groups %in% c("Development", "Social"))
 
-ttest5 <- t_test(total_materials_score ~ subfield_groups, devsocial_materials, paired = FALSE)
+ttest5 <- t_test(open_materials_score ~ subfield_groups, devsocial_materials, paired = FALSE)
 
 report(ttest5)
 ```
@@ -393,7 +393,7 @@ report(ttest5)
 devother_materials <- final1B %>%
   filter(subfield_groups %in% c("Development", "Other"))
 
-ttest6 <- t_test(total_materials_score ~ subfield_groups, devother_materials, paired = FALSE)
+ttest6 <- t_test(open_materials_score ~ subfield_groups, devother_materials, paired = FALSE)
 
 report(ttest6)
 ```
@@ -408,7 +408,7 @@ report(ttest6)
 second2019_first2020 <- final1B %>%
   filter(time_period %in% c("2nd half 2019", "1st half 2020"))
 
-ttest7 <- t_test(total_data_score ~ time_period, second2019_first2020, paired = FALSE)
+ttest7 <- t_test(open_data_score ~ time_period, second2019_first2020, paired = FALSE)
 
 report(ttest7)
 ```
@@ -419,7 +419,7 @@ report(ttest7)
 first2020_second2020 <- final1B %>%
   filter(time_period %in% c("1st half 2020", "2nd half 2020"))
 
-ttest8 <- t_test(total_data_score ~ time_period, first2020_second2020, paired = FALSE)
+ttest8 <- t_test(open_data_score ~ time_period, first2020_second2020, paired = FALSE)
 
 report(ttest8)
 ```

@@ -23,7 +23,7 @@ options(scipen=999) # remove scientific notation
 
 ## Read in data
 
-data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+data1A <- read_csv(here("data_files", "Scored Study 1A Master Dataset.csv"))
 
 # Note: you will need to change the location of the file, depending on where you have saved it
 ```
@@ -53,7 +53,7 @@ subfield_groups_data <- subfield_groups_data %>%
 ## Select relevant data 
 
 final1A <- subfield_groups_data %>%
-  select(article_id_number, subfield_groups, total_data_score, total_materials_score)
+  select(article_id_number, subfield_groups, open_data_score, open_materials_score)
 
 # Setting the subfield variable as a factor
 
@@ -68,7 +68,7 @@ final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development",
 # Note: We tried using the raincloud package function, but it only allowed us to compare two subfields at a time
 
 dataplot1 <- final1A %>%  
-  ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
+  ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
   geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
     theme_classic() +
@@ -88,7 +88,7 @@ dataplot1
 ```{r echo=FALSE}
 
 materialsplot1 <- final1A %>%  
-  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
   geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
     theme_classic() +
@@ -110,7 +110,7 @@ materialsplot1
 ```{r include=FALSE}
 ## Read in data
 
-data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+data1B <- read_csv(here("data_files", "Scored Study 1B Master Dataset.csv"))
 ```
 
 
@@ -137,7 +137,7 @@ subfield_groups_materials <- subfield_groups_materials %>%
 ## Select relevant data 
 
 final1B <- subfield_groups_materials %>%
-  select(article_id_number, subfield_groups, total_data_score, total_materials_score)
+  select(article_id_number, subfield_groups, open_data_score, open_materials_score)
 
 # Setting the subfield variable as a factor
 
@@ -151,7 +151,7 @@ final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development",
 
 
 dataplot2 <- final1B %>%  
-  ggplot(aes(x = subfield_groups, y = total_data_score, fill = subfield_groups)) +
+  ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
   geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
     theme_classic() +
@@ -170,7 +170,7 @@ dataplot2
 ```{r echo=FALSE}
 
 materialsplot2 <- final1B %>%  
-  ggplot(aes(x = subfield_groups, y = total_materials_score, fill = subfield_groups)) +
+  ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
   geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
     theme_classic() +

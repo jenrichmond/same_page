@@ -18,7 +18,7 @@ library(ggeasy)
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # Read and clean 1A data
 
-data1A <- read_csv(here("data_files", "scored_master_dataset_1A.csv"))
+data1A <- read_csv(here("data_files", "Scored Study 1A Master Dataset.csv"))
 
 # Note: you will need to change the location of the file, depending on where you have saved it
 
@@ -123,7 +123,7 @@ A_data_stats <- A_data_stats %>%
 
 # Read and clean 1B data
 
-data1B <- read_csv(here("data_files", "scored_master_dataset_1B.csv"))
+data1B <- read_csv(here("data_files", "Scored Study 1B Master Dataset.csv"))
 
 # Assign articles to subfield groups
 B_subfield_groups <- data1B %>%
