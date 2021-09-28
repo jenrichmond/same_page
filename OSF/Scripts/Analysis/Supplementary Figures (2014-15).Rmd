@@ -1,0 +1,358 @@
+---
+title: "Supplementary Figures (2014-15)"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+### The following figure illustrates the proportion of *Psychological Science* articles, published between January 2014 and May 2015, that  met a series of data sharing criteria, of those that reported having openly accessible data. 
+
+### The criteria are as follows:
+
+##### Reportedly Available: Data was reported to be available in the article
+##### Actually Locatable: Data was actually located at the reported URL link
+##### Correct Data: Data corresponded to what was reported in the article
+##### Complete Data: The full set of data were available
+##### Codebook Available: A codebook that defined what each variable in the dataset referred to, was available with the data
+##### Software Specified: The software that was used to analyse the data, was specified
+##### Scripts Available: Analysis scripts or code were available with the data
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Load packages 
+
+library(tidyverse)
+library(extrafont)
+library(here)
+library(janitor)
+library(ggeasy)
+
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+# Read and clean data 
+
+data1A <- read_csv(here("OSF", "Data Files", "Scored Study 1A Master Dataset.csv"))
+
+# Assign articles to subfield groups
+subfield_groups <- data1A %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# Delete the original subfield column
+subfield_groups <- subfield_groups %>%
+  select(-subfield)
+```
+
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# DATA
+
+# Select only relevant data
+
+select_data <- subfield_groups  %>%
+  select(article_id_number, subfield_groups, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
+
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
+# reportedly available
+reportedly_available_data <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, data_statement_indicates_that_data_are) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable data
+locatable_data <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, are_the_data_located_at_the_working_page) %>%
+  mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct data 
+correct_data <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, does_the_data_correspond_to_what_is_reported_in_the_article) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Data")
+
+# complete data
+complete_data <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, are_the_data_complete) %>%
+  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `No, not all of the data are available` + `Unclear whether or not all of the data are available`)*100) %>%
+  select(subfield_groups, Number = `Yes, all of the data appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Data")
+
+# software specified
+software_specified <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, software) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Software Specified")
+
+# codebook available 
+data_codebook_available <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Codebook Available")
+
+# scripts available 
+data_scripts_available <- select_data %>%
+  filter(data_statement_indicates_that_data_are == "Available") %>%
+  tabyl(subfield_groups, are_analysis_scripts_included_with_the_data) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Bind all statistics together
+
+all_data_stats <- rbind(reportedly_available_data, locatable_data, correct_data, complete_data, software_specified, data_codebook_available, data_scripts_available)%>%
+  relocate(subfield_groups, .after = `Real_Stage`) %>%
+  relocate(Number, .after = subfield_groups) %>%
+  relocate(Percent, .after = Number)
+
+```
+
+
+```{r echo=FALSE, warning=FALSE}
+# Plot
+
+data_plot <- ggplot(all_data_stats, aes(y=Percent, group = subfield_groups, colour = subfield_groups)) +
+  coord_cartesian(ylim=c(0,100)) +
+  geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
+  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
+  scale_color_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
+                     labels=c("Development (n = 9)",
+                              "Social (n = 28) ",
+                              "Cognition (n = 24)",
+                              "Other (n = 12)")) +
+  scale_size_manual(name= "subfield_groups",
+                    values=c(2,
+                             2,
+                             2,
+                             2),
+                    guide=F) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
+  easy_labs(y = "Percentage of Articles with Data Reportedly Available", x = "Data Sharing Criteria") +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available"))+
+  theme(legend.position=c(.2, .3)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 8)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  guides(colour = guide_legend(override.aes = list(size = 1, shape = NA))) +
+  theme(axis.line= element_line(),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+  
+
+data_plot
+
+```
+
+
+```{r eval=FALSE, include=FALSE}
+
+# Summary table
+
+# This table illustrates the number of articles (as opposed to the proportion) that met each data sharing criteria.
+
+data_percentages <- all_data_stats %>%
+  pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
+  select(" " = Real_Stage, Development, Social, Cognition, Other)
+
+data_summary <- gt(data_percentages) %>%
+  tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_body()) %>%
+    tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"), 
+    color = NULL)), # setting the colour to NULL removes the borders entirely 
+      locations = cells_body()) %>%
+  tab_options(
+    table_body.border.bottom.color = "black", # bottom-most border
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black", 
+    table.width = pct(30)) 
+
+data_summary
+
+
+```
+
+### The following figure illustrates the proportion of *Psychological Science* articles, published between January 2014 and May 2015, that met a series of materials sharing criteria, of those that reported having openly accessible materials. 
+
+### The criteria are as follows:
+
+##### Reportedly Available: Materials were reported to be available in the article
+##### Actually Locatable: Materials were actually located at the reported URL link
+##### Correct Materials: Materials corresponded to what was reported in the article
+##### Complete Materials: The full set of materials were available
+##### Scripts Available/Explanation Provided: Scripts or code that were used to generate or operate the materials were available, or an explanation of how the materials were used in the study was available
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# MATERIALS
+
+# Select only relevant data
+
+select_materials <- subfield_groups %>%
+  select(article_id_number, subfield_groups, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Summary tables
+
+# reportedly available
+reportedly_available_materials <- select_materials %>%
+  filter(statement_indicates_that_materials_are == "Available") %>%
+  tabyl(subfield_groups, statement_indicates_that_materials_are) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(subfield_groups, Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable materials
+locatable_materials <- select_materials %>%
+  filter(statement_indicates_that_materials_are == "Available") %>%
+  tabyl(subfield_groups, are_the_materials_located_at_the_working_page) %>%
+  mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct materials
+correct_materials <- select_materials %>%
+  filter(statement_indicates_that_materials_are == "Available") %>%
+  tabyl(subfield_groups, do_the_materials_correspond_to_what_is_reported_in_the_article) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Materials")
+
+# complete materials
+complete_materials <- select_materials %>%
+  filter(statement_indicates_that_materials_are == "Available") %>%
+  tabyl(subfield_groups, are_the_materials_complete) %>%
+  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available` + `Unclear whether or not all of the materials are available`)*100) %>%
+  select(subfield_groups, Number = `Yes, all of the materials appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Materials")
+
+# scripts available 
+material_scripts_available <- select_materials %>%
+  filter(statement_indicates_that_materials_are == "Available") %>%
+  tabyl(subfield_groups, are_analysis_scripts_included_with_the_materials) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(subfield_groups, Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bind all statistics together
+
+all_material_stats <- rbind(reportedly_available_materials, locatable_materials, correct_materials, complete_materials, material_scripts_available)%>%
+  relocate(subfield_groups, .after = `Real_Stage`) %>%
+  relocate(Number, .after = subfield_groups) %>%
+  relocate(Percent, .after = Number)
+
+```
+
+
+```{r echo=FALSE, warning=FALSE}
+# Plot
+
+materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = subfield_groups, colour = subfield_groups)) +
+  coord_cartesian(ylim=c(0,100)) +
+  geom_line(aes(colour=subfield_groups, x=Real_Stage)) +
+  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
+  scale_color_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99"),
+                     labels=c("Development (n = 10)",
+                              "Social (n = 33)",
+                              "Cognition (n = 36)",
+                              "Other (n = 18)")) +
+  scale_size_manual(name= "subfield_groups",
+                    values=c(2,
+                             2,
+                             2,
+                             2),
+                    guide=F) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
+  easy_labs(y = "Percentage of Articles with Materials Reportedly Available", x = "Material Sharing Criteria") +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available")) +
+  theme(legend.position=c(.2, .25)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 8)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  guides(colour = guide_legend(override.aes = list(size = 1, shape = NA))) +
+  theme(axis.line= element_line(),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+
+materials_plot
+
+```
+
+
+```{r eval=FALSE, include=FALSE}
+
+# Summary table
+
+# This table illustrates the number of articles (as opposed to the proportion) that met each data sharing criteria.
+
+materials_percentages <- all_material_stats %>%
+  pivot_wider(names_from = subfield_groups, values_from = "Number", c("Real_Stage", "Number")) %>%
+  select(" " = Real_Stage, Development, Social, Cognition, Other)
+
+materials_summary <- gt(materials_percentages) %>%
+  tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_body()) %>%
+    tab_style(style = list(
+  cell_text(color = "black", font = "Times New Roman", size = 16, align = "center")),
+  locations = cells_column_labels()) %>%
+  tab_style(style = list(
+    cell_borders(
+    sides = c("top", "bottom"), 
+    color = NULL)), # setting the colour to NULL removes the borders entirely 
+      locations = cells_body()) %>%
+  tab_options(
+    table_body.border.bottom.color = "black", # bottom-most border
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black", 
+    table.width = pct(30)) 
+
+materials_summary
+
+
+```
