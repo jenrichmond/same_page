@@ -1,0 +1,9 @@
+This file explains the contents of each file in the 'Data Files' folder (OSF > Data Files).
+
+Study 1A Master Dataset.csv: contains the raw data we collected from the Study 1A Qualtrics Survey, as well as the relevant data Kidwell et al. (2016) collected in their study. The newly collected data, and the existing Kidwell et al. data have been merged, so that each row contains information from both datasets. The variables have been renamed according to the Article Codebook for Study 1A. 
+
+Study 1B Master Dataset.csv: contains the raw data we collected from the Study 1B Qualtrics Survey. The variables have been renamed according to the Article Codebook for Study 1A. 
+
+Scored Study 1A Master Dataset.csv: contains the same data as "Study 1A Master Dataset.csv", however each article has been assigned to a subfield, and has received an Open Data and Open Materials Scores. As such, three extra variables appear in the data set: "subfield", "open_data_score", and "open_materials_score."
+
+Scored Study 1B Master Dataset.csv: contains the same data as "Study 1B Master Dataset.csv", however each article has been assigned to a subfield, and has received an Open Data and Open Materials Scores. As such, three extra variables appear in the data set: "subfield", "open_data_score", and "open_materials_score."
