@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 .DS_Store
+/scripts/Preparing the Data/pull1Afromqualtrics.R
+/scripts/Preparing the Data/pull1Bfromqualtrics.R
+/scripts/Preparing the Data/Final 1B Preparation Before Analysis.R
