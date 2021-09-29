@@ -1,7 +1,7 @@
 This file explains how each script should be used to reproduce the analyses and the results of this study. 
 
 First, we recommend that the user download the 'OSF' folder and save it somewhere on their machine. This will allow you to run the scripts without needing to change the locations of any of the files involved. 
-- Is it the folder or is it the project, the user needs to save?
+- Question for Jenny: Is it the folder or is it the project, the user needs to save?
 
 Study 1A
 
@@ -10,13 +10,14 @@ Assigning and Scoring the Articles
 The first step in running the analyses of Study 1A, is to assign each article to a subfield and to award each article with an Open Data and Open Materials Score. For this task, you will need the dataset titled "Study 1A Master Dataset.csv" (OSF > Data Files) and the script titled "Study 1A Scoring.R" (OSF > Scripts > Preparing the Data). Open the "Study 1A Scoring.R" script. If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Study 1B Master Dataset.csv" file, in line 9 of the script, to where you have it saved. Then, simply run the script. 
 
 In line 185, you will find the code that was used to save the new scored dataset onto your machine. However, if you have saved the entire OSF folder, there is no need to run this line of code. The new scored dataset is already located in the 'Data Files' folder. 
-- Do we need this?
+- Not sure if we needed this sentence?
 
 Running the Analyses
 
 Once you have scored the articles, you can carry out the corresponding analyses. Open the script titled "Study 1A Analysis.Rmd" (OSF > Analysis > Scripts). This script runs the ANOVA analyses described and the article, generates Figure 2 and 3, and also runs the corresponding *t*-tests. 
 
-The file titled "Study 1A Analysis Output.pdf" contains the output of "Study 1A Analysis.Rmd" in a PDF format. (DELETE)
+The file titled "Study 1A Analysis Output.pdf" contains the output of "Study 1A Analysis.Rmd" in a PDF format. (DELETE?)
+- Should I have a knitted pdf/html file in the folder as well, or should I leave it for the user to generate their own pdfs and htmls?
 
 Study 1B
 
@@ -25,8 +26,9 @@ Assigning and Scoring the Articles
 As in Study 1A, the first step is to assign each article to a subfield, and to award each article with an Open Data and Open Materials Score. For this task, you will need the dataset titled "Study 1B Master Dataset.csv" (OSF > Data Files) and the script titled "Study 1B Scoring.R" (OSF > Scripts > Preparing the Data).
   
 If you have saved the 'OSF' folder onto your machine, simply run the "Study 1B Scoring.R" script, to assign each article to a subfield, and to score the articles. If you haven't saved the 'OSF' folder onto your machine, you will need to change the location of the "Study 1B Master Dataset.csv"  file, in line 9 of the script, to where you have saved it on your machine. 
+
 In line 168, you will find the code that was used to save the new scored dataset onto your machine. However, if you have saved the entire OSF folder, there is no need to run this line of code. The new scored dataset is already located in the 'Data Files' folder. 
-- do we need this?
+- Again, not sure if we need this sentence?
 
 Running the Confirmatory Analyses 
 
@@ -34,13 +36,13 @@ Articles Published Between 2019-20
 
 To run the confirmatory analyses for articles published between 2019-20, open the script titled "Study 1B Confirmatory Analysis (2019-20).Rmd" (OSF > Scripts > Analysis). If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Scored Study 1B Master Dataset.csv"file to where you have it saved it, in line 28 of the script. Then, simply run the script. This script runs the 2019-20 ANOVA analyses, generates Figure 4 and 5, and also runs the corresponding *t*-tests. 
 
-The file titled "Study 1B Confirmatory Analysis (2019-20) Output.pdf" contains the output of "Study 1B Confirmatory Analysis (2019-20).Rmd" in a PDF format. (DELETE)
+The file titled "Study 1B Confirmatory Analysis (2019-20) Output.pdf" contains the output of "Study 1B Confirmatory Analysis (2019-20).Rmd" in a PDF format. (DELETE?)
 
 Articles Published in 2014-15 vs. 2019-20
 
 To run the confirmatory analyses for articles published in 2014-15 vs. 2019-20, open the script titled "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20).Rmd" (OSF > Scripts > Preparing the Data). If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Scored Study 1A Master Dataset.csv"  file and of the "Scored Study 1B Master Dataset.csv"  file to where you have saved them in line 29 and 42 of the script, respectively. Then, simply run the script. This script runs the 2014-15 vs. 2019-20 ANOVA analyses, generates Figure 6 and 7, and also runs the corresponding *t*-tests. 
 
-The file titled "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20) Output.pdf" contains the output of "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20).Rmd" in a PDF format. (DELETE)
+The file titled "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20) Output.pdf" contains the output of "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20).Rmd" in a PDF format. (DELETE?)
 
 Running the Exploratory Analyses 
 
@@ -48,20 +50,20 @@ Raincloud plots
 
 To generate the raincloud plots illustrated in Figure 8, you will need the datasets titled "Scored Study 1A Master Dataset.csv" (OSF > Data Files) and "Scored Study 1B Master Dataset.csv" (OSF > Data Files). First, open and run the script titled "R_raincloud.R" (OSF > Scripts > Analysis). This will create a function that will allow you to generate raincloud plots. Once you have created the function, open the script titled "Study 1B Exploratory Analysis - Raincloud Plots.Rmd" (OSF > Scripts > Analysis). If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Scored Study 1A Master Dataset.csv" file to where you have it saved in line 26 of the script. Similarly, in line 113, you will need to change the location of the "Scored Study 1B Master Dataset.csv" file to where you have saved it. Then, simply run the script. 
 
-The file titled "Study 1B Exploratory Analysis - Raincloud Plots Output.pdf" contains the output of "Study 1B Exploratory Analysis - Raincloud Plots.Rmd" in a PDF format. (DELETE)
+The file titled "Study 1B Exploratory Analysis - Raincloud Plots Output.pdf" contains the output of "Study 1B Exploratory Analysis - Raincloud Plots.Rmd" in a PDF format. (DELETE?)
 
 Open Science Badges 
 
 To generate Figure 9 and 10, you will need the datasets titled "Scored Study 1A Master Dataset.csv" and "Scored Study 1B Master Dataset.csv". Open the script titled "Study 1B Exploratory Analysis - Open Science Badges.Rmd" (OSF > Scripts > Analysis). If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Scored Study 1A Master Dataset.csv" file to where you have it saved in line 21 of the script. Similarly, in line 126, you will need to change the location of the "Scored Study 1B Master Dataset.csv" file to where you have saved it. Then, simply run the script. 
 
-The file titled "Study 1B Exploratory Analysis - Open Science Badges Output.pdf" contains the output of "Study 1B Exploratory Analysis - Open Science Badges.Rmd" in a PDF format. (DELETE)
+The file titled "Study 1B Exploratory Analysis - Open Science Badges Output.pdf" contains the output of "Study 1B Exploratory Analysis - Open Science Badges.Rmd" in a PDF format. (DELETE?)
 
 Supplementary Figures 
 
 We created four supplementary figures that weren't included in the study. The first two illustrated the percentage of articles, of those that had reported having openly accessible data and materials between 2014-15, that met a series of data and material sharing criteria, respectively. To generate these figures you will need the dataset titled "Scored Study 1A Master Dataset.csv" (OSF > Data Files) and the script titled "Supplementary Figures (2014-15).Rmd" (OSF > Scripts > Analysis). If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Scored Study 1A Master Dataset.csv" file, in line 38, to where you have it saved. Then, simply run the script.
 
-The file titled "Supplementary Figures (2014-15) Output.pdf" contains the supplementary figures in a PDF format. This file also contains definitions of each data and material sharing criterion. (DELETE)
+The file titled "Supplementary Figures (2014-15) Output.pdf" contains the supplementary figures in a PDF format. This file also contains definitions of each data and material sharing criterion. (DELETE?)
 
 The remaining two figures illustrated the percentage of articles, of those that had reported having openly accessible data and materials between 2019-20, that met the same series of data and material sharing criteria, respectively. To generate these figures you will need the dataset titled "Scored Study 1B Master Dataset.csv" (OSF > Data Files) and the script titled "Supplementary Figures (2019-20).Rmd" (OSF > Scripts > Analysis). If you haven't saved the OSF folder onto your machine, you will need to change the location of the "Scored Study 1B Master Dataset.csv" file, in line 38, to where you have it saved. Then, simply run the script.
 
-The file titled "Supplementary Figures (2019-20) Output.pdf" contains the supplementary figures in a PDF format. This file also contains definitions of each data and material sharing criterion. (DELETE)
+The file titled "Supplementary Figures (2019-20) Output.pdf" contains the supplementary figures in a PDF format. This file also contains definitions of each data and material sharing criterion. (DELETE?)
