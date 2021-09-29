@@ -1159,6 +1159,25 @@ ttest6_AB <- t_test(open_materials_score ~ subfield_groups, devother_materials_A
 report(ttest6_AB)
 ```
 
+## TIME T-TESTS
+
+### DATA
+
+```{r echo=FALSE}
+
+ttest7_AB <- t_test(open_data_score ~ time_period, dates, paired = FALSE)
+
+report(ttest7_AB) 
+```
+
+### MATERIALS
+
+```{r echo=FALSE}
+
+ttest8_AB <- t_test(open_materials_score ~ time_period, dates, paired = FALSE)
+
+report(ttest8_AB) 
+```
 # STUDY 1B EXPLORATORY
 
 ## RAINCLOUD PLOTS

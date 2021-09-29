@@ -405,3 +405,23 @@ ttest6 <- t_test(open_materials_score ~ subfield_groups, devother_materials, pai
 
 report(ttest6)
 ```
+
+## TIME T-TESTS
+
+### DATA
+
+```{r echo=FALSE}
+
+ttest7 <- t_test(open_data_score ~ time_period, dates, paired = FALSE)
+
+report(ttest7) 
+```
+
+### MATERIALS
+
+```{r echo=FALSE}
+
+ttest8 <- t_test(open_materials_score ~ time_period, dates, paired = FALSE)
+
+report(ttest8) 
+```
