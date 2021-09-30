@@ -18,6 +18,7 @@ library(report)
 source("R_rainclouds copy.R")
 library(ggeasy)
 library(gghalves)
+library(ggsignif)
 set.seed(1)
 ```
 
@@ -174,6 +175,9 @@ data_timeperiod_descriptives_A <- final1A %>%
 
 data_timeperiod_descriptives_A
 
+# Specifying which levels of the time variable the significance bars need to compare
+d2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
+
 # Plot
 
 d2_A <- data_timeperiod_descriptives_A %>%
@@ -188,7 +192,9 @@ d2_A <- data_timeperiod_descriptives_A %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_A_comparisons, y_position = c(8, 11, 14), tip_length = 0.1, annotation = c("*", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -239,6 +245,9 @@ materials_subfield_descriptives_A <- final1A %>%
 
 materials_subfield_descriptives_A
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_A_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 m1_A <- materials_subfield_descriptives_A %>%
@@ -253,7 +262,8 @@ m1_A <- materials_subfield_descriptives_A %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
@@ -269,6 +279,9 @@ materials_timeperiod_descriptives_A <- final1A %>%
 
 materials_timeperiod_descriptives_A
 
+# Specifying which levels of the time variable the significance bars need to compare
+m2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
+
 # Plot
 
 m2_A <- materials_timeperiod_descriptives_A %>%
@@ -283,7 +296,9 @@ m2_A <- materials_timeperiod_descriptives_A %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') + 
+  geom_signif(comparisons = m2_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("n.s.", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -387,33 +402,41 @@ ttest5_A <- t_test(open_data_score ~ time_period, second2014_first2015, paired =
 report(ttest5_A)
 ```
 
-### MATERIALS
-
-#### First half 2014 vs. Second half 2014
-
-```{r echo=FALSE}
-ttest6_A <- t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE)
-
-report(ttest6_A)
-```
-
-#### Second half 2014 vs. First half 2015
-
-```{r echo=FALSE}
-ttest7_A <- t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE)
-
-report(ttest7_A)
-```
-
-#### First half 2014 vs. First half 2015
+### First half 2014 vs. First half 2015
 
 ```{r echo=FALSE}
 first2014_first2015 <- final1A %>%
   filter(time_period %in% c("1st half 2014", "1st half 2015"))
 
-ttest8_A <- t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE)
+ttest6_A <- t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE)
+
+report(ttest6_A)
+```
+
+## MATERIALS
+
+### First half 2014 vs. Second half 2014
+
+```{r echo=FALSE}
+ttest7_A <- t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE)
+
+report(ttest7_A)
+```
+
+### Second half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+ttest8_A <- t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE)
 
 report(ttest8_A)
+```
+
+### First half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+ttest9_A <- t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE)
+
+report(ttest9_A)
 ```
 
 # STUDY 1B CONFIRMATORY - 2019-20
@@ -546,6 +569,9 @@ data_subfield_descriptives_B$subfield_groups <- fct_relevel(data_subfield_descri
 
 data_subfield_descriptives_B
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+d1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 d1_B <- data_subfield_descriptives_B %>%
@@ -560,7 +586,8 @@ d1_B <- data_subfield_descriptives_B %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = d1_B_comparisons, y_position = c(17, 19.5, 22.5), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
@@ -576,6 +603,9 @@ data_timeperiod_descriptives_B <- final1B %>%
 
 data_timeperiod_descriptives_B
 
+# Specifying which levels of the time variable the significance bars need to compare
+d2_B_comparisons <- list( c("2nd half 2019", "1st half 2020"), c("1st half 2020", "2nd half 2020"), c("2nd half 2019", "2nd half 2020") )
+
 # Plot
 
 d2_B <- data_timeperiod_descriptives_B %>%
@@ -586,11 +616,12 @@ d2_B <- data_timeperiod_descriptives_B %>%
                 width=.2) + # narrower bars
     theme_classic() +
     scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_B_comparisons, y_position = c(18, 20, 22.5), tip_length = 0.1,  annotation = c("*", "n.s.", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 ```
 
 #### Interaction between time and subfield - Data scores 
@@ -640,6 +671,9 @@ materials_subfield_descriptives_B <- final1B %>%
 
 materials_subfield_descriptives_B
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 m1_B <- materials_subfield_descriptives_B %>%
@@ -654,11 +688,12 @@ m1_B <- materials_subfield_descriptives_B %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_B_comparisons, y_position = c(11.5, 14.5, 17), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
-### Time Period x Materials Score
+#### Time Period x Materials Score
 
 ```{r echo=FALSE}
 materials_timeperiod_descriptives_B <- final1B %>%
@@ -688,7 +723,7 @@ m2_B <- materials_timeperiod_descriptives_B %>%
 
 ```
 
-### Interaction between time and subfield - Materials Score
+#### Interaction between time and subfield - Materials Score
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_subfieldtime_descriptives_B <- final1B %>%
@@ -819,6 +854,17 @@ ttest8_B <- t_test(open_data_score ~ time_period, first2020_second2020, paired =
 report(ttest8_B)
 ```
 
+#### Second half 2019 vs. Second half 2020
+
+```{r}
+second2019_second2020 <- final1B %>%
+  filter(time_period %in% c("2nd half 2019", "2nd half 2020"))
+
+ttest9_B <- t_test(open_data_score ~ time_period, second2019_second2020, paired = FALSE)
+
+report(ttest9_B)
+```
+
 ### MATERIALS
 
 There time period main effect for Open Materials Scores was not statistically significant, so no t-tests to run here
@@ -910,6 +956,9 @@ data_subfield_descriptives_AB$subfield_groups <- fct_relevel(data_subfield_descr
 
 data_subfield_descriptives_AB
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+d1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 d1_AB <- data_subfield_descriptives_AB %>%
@@ -925,7 +974,9 @@ d1_AB <- data_subfield_descriptives_AB %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = d1_AB_comparisons, y_position = c(10, 14, 18), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -941,6 +992,9 @@ data_timeperiod_descriptives_AB <- dates_AB %>%
 
 data_timeperiod_descriptives_AB
 
+# Specifying which levels of the time variable the significance bars need to compare
+d2_AB_comparisons <- list( c("2014-15", "2019-20"))
+
 # Plot
 
 d2_AB <- data_timeperiod_descriptives_AB %>%
@@ -951,11 +1005,13 @@ d2_AB <- data_timeperiod_descriptives_AB %>%
                 width=.2) + # narrower bars
     theme_classic() +
     scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
-  scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_AB_comparisons, y_position = 17, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -1006,6 +1062,9 @@ materials_subfield_descriptives_AB <- dates_AB %>%
 
 materials_subfield_descriptives_AB
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 m1_AB <- materials_subfield_descriptives_AB %>%
@@ -1020,7 +1079,9 @@ m1_AB <- materials_subfield_descriptives_AB %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_AB_comparisons, y_position = c(7.5, 10.5, 13.5), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -1036,6 +1097,9 @@ materials_timeperiod_descriptives_AB <- dates_AB %>%
 
 materials_timeperiod_descriptives_AB
 
+# Specifying which levels of the time variable the significance bars need to compare
+m2_AB_comparisons <- list( c("2014-15", "2019-20"))
+
 # Plot
 
 m2_AB <- materials_timeperiod_descriptives_AB %>%
@@ -1050,11 +1114,13 @@ m2_AB <- materials_timeperiod_descriptives_AB %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') +
+  geom_signif(comparisons = m2_AB_comparisons, y_position = 11, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
-### Interaction between time and subfield - Materials Score
+#### Interaction between time and subfield - Materials Score
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_subfieldtime_descriptives_AB <- dates_AB %>%
@@ -1165,7 +1231,7 @@ report(ttest6_AB)
 
 ```{r echo=FALSE}
 
-ttest7_AB <- t_test(open_data_score ~ time_period, dates, paired = FALSE)
+ttest7_AB <- t_test(open_data_score ~ time_period, dates_AB, paired = FALSE)
 
 report(ttest7_AB) 
 ```
@@ -1174,7 +1240,7 @@ report(ttest7_AB)
 
 ```{r echo=FALSE}
 
-ttest8_AB <- t_test(open_materials_score ~ time_period, dates, paired = FALSE)
+ttest8_AB <- t_test(open_materials_score ~ time_period, dates_AB, paired = FALSE)
 
 report(ttest8_AB) 
 ```

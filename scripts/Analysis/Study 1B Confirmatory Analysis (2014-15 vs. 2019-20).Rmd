@@ -17,6 +17,7 @@ library(papaja)
 library(patchwork)
 library(afex)
 library(report)
+library(ggsignif)
 ```
 
 
@@ -156,6 +157,9 @@ data_subfield_descriptives$subfield_groups <- fct_relevel(data_subfield_descript
 
 data_subfield_descriptives
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+d1_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 d1 <- data_subfield_descriptives %>%
@@ -171,7 +175,9 @@ d1 <- data_subfield_descriptives %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = d1_comparisons, y_position = c(10, 14, 18), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -187,6 +193,9 @@ data_timeperiod_descriptives <- dates %>%
 
 data_timeperiod_descriptives
 
+# Specifying which levels of the time variable the significance bars need to compare
+d2_comparisons <- list( c("2014-15", "2019-20"))
+
 # Plot
 
 d2 <- data_timeperiod_descriptives %>%
@@ -197,11 +206,13 @@ d2 <- data_timeperiod_descriptives %>%
                 width=.2) + # narrower bars
     theme_classic() +
     scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
-  scale_y_continuous(limits = c(0,21), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_comparisons, y_position = 17, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
+
 
 ```
 
@@ -252,6 +263,9 @@ materials_subfield_descriptives <- dates %>%
 
 materials_subfield_descriptives
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 m1 <- materials_subfield_descriptives %>%
@@ -266,7 +280,8 @@ m1 <- materials_subfield_descriptives %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_comparisons, y_position = c(7.5, 10.5, 13.5), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
@@ -282,6 +297,9 @@ materials_timeperiod_descriptives <- dates %>%
 
 materials_timeperiod_descriptives
 
+# Specifying which levels of the time variable the significance bars need to compare
+m2_comparisons <- list( c("2014-15", "2019-20"))
+
 # Plot
 
 m2 <- materials_timeperiod_descriptives %>%
@@ -296,7 +314,8 @@ m2 <- materials_timeperiod_descriptives %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') +
+  geom_signif(comparisons = m2_comparisons, y_position = 11, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 

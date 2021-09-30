@@ -18,7 +18,7 @@ library(papaja)
 library(patchwork)
 library(afex)
 library(report)
-library(ggpubr)
+library(ggsignif)
 
 ```
 
@@ -176,7 +176,8 @@ data_timeperiod_descriptives <- final1A %>%
 
 data_timeperiod_descriptives
 
-comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
+# Specifying which levels of the time variable the significance bars need to compare
+d2_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
 
 # Plot
 
@@ -193,9 +194,7 @@ d2 <- data_timeperiod_descriptives %>%
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   ggtitle('(b)') +
-  stat_compare_means(method = "anova", comparisons = comparisons, label = "p.signif", vjust = 0.4, step.increase = 0.5, tip.length = 0.1)
-
-d2
+  geom_signif(comparisons = d2_comparisons, y_position = c(7, 11, 15), tip_length = 0.1, annotation = c("*", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
@@ -246,6 +245,9 @@ materials_subfield_descriptives <- final1A %>%
 
 materials_subfield_descriptives
 
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
 # Plot
 
 m1 <- materials_subfield_descriptives %>%
@@ -260,7 +262,8 @@ m1 <- materials_subfield_descriptives %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)')
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_comparisons, y_position = c(7, 11, 15), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
@@ -276,6 +279,9 @@ materials_timeperiod_descriptives <- final1A %>%
 
 materials_timeperiod_descriptives
 
+# Specifying which levels of the time variable the significance bars need to compare
+m2_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
+
 # Plot
 
 m2 <- materials_timeperiod_descriptives %>%
@@ -290,7 +296,8 @@ m2 <- materials_timeperiod_descriptives %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)')
+  ggtitle('(b)') + 
+  geom_signif(comparisons = m2_comparisons, y_position = c(7, 11, 15), tip_length = 0.1, annotation = c("n.s.", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
 
@@ -395,32 +402,40 @@ ttest5 <- t_test(open_data_score ~ time_period, second2014_first2015, paired = F
 report(ttest5)
 ```
 
-## MATERIALS
-
-### First half 2014 vs. Second half 2014
-
-```{r echo=FALSE}
-ttest6 <- t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE)
-
-report(ttest6)
-```
-
-### Second half 2014 vs. First half 2015
-
-```{r echo=FALSE}
-ttest7 <- t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE)
-
-report(ttest7)
-```
-
 ### First half 2014 vs. First half 2015
 
 ```{r echo=FALSE}
 first2014_first2015 <- final1A %>%
   filter(time_period %in% c("1st half 2014", "1st half 2015"))
 
-ttest8 <- t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE)
+ttest6 <- t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE)
+
+report(ttest6)
+```
+
+## MATERIALS
+
+### First half 2014 vs. Second half 2014
+
+```{r echo=FALSE}
+ttest7 <- t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE)
+
+report(ttest7)
+```
+
+### Second half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+ttest8 <- t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE)
 
 report(ttest8)
+```
+
+### First half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+ttest9 <- t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE)
+
+report(ttest9)
 ```
 
