@@ -89,6 +89,13 @@ final1A <- dates %>%
 final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
 
+# Timeperiod and subfield summary
+
+timeperiod_subfield_summary <- dates %>%
+  tabyl(subfield_groups, time_period) 
+
+timeperiod_subfield_summary
+
 ```
 
 # DATA ANOVA Analysis 
