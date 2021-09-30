@@ -77,6 +77,13 @@ timeperiod_summary_A <- dates_A %>%
 
 timeperiod_summary_A
 
+# Timeperiod and subfield summary
+
+timeperiod_subfield_summary_A <- dates_A %>%
+  tabyl(subfield_groups, time_period) 
+
+timeperiod_subfield_summary_A
+
 ```
 
 
