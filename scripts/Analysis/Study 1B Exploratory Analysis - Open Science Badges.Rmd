@@ -45,6 +45,10 @@ A_subfield_groups <- A_subfield_groups %>%
 A_select_data <- A_subfield_groups  %>%
   select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
 
+# Percentage of articles that received a badge
+A_data_badge <- A_select_data %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data)
+
 ```
 
 
@@ -147,6 +151,10 @@ B_subfield_groups <- B_subfield_groups %>%
 
 B_select_data <- B_subfield_groups  %>%
   select(article_id_number, subfield_groups, data_badge, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
+
+# Percentage of articles that received a badge
+B_data_badge <- B_select_data %>%
+  tabyl(data_badge)
 
 ```
 
@@ -267,6 +275,10 @@ combined_data_plot
 
 A_select_materials <- A_subfield_groups %>%
   select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
+
+# Percentage of articles that received a badge
+A_materials_badge <- A_select_materials %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials)
 ```
 
 
@@ -333,6 +345,10 @@ A_material_stats <- A_material_stats %>%
 
 B_select_materials <- B_subfield_groups %>%
   select(article_id_number, subfield_groups, materials_badge, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
+
+# Percentage of articles that received a badge
+B_materials_badge <- B_select_materials %>%
+  tabyl(materials_badge)
 ```
 
 
