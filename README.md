@@ -1,6 +1,6 @@
 # Are we all on the same page?
 
-Jenny is checking that OSF is updating from git but README.
+Jenny is checking that OSF is updating from git by editing the README.
 
 When you are using the terminal to communicate with Git, there are 4 steps you need to take:
 1. git pull
