@@ -1,4 +1,4 @@
-This file explains the contents of each file in the 'Data Files' folder (OSF > Data Files).
+This file explains the contents of each file in the 'Data Files' folder.
 
 Study 1A Master Dataset.csv: contains the raw data we collected from the Study 1A Qualtrics Survey, as well as the relevant data Kidwell et al. (2016) collected in their study. The newly collected data, and the existing Kidwell et al. data have been merged, so that each row contains information from both datasets. The variables have been renamed according to the Article Codebook for Study 1A. 
 
