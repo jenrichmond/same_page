@@ -1,0 +1,20 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+.gitignore
+/Working/data_files/Rapp.history
+/Working/data_files/Old Files
+/Working/scripts/Preparing the Data/pull1Afromqualtrics.R
+/Working/scripts/Preparing the Data/pull1Bfromqualtrics.R
+/Working/scripts/Preparing the Data/Final 1B Preparation Before Analysis.R
+/Working/scripts/Preparing the Data/Untitled.R
+/Working/scripts/Preparing the Data/Preparing 1B Data for Analysis.R
+/Working/scripts/Preparing the Data/Combining Kidwell and 1A.R
+/Working/scripts/Rapp.history
+/Working/scripts/Other
+/Working/other_resources
+/Working/scripts/Reliability
+
+/Working/ignore.R
