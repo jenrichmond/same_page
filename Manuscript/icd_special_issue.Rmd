@@ -1,11 +1,80 @@
 ---
-title: "Special Issue Markdown"
-output: html_document
+title             : "Are we all on the same page? Subfield differences in open science practice"
+shorttitle        : "Subfield "
+
+author: 
+  - name          : "Christina Riochios"
+    affiliation   : "1"
+     # Define only one corresponding author
+    address       : "Postal address"
+    email         : "c.riochios@unsw.edu.au"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - Conceptualization
+      - Methodology
+      - Investigation
+      - Data curation
+      - Visualisation
+      - Formal Analysis
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+  - name          : "Jenny L. Richmond"
+    affiliation   : "1"
+    corresponding : yes 
+    email         : "j.richmond@unsw.edu.au"
+    role:
+      - Conceptualization
+      - Methodology
+      - Formal Analysis
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+      - Supervision
+
+affiliation:
+  - id            : "1"
+    institution   : "University of New South Wales"
+ 
+authornote: |
+  School of Psychology, UNSW  
+
+abstract: |
+  Christina- can you insert abstract here please :)
+  
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "keywords"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib"]
+
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf
 ---
 
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
-
+```{r setup, include = FALSE}
+library(papaja)
 library(tidyverse)
 library(janitor)
 library(here)
@@ -15,27 +84,73 @@ library(papaja)
 library(patchwork)
 library(afex)
 library(report)
-source("R_rainclouds copy.R")
 library(ggeasy)
 library(gghalves)
 library(ggsignif)
-set.seed(1)
+
+source("R_rainclouds copy.R")
+r_refs("r-references.bib")
 ```
 
-# STUDY 1A
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(1)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
 
-## Read in data 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+# INTRODUCTION
+
+The field of psychology, like many other scientific disciplines, is currently facing a replication crisis, in which researchers are struggling to replicate existing findings. In 2015, a group of 270 psychological researchers attempted to replicate the findings of 100 psychology experiments. Whilst 97% of the original studies generated statistically significant findings, only 36% of the replication attempts were statistically significant. In addition, the replicated effects were, on average, half the size of the original effects [@open2015estimating]. These findings illustrate the challenge of replicability in psychological research and the pressing need to rectify flawed research practices. 
+
+One strategy that has been used to combat the replication crisis within psychology is open science. Open science practices are those that increase the transparency of, and access to, scientific research [@klein2018practical]. Open data and open materials practices, for example, involve researchers sharing their raw data and experimental materials on publicly accessible online repositories. These practices make it easier for others to replicate the methodology and reproduce the results from published work [@klein2018practical].  
+ 
+To encourage researchers to employ open science practices, many psychology journals have implemented incentives, like Open Science Badges. In 2013, the Center for Open Science established three Open Science Badges: Open Data, Open Materials and Preregistered, to acknowledge and reward researchers for their use of open science practices (Center for Open Science, 2021). The Open Data Badge and the Open Materials Badge are awarded when the data and materials that are required to reproduce the methods and results of a study are shared publicly online, whilst the Preregistered Badge is awarded when the design,  hypotheses and/or analysis plan are publicly archived prior to data collection. To date, 75 journals (40 in Psychology) have adopted the COS Open Science badges (Center for Open Science, 2021).  
+
+At *Psychological Science*, the Association of Psychological Science’s flagship journal, Open Science Badges appear to have been successful in encouraging researchers to adopt open science practices. In 2016, Kidwell et al. coded the frequency of data and material sharing in the 18 months before and after Open Science Badges were implemented at *Psychological Science*.  [@kidwell2016badges]. Kidwell et al. found that data sharing increased dramatically from 2.5% prior to badges to 39.4% following badges. Materials sharing also rose from 12.7% to 30.3%. Data and material sharing in control journals, such as the *Journal of Personality and Social Psychology*, which did not award badges, remained low over the same time period [@kidwell2016badges]. These results led Kidwell et al. to conclude that Open Science Badges successfully incentivise the uptake of open science practices.  
+
+The support for open science continues to grow, however, it is not yet clear whether engagement with open science is consistent across different fields within psychology. Notably, developmental psychology has received significant criticism for its lack of receptivity towards open science. As Figure 1 illustrates, prominent developmental researchers, Prof Michael Frank and Dr. Jennifer Pfeifer, have labelled the Society for Research in Child Development’s (SRCD) open science policy as ‘weak’ and as one that ‘undervalues openness.’ More recently, the Editor-in-Chief of Infant and Child Development, Prof Moin Syed, stated that the uptake of open science within the field of developmental psychology has been ‘slow and uneven’ [@syed2020infant]. A survey supporting these viewpoints showed that, on average, 80% of researchers publishing in *Child Development* felt their institutions failed to provide adequate guidance or financial support for sharing data, (SRCD Task Force on Scientific Integrity and Openness Survey (2017), cited in Gennetian et al., [@gennetian2020advancing]. As such, developmental researchers may be slower to adopt open science practices than those in other psychological disciplines, however, this possibility has yet to be empirically investigated. 
+
+
+FIGURE 1
+
+```{r eval = FALSE}
+knitr::include_graphics(here::here("Manuscript", "Figure1_mf.png"))
+```
+```{r eval = FALSE}
+knitr::include_graphics(here::here("Manuscript", "Figure1_jp.png"))
+```
+
+Meta-research, the study of research itself, can empirically assess whether developmental psychology is truly behind in the open science movement. Previous investigations, including Kidwell et al. [@kidwell2016badges], have revealed that open science incentives can increase the use of open science practices. However, what remains unclear is whether the uptake of open science has been consistent across psychological subfields and sustained over time. To address this research question, we used the open data from the Kidwell et al. study to examine whether rates of data and material sharing, following the implementation of Open Science Badges at Psychological Science, differed as a function of subfield. In addition, we conducted the same open data and materials coding for articles published in the most recent 18 months (July 2019-Dec 2020) to test whether the badges have continued to be impactful and whether the impact has been consistent across subfields. We were particularly interested in determining whether developmental psychology researchers papers published in developmental  impact of badges has beenrovement  sharing practices in the Whilst we expected to observe subfield differences in the use of open science practices, the nature and magnitude of these differences remained unclear. Study 1A was preregistered at the Open Science Framework: https://osf.io/3tsmy/.  
+
+ 
+
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+## Participants
+
+## Material
+
+## Procedure
+
+## Data analysis
+We used `r cite_r("r-references.bib")` for all our analyses.
+
+
+# 1A Results
+
+```{r 1Aprep, message=FALSE, warning=FALSE, include=FALSE}
+
+# read Study1A data
 
 options(scipen=999) # remove scientific notation
 
 data1A <- read_csv(here("Data_Files", "Scored Study 1A Master Dataset.csv"))
 
-```
 
-## First factor: Subfield
-```{r echo=FALSE}
-# Assign articles to a subfield group
+# subfield prep
+# Assign articles to a subfield group, behNS, cogNS, health and perception grouped together into "Other"
 subfield_groups_A <- data1A %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
                                      subfield == "Cognitive Neuroscience" ~ "Other",
@@ -43,24 +158,19 @@ subfield_groups_A <- data1A %>%
                                      subfield == "Perception" ~ "Other",
                                      subfield == "Developmental Psychology" ~ "Development",
                                      subfield == "Social Psychology" ~  "Social",
+                                      subfield == "Cognition" ~  "Cognition",
                                      TRUE ~ as.character(subfield))) %>%
-  relocate(subfield_groups, .after = subfield)
+  relocate(subfield_groups, .after = subfield) %>%
+  select(-subfield) # drop original subfield column
 
-# we can now delete the original subfield column
-subfield_groups_A <- subfield_groups_A %>%
-  select(-subfield)
-
-# Subfield summary
+# Subfield summary, count articles in each of the 4 subfield groups
 
 subfield_summary_A <- subfield_groups_A %>%
     count(subfield_groups) 
 
 subfield_summary_A
-```
 
-## Second factor: Time 
-
-```{r echo=FALSE}
+# Time prep
 # Group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
 
 dates_A <- subfield_groups_A %>%
@@ -80,29 +190,26 @@ timeperiod_summary_A
 # Timeperiod and subfield summary
 
 timeperiod_subfield_summary_A <- dates_A %>%
-  tabyl(subfield_groups, time_period) 
+  tabyl(subfield_groups, time_period) %>%
+  select("subfield_groups", "1st half 2014", "2nd half 2014", "1st half 2015")
 
 timeperiod_subfield_summary_A
 
-```
-
-
-```{r message=FALSE, include=FALSE}
-## Select relevant data 
+## Select relevant data for ANOVA analysis
 
 final1A <- dates_A %>%
   select(article_id_number, subfield_groups, time_period, open_data_score, open_materials_score)
 
-# Setting subfield and timeperiod varaibles as factors 
+# Setting subfield and timeperiod variables as factors 
 
 final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
 
 ```
 
-## DATA ANOVA Analysis 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r 1A-d-anova, echo=FALSE, message=FALSE, warning=FALSE}
+## DATA ANOVA Analysis 
 
 data_aov_A <- aov_ez(
   data = final1A, dv = "open_data_score", 
@@ -112,47 +219,53 @@ data_aov_A <- aov_ez(
 
 data_apa_A <- apa_print(data_aov_A)
 
-apa_table(data_apa_A$table,
-          caption = "Between-subjects ANOVA for Open Data Scores")
+```
+
+
+```{r 1A-d-ttests, echo=FALSE}
+## SUBFIELD T-TESTS
+### DATA 
+# Subfield main effect for Open Data Scores was not significant, so no t-tests to run here
+
+## TIME T-TESTS
+### DATA
+#### First half 2014 vs. Second half 2014
+first2014_second2014 <- final1A %>%
+  filter(time_period %in% c("1st half 2014", "2nd half 2014"))
+
+ttest_apa4_A <- apa_print(t_test(open_data_score ~ time_period, first2014_second2014, paired = FALSE))
+
+#### Second half 2014 vs. First half 2015
+second2014_first2015 <- final1A %>%
+  filter(time_period %in% c("2nd half 2014", "1st half 2015"))
+
+ttest_apa5_A <- apa_print(t_test(open_data_score ~ time_period, second2014_first2015, paired = FALSE))
+
+#### First half 2014 vs. First half 2015
+first2014_first2015 <- final1A %>%
+  filter(time_period %in% c("1st half 2014", "1st half 2015"))
+
+ttest_apa6_A <- apa_print(t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE))
 
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_A$full$time_period`. However, the main effect of subfield, `r data_apa_A$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa_A$full$time_period_subfield_groups`, were not statistically significant. 
 
-## MATERIALS ANOVA Analysis 
+# 1AData scores text
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-materials_aov_A <- aov_ez(
-  data = final1A, dv = "open_materials_score", 
-  id = "article_id_number", 
-  between = c("time_period", "subfield_groups"), 
-  type = "2")
+As illustrated in Figure 1, the two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_A$full$time_period`. However, the main effect of subfield, `r data_apa_A$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa_A$full$time_period_subfield_groups`, were not statistically significant. Articles published in the latter part of 2014 had significantly higher open data scores than article published in the first half of the year, `r ttest_apa4_A$statistic`, however there was no further increase across the early part of 2015,`r ttest_apa5_A$statistic`. Critically, there was no significant difference in the open data scores as a function of subfield (see Figure 1a). 
 
-materials_apa_A <- apa_print(materials_aov_A)
 
-apa_table(materials_apa_A$table,
-          caption = "Between-subjects ANOVA for Open Materials Scores")
-```
-
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_A$full$subfield_groups`, and a significant main effect of time period, `r materials_apa_A$full$time_period`. However the interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant. 
+```{r 1A-d-plots, echo=FALSE, message=FALSE, warning=FALSE}
 
 ## PLOTS
-
 ### DATA
-
 #### Subfield x Data Score
-
-```{r echo=FALSE}
 data_subfield_descriptives_A <- final1A %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-data_subfield_descriptives_A
-
-# Plot
 
 d1_A <- data_subfield_descriptives_A %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
@@ -168,11 +281,7 @@ d1_A <- data_subfield_descriptives_A %>%
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   ggtitle('(a)')
 
-```
-
 #### Time Period x Data Score
-
-```{r echo=FALSE}
 data_timeperiod_descriptives_A <- final1A %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -180,12 +289,9 @@ data_timeperiod_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-data_timeperiod_descriptives_A
-
 # Specifying which levels of the time variable the significance bars need to compare
 d2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
 
-# Plot
 
 d2_A <- data_timeperiod_descriptives_A %>%
   ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
@@ -203,11 +309,7 @@ d2_A <- data_timeperiod_descriptives_A %>%
   geom_signif(comparisons = d2_A_comparisons, y_position = c(8, 11, 14), tip_length = 0.1, annotation = c("*", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 
-```
-
-#### Interaction between time and subfield - Data scores 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+### Interaction between time and subfield - Data scores 
 data_subfieldtime_descriptives_A <- final1A %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -215,9 +317,6 @@ data_subfieldtime_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-data_subfieldtime_descriptives_A
-
-# Plot
 
 d3_A <- data_subfieldtime_descriptives_A  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
@@ -238,19 +337,79 @@ d3_A <- data_subfieldtime_descriptives_A  %>%
 
 ```
 
+*Figure 1*: Mean open data scores for article published in 2014 and 2015, as a function of subfield and time period. 
+
+
+```{r 1A-m-anova, echo=FALSE, message=FALSE, warning=FALSE}
+
+## MATERIALS ANOVA Analysis 
+
+materials_aov_A <- aov_ez(
+  data = final1A, dv = "open_materials_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+materials_apa_A <- apa_print(materials_aov_A)
+
+apa_table(materials_apa_A$table,
+          caption = "Between-subjects ANOVA for Open Materials Scores")
+```
+
+
+```{r 1A-m-ttests}
+
+## SUBFIELD T-TESTS
+### MATERIALS
+#### Developmental vs. Cognition
+devcog_materials_A <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Cognition")) 
+
+ttest_apa1_A <- apa_print(t_test(open_materials_score ~ subfield_groups, devcog_materials_A, paired = FALSE))
+
+
+#### Developmental vs. Social
+devsocial_materials_A <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest_apa2_A <- apa_print(t_test(open_materials_score ~ subfield_groups, devsocial_materials_A, paired = FALSE))
+
+#### Developmental vs. Other
+devother_materials_A <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest_apa3_A <- apa_print(t_test(open_materials_score ~ subfield_groups, devother_materials_A, paired = FALSE))
+
+### MATERIALS
+## TIME T-TESTS
+
+## MATERIALS
+### First half 2014 vs. Second half 2014
+ttest_apa7_A <- apa_print(t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE))
+
+
+### Second half 2014 vs. First half 2015
+ttest_apa8_A <- apa_print(t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE))
+
+### First half 2014 vs. First half 2015
+ttest_apa9_A <- apa_print(t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE))
+```
+
+# 1AMaterial scores text
+
+In contrast, for open materials scores, two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_A$full$subfield_groups`, and a significant main effect of time period, `r materials_apa_A$full$time_period`. However the interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant. Papers in developmental psychology had lower open materials scores than those in both social, `r ttest_apa2_A$statistic`, and cognition, `r ttest_apa1_A$statistic`, but developmental open materials scores did not differ from papers allocated to the other subfield category, `r ttest_apa3_A$statistic`.  Open materials scores increased incrementally across 2014 and 2015; papers published in the first half of 2015 had significantly higher open materials scores than those published in the first half of 2014,`r ttest_apa9_A$statistic`.
+
+
+```{r 1A-m-plots, echo=FALSE, message=FALSE, warning=FALSE}
 ### MATERIALS
 
 #### Subfield x Materials Score
-
-```{r echo=FALSE}
 materials_subfield_descriptives_A <- final1A %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_subfield_descriptives_A
 
 # Specifying which levels of the subfield variable the significance bars need to compare
 m1_A_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
@@ -272,19 +431,13 @@ m1_A <- materials_subfield_descriptives_A %>%
   ggtitle('(a)') + 
   geom_signif(comparisons = m1_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
-```
-
 #### Time Period x Materials Score
-
-```{r echo=FALSE}
 materials_timeperiod_descriptives_A <- final1A %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_timeperiod_descriptives_A
 
 # Specifying which levels of the time variable the significance bars need to compare
 m2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
@@ -307,19 +460,14 @@ m2_A <- materials_timeperiod_descriptives_A %>%
   geom_signif(comparisons = m2_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("n.s.", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 
-```
-
 #### Interaction between time and subfield - Materials Score
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_subfieldtime_descriptives_A <- final1A %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_subfieldtime_descriptives_A 
 
 # Plot
 
@@ -342,121 +490,19 @@ m3_A <- materials_subfieldtime_descriptives_A  %>%
 
 ```
 
-## SUBFIELD T-TESTS
+**Figure 2**: Mean open materials scores for articles published in 2014 and 2015, as a function of subfield and time period. 
 
-### DATA 
 
-Subfield main effect for Open Data Scores was not significant, so no t-tests to run here
+# 1B Results
 
-### MATERIALS
-
-#### Developmental vs. Cognition
-
-```{r echo=FALSE}
-devcog_materials_A <- final1A %>%
-  filter(subfield_groups %in% c("Development", "Cognition")) 
-
-ttest1_A <- t_test(open_materials_score ~ subfield_groups, devcog_materials_A, paired = FALSE)
-
-report(ttest1_A)
-```
-
-#### Developmental vs. Social
-
-```{r echo=FALSE}
-devsocial_materials_A <- final1A %>%
-  filter(subfield_groups %in% c("Development", "Social"))
-
-ttest2_A <- t_test(open_materials_score ~ subfield_groups, devsocial_materials_A, paired = FALSE)
-
-report(ttest2_A)
-```
-
-#### Developmental vs. Other
-
-```{r echo=FALSE}
-devother_materials_A <- final1A %>%
-  filter(subfield_groups %in% c("Development", "Other"))
-
-ttest3_A <- t_test(open_materials_score ~ subfield_groups, devother_materials_A, paired = FALSE)
-
-report(ttest3_A)
-```
-
-## TIME T-TESTS
-
-### DATA
-
-#### First half 2014 vs. Second half 2014
-
-```{r echo=FALSE}
-first2014_second2014 <- final1A %>%
-  filter(time_period %in% c("1st half 2014", "2nd half 2014"))
-
-ttest4_A <- t_test(open_data_score ~ time_period, first2014_second2014, paired = FALSE)
-
-report(ttest4_A) 
-```
-
-#### Second half 2014 vs. First half 2015
-
-```{r echo=FALSE}
-second2014_first2015 <- final1A %>%
-  filter(time_period %in% c("2nd half 2014", "1st half 2015"))
-
-ttest5_A <- t_test(open_data_score ~ time_period, second2014_first2015, paired = FALSE)
-
-report(ttest5_A)
-```
-
-### First half 2014 vs. First half 2015
-
-```{r echo=FALSE}
-first2014_first2015 <- final1A %>%
-  filter(time_period %in% c("1st half 2014", "1st half 2015"))
-
-ttest6_A <- t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE)
-
-report(ttest6_A)
-```
-
-## MATERIALS
-
-### First half 2014 vs. Second half 2014
-
-```{r echo=FALSE}
-ttest7_A <- t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE)
-
-report(ttest7_A)
-```
-
-### Second half 2014 vs. First half 2015
-
-```{r echo=FALSE}
-ttest8_A <- t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE)
-
-report(ttest8_A)
-```
-
-### First half 2014 vs. First half 2015
-
-```{r echo=FALSE}
-ttest9_A <- t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE)
-
-report(ttest9_A)
-```
-
+```{r 1Bprep, include=FALSE}
 # STUDY 1B CONFIRMATORY - 2019-20
 
 ## Read in data
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 data1B <- read_csv(here("Data_Files", "Scored Study 1B Master Dataset.csv"))
 
-```
-
 ## First factor: Subfield
-```{r echo=FALSE}
 # Assign articles to subfield groups
 subfield_groups_B <- data1B %>%
   mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
@@ -477,12 +523,8 @@ subfield_groups_B <- subfield_groups_B %>%
 subfield_summary_B <- subfield_groups_B %>%
     count(subfield_groups) 
 
-subfield_summary_B
-```
-
 ## Second factor: Time 
 
-```{r echo=FALSE}
 dates_B <- subfield_groups_B %>%
   mutate(time_period = case_when(
     str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
@@ -495,18 +537,10 @@ dates_B <- subfield_groups_B %>%
 timeperiod_summary_B <- dates_B %>%
   count(time_period)
 
-timeperiod_summary_B
-
 # Timeperiod and subfield summary
 
 timeperiod_subfield_summary_B <- dates_B %>%
   tabyl(subfield_groups, time_period) 
-
-timeperiod_subfield_summary_B
-```
-
-
-```{r message=FALSE, include=FALSE}
 
 # Select only relevant data
 final1B <- dates_B %>%
@@ -516,13 +550,9 @@ final1B <- dates_B %>%
 
 final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020","2nd half 2020"))
-
 ```
 
-## DATA ANOVA Analysis 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
+```{r 1B-d-anova}
 data_aov_B <- aov_ez(
   data = final1B, dv = "open_data_score", 
   id = "article_id_number", 
@@ -531,40 +561,70 @@ data_aov_B <- aov_ez(
 
 data_apa_B <- apa_print(data_aov_B)
 
-apa_table(data_apa_B$table,
-          caption = "Between-subjects ANOVA for Open Data Scores")
 
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_B$full$time_period`, and a significant main effect of subfield, `r data_apa_B$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa_B$full$time_period_subfield_groups`, was not statistically significant. 
-
-
-## MATERIALS ANOVA Analysis 
-
-```{r echo=FALSE}
-
-materials_aov_B <- aov_ez(
-  data = final1B, dv = "open_materials_score", 
-  id = "article_id_number", 
-  between = c("time_period", "subfield_groups"), 
-  type = "2")
-
-materials_apa_B <- apa_print(materials_aov_B)
-
-apa_table(materials_apa_B$table,
-          caption = "Between-subjects ANOVA for Open Materials Scores")
-```
-
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_B$full$subfield_groups`, however the main effect of time period, `r materials_apa_B$full$time_period`, and the interaction between time period and subfield, `r materials_apa_B$full$time_period_subfield_groups`, were not statistically significant. 
-
-
-## PLOTS
+```{r 1B-d-ttests}
+## SUBFIELD T-TESTS
 
 ### DATA
 
-#### Subfield x Data Score
+#### Development vs. Cognition
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+devcog_data_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Cognition"))
+
+ttest_apa1_B <- apa_print(t_test(open_data_score ~ subfield_groups, devcog_data_B, paired = FALSE))
+
+#### Development vs. Social
+
+devsocial_data_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest_apa2_B <- apa_print(t_test(open_data_score ~ subfield_groups, devsocial_data_B, paired = FALSE))
+
+#### Development vs. Other
+
+devother_data_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest_apa3_B <- apa_print(t_test(open_data_score ~ subfield_groups, devother_data_B, paired = FALSE))
+
+## TIME T-TESTS
+
+### DATA
+
+#### Second half 2019 vs. First half 2020
+
+second2019_first2020 <- final1B %>%
+  filter(time_period %in% c("2nd half 2019", "1st half 2020"))
+
+ttest_apa7_B <- apa_print(t_test(open_data_score ~ time_period, second2019_first2020, paired = FALSE))
+
+#### First half 2020 vs. Second half 2020
+
+first2020_second2020 <- final1B %>%
+  filter(time_period %in% c("1st half 2020", "2nd half 2020"))
+
+ttest_apa8_B <- apa_print(t_test(open_data_score ~ time_period, first2020_second2020, paired = FALSE))
+
+#### Second half 2019 vs. Second half 2020
+
+second2019_second2020 <- final1B %>%
+  filter(time_period %in% c("2nd half 2019", "2nd half 2020"))
+
+ttest_apa9_B <- apa_print(t_test(open_data_score ~ time_period, second2019_second2020, paired = FALSE))
+
+```
+
+## 1BData scores text
+
+Consistent with the results from Study 1A, open data scores also increased significantly across 2019 and 2020, `r data_apa_B$full$time_period`, however across this time period, open data scores differed significantly by subfield, `r data_apa_B$full$subfield_groups`. The interaction between time period and subfield, `r data_apa_B$full$time_period_subfield_groups`, was not statistically significant. When we compared the open data scores from papers published in developmental psychology to each of the other subfield categories (Figure 2a), we found that papers in developmental psychology had significantly lower open data scores than papers in cognition, `r ttest_apa1_B$statistic`. The magnitude of open data scores did not differ from papers published in social psychology, `r ttest_apa2_B$statistic` or those that fell into the other category, `r ttest_apa3_B$statistic`. In terms of changes over time, open data scores increased significantly from late 2019 into 2020, `r ttest_apa7_B$statistic`, but were stable across 2020, `r ttest_apa8_B$statistic`.  
+
+```{r 1B-d-plots, echo=FALSE, message=FALSE, warning=FALSE}
+## PLOTS
+### DATA
+### Subfield x Data Score
 data_subfield_descriptives_B <- final1B %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -574,7 +634,6 @@ data_subfield_descriptives_B <- final1B %>%
 
 data_subfield_descriptives_B$subfield_groups <- fct_relevel(data_subfield_descriptives_B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 
-data_subfield_descriptives_B
 
 # Specifying which levels of the subfield variable the significance bars need to compare
 d1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
@@ -596,19 +655,13 @@ d1_B <- data_subfield_descriptives_B %>%
   ggtitle('(a)') + 
   geom_signif(comparisons = d1_B_comparisons, y_position = c(17, 19.5, 22.5), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
-```
-
 #### Time Period x Data Score
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_timeperiod_descriptives_B <- final1B %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-data_timeperiod_descriptives_B
 
 # Specifying which levels of the time variable the significance bars need to compare
 d2_B_comparisons <- list( c("2nd half 2019", "1st half 2020"), c("1st half 2020", "2nd half 2020"), c("2nd half 2019", "2nd half 2020") )
@@ -629,19 +682,15 @@ d2_B <- data_timeperiod_descriptives_B %>%
   easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
   ggtitle('(b)') +
   geom_signif(comparisons = d2_B_comparisons, y_position = c(18, 20, 22.5), tip_length = 0.1,  annotation = c("*", "n.s.", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
-```
 
 #### Interaction between time and subfield - Data scores 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_subfieldtime_descriptives_B <- final1B %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-data_subfieldtime_descriptives_B
 
 # Plot
 
@@ -664,20 +713,67 @@ d3_B <- data_subfieldtime_descriptives_B  %>%
 
 ```
 
+*Figure 3*: Mean open data scores for articles published in 2019 and 2020, as a function of subfield and time period. 
+
+```{r 1B-m-anova}
+
+materials_aov_B <- aov_ez(
+  data = final1B, dv = "open_materials_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+materials_apa_B <- apa_print(materials_aov_B)
+
+apa_table(materials_apa_B$table,
+          caption = "Between-subjects ANOVA for Open Materials Scores")
+```
+
+```{r 1B-m-ttests}
+### MATERIAL
+
+#### Developmental vs. Cognition
+
+devcog_materials_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Cognition"))
+
+ttest_apa4_B <- apa_print(t_test(open_materials_score ~ subfield_groups, devcog_materials_B, paired = FALSE))
+
+#### Developmental vs. Social
+
+devsocial_materials_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest_apa5_B <- apa_print(t_test(open_materials_score ~ subfield_groups, devsocial_materials_B, paired = FALSE))
+
+### Developmental vs. Other
+
+devother_materials_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest_apa6_B <- apa_print(t_test(open_materials_score ~ subfield_groups, devother_materials_B, paired = FALSE))
+
 ### MATERIALS
 
+# The time period main effect for Open Materials Scores was not statistically significant, so no t-tests to run here
+
+```
+
+
+## 1BMaterials scores text
+
+As in Study 1A, for open materials scores in 2019 and 2020, there was a significant main effect of subfield, `r materials_apa_B$full$subfield_groups`, however the main effect of time period, `r materials_apa_B$full$time_period`, and the interaction between time period and subfield, `r materials_apa_B$full$time_period_subfield_groups`, were not statistically significant (see Figure 2). Consistent with open data scores, papers published in developmental psychology had significantly lower open materials scores than paper published in cognition, `r ttest_apa4_B$statistic`, however, open materials scores did not differ between developmental and social psychology, `r ttest_apa5_B$statistic`, or between developmental psychology and the other subfield category, `r ttest_apa6_B$statistic`. There were no additional changes in open materials scores across this period between mid-2019 and the end of 2020. 
+
+```{r 1B-m-plots, echo=FALSE, message=FALSE, warning=FALSE}
+### MATERIALS
 #### Subfield x Materials Score
 
-```{r echo=FALSE}
 materials_subfield_descriptives_B <- final1B %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_subfield_descriptives_B
-
 # Specifying which levels of the subfield variable the significance bars need to compare
 m1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
 
@@ -698,19 +794,15 @@ m1_B <- materials_subfield_descriptives_B %>%
   ggtitle('(a)') + 
   geom_signif(comparisons = m1_B_comparisons, y_position = c(11.5, 14.5, 17), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
-```
 
 #### Time Period x Materials Score
 
-```{r echo=FALSE}
 materials_timeperiod_descriptives_B <- final1B %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_timeperiod_descriptives_B
 
 # Plot
 
@@ -728,11 +820,9 @@ m2_B <- materials_timeperiod_descriptives_B %>%
   easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
   ggtitle('(b)')
 
-```
-
 #### Interaction between time and subfield - Materials Score
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+
 materials_subfieldtime_descriptives_B <- final1B %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
@@ -740,7 +830,6 @@ materials_subfieldtime_descriptives_B <- final1B %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-materials_subfieldtime_descriptives_B
 
 # Plot
 
@@ -761,132 +850,23 @@ m3_B <- materials_subfieldtime_descriptives_B  %>%
 
 (m1_B | m2_B) / m3_B
 
+
 ```
 
-## SUBFIELD T-TESTS
+*Figure 4*: Mean open materials scores for articles published in 2019 and 2020, as a function of subfield and time period. 
 
-### DATA
 
-#### Development vs. Cognition
+# AB ACROSS time
 
-```{r echo=FALSE}
-devcog_data_B <- final1B %>%
-  filter(subfield_groups %in% c("Development", "Cognition"))
-
-ttest1_B <- t_test(open_data_score ~ subfield_groups, devcog_data_B, paired = FALSE)
-
-report(ttest1_B)
-```
-
-#### Development vs. Social
-
-```{r echo=FALSE}
-devsocial_data_B <- final1B %>%
-  filter(subfield_groups %in% c("Development", "Social"))
-
-ttest2_B <- t_test(open_data_score ~ subfield_groups, devsocial_data_B, paired = FALSE)
-
-report(ttest2_B)
-```
-
-#### Development vs. Other
-
-```{r echo=FALSE}
-devother_data_B <- final1B %>%
-  filter(subfield_groups %in% c("Development", "Other"))
-
-ttest3_B <- t_test(open_data_score ~ subfield_groups, devother_data_B, paired = FALSE)
-
-report(ttest3_B)
-```
-
-### MATERIAL
-
-#### Developmental vs. Cognition
-
-```{r echo=FALSE}
-devcog_materials_B <- final1B %>%
-  filter(subfield_groups %in% c("Development", "Cognition"))
-
-ttest4_B <- t_test(open_materials_score ~ subfield_groups, devcog_materials_B, paired = FALSE)
-
-report(ttest4_B)
-```
-
-#### Developmental vs. Social
-
-```{r echo=FALSE}
-devsocial_materials_B <- final1B %>%
-  filter(subfield_groups %in% c("Development", "Social"))
-
-ttest5_B <- t_test(open_materials_score ~ subfield_groups, devsocial_materials_B, paired = FALSE)
-
-report(ttest5_B)
-```
-
-### Developmental vs. Other
-
-```{r echo=FALSE}
-devother_materials_B <- final1B %>%
-  filter(subfield_groups %in% c("Development", "Other"))
-
-ttest6_B <- t_test(open_materials_score ~ subfield_groups, devother_materials_B, paired = FALSE)
-
-report(ttest6_B)
-```
-
-## TIME T-TESTS
-
-### DATA
-
-#### Second half 2019 vs. First half 2020
-
-```{r echo=FALSE}
-second2019_first2020 <- final1B %>%
-  filter(time_period %in% c("2nd half 2019", "1st half 2020"))
-
-ttest7_B <- t_test(open_data_score ~ time_period, second2019_first2020, paired = FALSE)
-
-report(ttest7_B)
-```
-
-#### First half 2020 vs. Second half 2020
-
-```{r echo=FALSE}
-first2020_second2020 <- final1B %>%
-  filter(time_period %in% c("1st half 2020", "2nd half 2020"))
-
-ttest8_B <- t_test(open_data_score ~ time_period, first2020_second2020, paired = FALSE)
-
-report(ttest8_B)
-```
-
-#### Second half 2019 vs. Second half 2020
-
-```{r}
-second2019_second2020 <- final1B %>%
-  filter(time_period %in% c("2nd half 2019", "2nd half 2020"))
-
-ttest9_B <- t_test(open_data_score ~ time_period, second2019_second2020, paired = FALSE)
-
-report(ttest9_B)
-```
-
-### MATERIALS
-
-There time period main effect for Open Materials Scores was not statistically significant, so no t-tests to run here
+```{r ab_prep, include=FALSE}
 
 # STUDY 1B CONFIRMATORY - 2014-15 vs. 2019-20
-
 ## Merge 1A and 1B data into one dataframe
-```{r include=FALSE}
 
 alldata <- rbind(final1A, final1B)
-```
 
 ## Condense to two levels of time
 
-```{r echo=FALSE}
 dates_AB <- alldata %>%
   mutate(time_period = case_when(time_period %in% c("1st half 2014", "2nd half 2014", "1st half 2015") ~ "2014-15", time_period %in% c("2nd half 2019", "1st half 2020", "2nd half 2020") ~ "2019-20"))
 
@@ -900,19 +880,15 @@ dates_AB$time_period <- fct_relevel(dates_AB$time_period, c("2014-15", "2019-20"
 subfield_summary_AB <- dates_AB %>%
     count(subfield_groups) 
 
-subfield_summary_AB
-
 timeperiod_summary_AB <- dates_AB %>%
   count(time_period)
 
-timeperiod_summary_AB
+```
 
-````
+
+```{r ab_d-aov, echo=FALSE, message=FALSE, warning=FALSE}
 
 ## DATA ANOVA Analysis
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
 data_aov_AB <- aov_ez(
   data = dates_AB, dv = "open_data_score", 
   id = "article_id_number", 
@@ -921,16 +897,8 @@ data_aov_AB <- aov_ez(
 
 data_apa_AB <- apa_print(data_aov_AB)
 
-apa_table(data_apa_AB$table,
-          caption = "Between-subjects ANOVA for Open Data Scores")
-```
 
-Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_AB$full$time_period`, and a significant main effect of subfield, `r data_apa_AB$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa_AB$full$time_period_subfield_groups`, was not statistically significant. 
-
-## MATERIALS ANOVA Analysis 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
+# MATERIALS ANOVA analysis
 materials_aov_AB <- aov_ez(
   data = dates_AB, dv = "open_materials_score", 
   id = "article_id_number", 
@@ -939,19 +907,16 @@ materials_aov_AB <- aov_ez(
 
 materials_apa_AB <- apa_print(materials_aov_AB)
 
-apa_table(materials_apa_AB$table,
-          caption = "Between-subjects ANOVA for Open Materials Scores")
+
 ```
 
-Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_AB$full$subfield_groups`, and time period, `r materials_apa_AB$full$time_period`. However, the interaction between time period and subfield, `r materials_apa_AB$full$time_period_subfield_groups`, was not statistically significant. 
+
+```{r AB-d-plot, echo=FALSE}
 
 ## PLOTS
-
 ### DATA
-
 #### Subfield x Data Score
 
-```{r echo=FALSE}
 data_subfield_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -960,8 +925,6 @@ data_subfield_descriptives_AB <- dates_AB %>%
             stderr = SD/sqrt(N))
 
 data_subfield_descriptives_AB$subfield_groups <- fct_relevel(data_subfield_descriptives_AB$subfield_groups, c("Development", "Social", "Cognition", "Other"))
-
-data_subfield_descriptives_AB
 
 # Specifying which levels of the subfield variable the significance bars need to compare
 d1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
@@ -984,20 +947,13 @@ d1_AB <- data_subfield_descriptives_AB %>%
   ggtitle('(a)') + 
   geom_signif(comparisons = d1_AB_comparisons, y_position = c(10, 14, 18), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
-
-```
-
 #### Time Period x Data Score
-
-```{r echo=FALSE}
 data_timeperiod_descriptives_AB <- dates_AB %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-data_timeperiod_descriptives_AB
 
 # Specifying which levels of the time variable the significance bars need to compare
 d2_AB_comparisons <- list( c("2014-15", "2019-20"))
@@ -1019,20 +975,13 @@ d2_AB <- data_timeperiod_descriptives_AB %>%
   ggtitle('(b)') +
   geom_signif(comparisons = d2_AB_comparisons, y_position = 17, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
 
-
-```
-
 #### Interaction between time and subfield - Data scores 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 data_subfieldtime_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-data_subfieldtime_descriptives_AB 
 
 # Plot
 
@@ -1049,25 +998,43 @@ d3_AB <- data_subfieldtime_descriptives_AB  %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('(c)')
-
-(d1_AB | d2_AB) / d3_AB
+  ggtitle('a) Open Data scores')
 
 ```
+
+
+
+```{r ab_m-aov, echo=FALSE, message=FALSE, warning=FALSE}
+
+# MATERIALS ANOVA analysis
+materials_aov_AB <- aov_ez(
+  data = dates_AB, dv = "open_materials_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+materials_apa_AB <- apa_print(materials_aov_AB)
+
+```
+
+
+# AB data/materials text
+
+When looking at open data scores across both time periods, we found that scores increased over time, `r data_apa_AB$full$time_period`, and differed as a function of subfield, `r data_apa_AB$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa_AB$full$time_period_subfield_groups`, was not statistically significant, suggesting that there were no subfield differences in the magnitude of open data scores over time (see Figure Xa). A similar pattern was found for open material scores; scores increased over time `r materials_apa_AB$full$time_period`, and differed by subfield, `r materials_apa_AB$full$subfield_groups`, but there was no evidence that the magnitude of improvement over time differed by subfield (see Figure Xb), `r materials_apa_AB$full$time_period_subfield_groups`. 
+
+> t-tests probably not necessary, b/c point was really to see if there was an interaction, also maybe the most appropriate plot is just the interaction one, rather than subfield + time
+
+```{r AB-m-plot, echo=FALSE}
 
 ### MATERIALS
 
 #### Subfield x Materials Score
-
-```{r echo=FALSE}
 materials_subfield_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_subfield_descriptives_AB
 
 # Specifying which levels of the subfield variable the significance bars need to compare
 m1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
@@ -1089,20 +1056,14 @@ m1_AB <- materials_subfield_descriptives_AB %>%
   ggtitle('(a)') + 
   geom_signif(comparisons = m1_AB_comparisons, y_position = c(7.5, 10.5, 13.5), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
-
-```
-
 #### Time Period x Materials Score
 
-```{r echo=FALSE}
 materials_timeperiod_descriptives_AB <- dates_AB %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_timeperiod_descriptives_AB
 
 # Specifying which levels of the time variable the significance bars need to compare
 m2_AB_comparisons <- list( c("2014-15", "2019-20"))
@@ -1124,20 +1085,14 @@ m2_AB <- materials_timeperiod_descriptives_AB %>%
   ggtitle('(b)') +
   geom_signif(comparisons = m2_AB_comparisons, y_position = 11, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
 
-
-```
-
 #### Interaction between time and subfield - Materials Score
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 materials_subfieldtime_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-materials_subfieldtime_descriptives_AB
 
 # Plot
 
@@ -1154,111 +1109,26 @@ m3_AB <- materials_subfieldtime_descriptives_AB  %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
     theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('(c)')
+  ggtitle('b) Open Materials scores')
 
-(m1_AB | m2_AB) / m3_AB
+#(m1_AB | m2_AB) / m3_AB
+
+d3_AB / m3_AB
 
 ```
 
-## SUBFIELD T-TESTS
+> including just the combo of interaction plots here. Christina- can you remove the code that makes the subfield and time plots from the chunks above and work out how to make this patchwork plot share y axis labels and legends
 
-### DATA
 
-#### Development vs. Cognition
+> JENNY UP TO HERE 
 
-```{r echo=FALSE}
-devcog_data_AB <- dates_AB %>%
-  filter(subfield_groups %in% c("Development", "Cognition"))
-
-ttest1_AB <- t_test(open_data_score ~ subfield_groups, devcog_data_AB, paired = FALSE)
-
-report(ttest1_AB)
-```
-
-#### Development vs. Social
-
-```{r echo=FALSE}
-devsocial_data_AB <- dates_AB %>%
-  filter(subfield_groups %in% c("Development", "Social"))
-
-ttest2_AB <- t_test(open_data_score ~ subfield_groups, devsocial_data_AB, paired = FALSE)
-
-report(ttest2_AB)
-```
-
-#### Development vs. Other
-
-```{r echo=FALSE}
-devother_data_AB <- dates_AB %>%
-  filter(subfield_groups %in% c("Development", "Other"))
-
-ttest3_AB <- t_test(open_data_score ~ subfield_groups, devother_data_AB, paired = FALSE)
-
-report(ttest3_AB)
-```
-
-### MATERIAL
-
-#### Developmental vs. Cognition
-
-```{r echo=FALSE}
-devcog_materials_AB <- dates_AB %>%
-  filter(subfield_groups %in% c("Development", "Cognition"))
-
-ttest4_AB <- t_test(open_materials_score ~ subfield_groups, devcog_materials_AB, paired = FALSE)
-
-report(ttest4_AB)
-```
-
-#### Developmental vs. Social
-
-```{r echo=FALSE}
-devsocial_materials_AB <- dates_AB %>%
-  filter(subfield_groups %in% c("Development", "Social"))
-
-ttest5_AB <- t_test(open_materials_score ~ subfield_groups, devsocial_materials_AB, paired = FALSE)
-
-report(ttest5_AB)
-```
-
-#### Developmental vs. Other
-
-```{r echo=FALSE}
-devother_materials_AB <- dates_AB %>%
-  filter(subfield_groups %in% c("Development", "Other"))
-
-ttest6_AB <- t_test(open_materials_score ~ subfield_groups, devother_materials_AB, paired = FALSE)
-
-report(ttest6_AB)
-```
-
-## TIME T-TESTS
-
-### DATA
-
-```{r echo=FALSE}
-
-ttest7_AB <- t_test(open_data_score ~ time_period, dates_AB, paired = FALSE)
-
-report(ttest7_AB) 
-```
-
-### MATERIALS
-
-```{r echo=FALSE}
-
-ttest8_AB <- t_test(open_materials_score ~ time_period, dates_AB, paired = FALSE)
-
-report(ttest8_AB) 
-```
 # STUDY 1B EXPLORATORY
 
 ## RAINCLOUD PLOTS
 
+```{r 1ab-rain, echo=FALSE}
+
 ### 1A Data Plot
-
-```{r echo=FALSE}
-
 # Note: We tried using the raincloud package function, but it only allowed us to compare two subfields at a time
 
 rainplot_data1 <- final1A %>%  
@@ -1273,14 +1143,7 @@ rainplot_data1 <- final1A %>%
   easy_remove_legend() + 
   ggtitle('(a)')
 
-rainplot_data1
-
-```
-
 ### 1A Materials Plot
-
-```{r echo=FALSE}
-
 rainplot_materials1 <- final1A %>%  
   ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
@@ -1293,15 +1156,7 @@ rainplot_materials1 <- final1A %>%
   easy_remove_legend() + 
   ggtitle('(b)')
 
-rainplot_materials1
-
-```
-
 ### 1B Data Plot
-
-```{r echo=FALSE}
-
-
 rainplot_data2 <- final1B %>%  
   ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
   geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
@@ -1314,12 +1169,7 @@ rainplot_data2 <- final1B %>%
   easy_remove_legend() + 
   ggtitle('(c)')
 
-rainplot_data2
-```
-
 ### 1B Materials Plot
-
-```{r echo=FALSE}
 
 rainplot_materials2 <- final1B %>%  
   ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
@@ -1333,22 +1183,19 @@ rainplot_materials2 <- final1B %>%
   easy_remove_legend() + 
   ggtitle('(d)')
 
-rainplot_materials2
-```
+### patch figure 
 
-### Figure 
-
-```{r echo=FALSE}
 (rainplot_data1 | rainplot_materials1) / 
 (rainplot_data2 | rainplot_materials2)
 ```
 
 ## OPEN SCIENCE BADGES
 
-### Open Data Badge Plot
 
+```{r osb-prep, message=FALSE, warning=FALSE, include=FALSE}
+
+### Open Data Badge Plot
 #### Select only relevant 1A variables
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 A_select_data <- subfield_groups_A  %>%
   select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
@@ -1357,11 +1204,7 @@ A_select_data <- subfield_groups_A  %>%
 A_data_badge <- A_select_data %>%
   tabyl(did_the_article_receive_a_badge_for_open_data)
 
-```
-
 #### Summary tables
-```{r message=FALSE, warning=FALSE, include=FALSE}
-
 # reportedly available
 A_reportedly_available_data <- A_select_data %>%
   filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
@@ -1441,6 +1284,7 @@ B_data_badge <- B_select_data %>%
 ```
 
 #### Summary tables
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
 # reportedly available
@@ -1498,10 +1342,8 @@ B_data_scripts_available <- B_select_data %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(Number = Yes, Percent) %>%
   mutate(Real_Stage = "Scripts Available")
-```
 
 #### Bind all statistics together
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 B_data_stats <- rbind(B_reportedly_available_data, B_locatable_data, B_correct_data, B_complete_data, B_software_specified, B_data_codebook_available, B_data_scripts_available)
 
@@ -1511,13 +1353,13 @@ B_data_stats <- B_data_stats %>%
 ```
 
 #### Combine 1A and 1B stats together
-```{r include=FALSE}
+```{r combo-data, include=FALSE}
 
 all_data_stats <- rbind(A_data_stats, B_data_stats)
 ```
 
 #### Plot combined data
-```{r echo=FALSE}
+```{r combo-plot, echo=FALSE}
 
 combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colour = Time)) +
   coord_cartesian(ylim=c(0,100)) +
@@ -1544,11 +1386,10 @@ combined_data_plot
 
 ```
 
+
+```{r omb-prep, message=FALSE, warning=FALSE, include=FALSE}
 ### Open Materials Badge Plot
-
 #### Select only relevant 1A variables
-```{r message=FALSE, warning=FALSE, include=FALSE}
-
 A_select_materials <- subfield_groups_A %>%
   select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
 
@@ -1557,9 +1398,9 @@ A_materials_badge <- A_select_materials %>%
   tabyl(did_the_article_receive_a_badge_for_open_materials)
 ```
 
-#### Summary tables
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#### Summary tables
 # reportedly available
 A_reportedly_available_materials <- A_select_materials %>%
   filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
@@ -1599,21 +1440,14 @@ A_material_scripts_available <- A_select_materials %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(Number = Yes, Percent) %>%
   mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
-```
 
 #### Bind all statistics
-```{r message=FALSE, warning=FALSE, include=FALSE}
-
 A_material_stats <- rbind(A_reportedly_available_materials, A_locatable_materials, A_correct_materials, A_complete_materials, A_material_scripts_available)
 
 A_material_stats <- A_material_stats %>%
   mutate("Time" = "2014-15") 
 
-```
-
-
 #### Select only relevant 1Bvariables
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 B_select_materials <- subfield_groups_B %>%
   select(article_id_number, subfield_groups, materials_badge, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
@@ -1621,11 +1455,8 @@ B_select_materials <- subfield_groups_B %>%
 # Percentage of articles that received a badge
 B_materials_badge <- B_select_materials %>%
   tabyl(materials_badge)
-```
 
 #### Summary tables
-```{r message=FALSE, warning=FALSE, include=FALSE}
-
 # reportedly available
 B_reportedly_available_materials <- B_select_materials %>%
   filter(materials_badge == "Yes") %>%
@@ -1665,24 +1496,21 @@ B_material_scripts_available <- B_select_materials %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(Number = Yes, Percent) %>%
   mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
-```
 
 #### Bind all statistics
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 B_material_stats <- rbind(B_reportedly_available_materials, B_locatable_materials, B_correct_materials, B_complete_materials, B_material_scripts_available)
 
 B_material_stats <- B_material_stats %>%
   mutate("Time" = "2019-20") 
-```
 
 #### Combine 1A and 1B stats together
-```{r include=FALSE}
+
 all_material_stats <- rbind(A_material_stats, B_material_stats)
 ```
 
 #### Plot combined data 
-```{r echo=FALSE}
+```{r combo-m-plot, echo=FALSE}
 combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Time, colour = Time)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
@@ -1707,3 +1535,24 @@ combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Ti
 combined_materials_plot
 
 ```
+
+
+
+
+
+
+
+
+# Discussion
+
+
+\newpage
+
+# References
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id="refs" custom-style="Bibliography"></div>
+\endgroup
