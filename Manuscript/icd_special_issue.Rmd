@@ -124,6 +124,8 @@ Meta-research, the study of research itself, can empirically assess whether deve
 
  
 
+> Christina working below here
+
 
 # Methods
 We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
@@ -137,6 +139,8 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
 
+> Christina working above here
+> Jenny working below here
 
 # 1A Results
 
@@ -1544,6 +1548,38 @@ combined_materials_plot
 
 
 # Discussion
+
+### REVERSE OUTLINE
+
+1. summary of subfield differences in results
+  + explaining subfield diff (dev behind) with protocol violations
+  + explaining subfield diff (dev behind) with scarcity of data
+  + explaining subfield diff (dev behind) with different materials/methods
+2. practical implications
+  + solution re moving from traditional methods to digitised methods
+  + collaborative research projects 
+3. summary of open data and materials scores over time
+  + consistency of findings w kidwell, impact of different analysis methods
+  + link with the new 2021 study
+  + explain increase in scores in terms of increasing support for open science
+  + alternative explanation- policy changes at Psych Sci
+  + differ policy changes at psych sci
+4. practical implications change yet to be made
+  + framing benefits to personal rather than whole field
+5. shortcomings of open science badges , lack of link between earning badge and sharing meta data
+  + inconsistent application of criteria
+  + future proposed open science score instead of badges
+  + benefits of score over badges
+6. limitations/future research
+  + no control group, can results be generalised to whole field?
+  + future work automated code to assess field as a whole
+  + open science is limited in ability to tackle replication crisis
+  + why poor link between OS and reproducibility -- preregisteration argument
+CAUTION re open science practice
+CONCLUSION
+
+  
+
 
 
 \newpage
