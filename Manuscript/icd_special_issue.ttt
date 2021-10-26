@@ -5,30 +5,7 @@
 \begin{center}
 \begin{threeparttable}
 
-\caption{\label{tab:1A-m-anova}Between-subjects ANOVA for Open Materials Scores}
-
-\begin{tabular}{lllllll}
-\toprule
-Effect & \multicolumn{1}{c}{$F$} & \multicolumn{1}{c}{$\mathit{df}_1$} & \multicolumn{1}{c}{$\mathit{df}_2$} & \multicolumn{1}{c}{$\mathit{MSE}$} & \multicolumn{1}{c}{$p$} & \multicolumn{1}{c}{$\hat{\eta}^2_G$}\\
-\midrule
-Time period & 4.74 & 2 & 310 & 32.16 & .009 & .030\\
-Subfield groups & 4.03 & 3 & 310 & 32.16 & .008 & .038\\
-Time period $\times$ Subfield groups & 0.85 & 6 & 310 & 32.16 & .530 & .016\\
-\bottomrule
-\end{tabular}
-
-\end{threeparttable}
-\end{center}
-
-\end{table*}
-\begin{table*}[hbt]
-\ifnextchar[{\eatarg}{}
-[tbp]
-
-\begin{center}
-\begin{threeparttable}
-
-\caption{\label{tab:1B-m-anova}Between-subjects ANOVA for Open Materials Scores}
+\caption{\label{tab:1B-m-stats}Between-subjects ANOVA for Open Materials Scores}
 
 \begin{tabular}{lllllll}
 \toprule

@@ -37,21 +37,9 @@ authornote: |
   School of Psychology, UNSW  
 
 abstract: |
-  Christina- can you insert abstract here please :)
+  Although open science has become a popular tool to combat the replication crisis, it is unclear whether the uptake of open science practices has been consistent across the field of psychology. In this study, we utilised open data from a previous study to determine whether data and material sharing, two prominent open science practices, differed as a function of psychological subfield at the distinguished journal, *Psychological Science*. The results showed that open data and open materials scores, indicators of data and material sharing, increased from 2014-15 to 2019-20. Of note, articles published in the field of developmental psychology generated considerably lower open Data and open Materials Scores, compared to articles in other subfields. These findings are discussed in the context of why developmental psychologists may be slower to adopt open science practices, compared to other researchers, and how journals can more effectively encourage authors to practice open science, across all psychological subfields. As part of our analyses, we also looked at how the awarding of Open Science Badges related to researchers’ open science behaviours. Whilst Open Science Badges were closely related to data and material sharing, the usability of the shared data and materials appeared to be questionable. Consequently, we question the value of Open Science Badges in overcoming the replication crisis and propose an alternative open science initiative, that may be more effective. 
   
-  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
-  
-  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
-  
-  One sentence clearly stating the **general problem** being addressed by  this particular study.
-  
-  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
-  
-  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
-  
-  One or two sentences to put the results into a more **general context**.
-  
-  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+
   
   <!-- https://tinyurl.com/ybremelq -->
   
@@ -60,7 +48,7 @@ wordcount         : "X"
 
 bibliography      : ["r-references.bib"]
 
-floatsintext      : no
+floatsintext      : yes
 figurelist        : no
 tablelist         : no
 footnotelist      : no
@@ -98,7 +86,6 @@ set.seed(1)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-# INTRODUCTION
 
 The field of psychology, like many other scientific disciplines, is currently facing a replication crisis, in which researchers are struggling to replicate existing findings. In 2015, a group of 270 psychological researchers attempted to replicate the findings of 100 psychology experiments. Whilst 97% of the original studies generated statistically significant findings, only 36% of the replication attempts were statistically significant. In addition, the replicated effects were, on average, half the size of the original effects [@open2015estimating]. These findings illustrate the challenge of replicability in psychological research and the pressing need to rectify flawed research practices. 
 
@@ -108,50 +95,79 @@ To encourage researchers to employ open science practices, many psychology journ
 
 At *Psychological Science*, the Association of Psychological Science’s flagship journal, Open Science Badges appear to have been successful in encouraging researchers to adopt open science practices. In 2016, Kidwell et al. coded the frequency of data and material sharing in the 18 months before and after Open Science Badges were implemented at *Psychological Science*.  [@kidwell2016badges]. Kidwell et al. found that data sharing increased dramatically from 2.5% prior to badges to 39.4% following badges. Materials sharing also rose from 12.7% to 30.3%. Data and material sharing in control journals, such as the *Journal of Personality and Social Psychology*, which did not award badges, remained low over the same time period [@kidwell2016badges]. These results led Kidwell et al. to conclude that Open Science Badges successfully incentivise the uptake of open science practices.  
 
-The support for open science continues to grow, however, it is not yet clear whether engagement with open science is consistent across different fields within psychology. Notably, developmental psychology has received significant criticism for its lack of receptivity towards open science. As Figure 1 illustrates, prominent developmental researchers, Prof Michael Frank and Dr. Jennifer Pfeifer, have labelled the Society for Research in Child Development’s (SRCD) open science policy as ‘weak’ and as one that ‘undervalues openness.’ More recently, the Editor-in-Chief of Infant and Child Development, Prof Moin Syed, stated that the uptake of open science within the field of developmental psychology has been ‘slow and uneven’ [@syed2020infant]. A survey supporting these viewpoints showed that, on average, 80% of researchers publishing in *Child Development* felt their institutions failed to provide adequate guidance or financial support for sharing data, (SRCD Task Force on Scientific Integrity and Openness Survey (2017), cited in Gennetian et al., [@gennetian2020advancing]. As such, developmental researchers may be slower to adopt open science practices than those in other psychological disciplines, however, this possibility has yet to be empirically investigated. 
+The support for open science continues to grow, however, it is not yet clear whether engagement with open science is consistent across different fields within psychology. Notably, developmental psychology has received significant criticism for its lack of receptivity towards open science. As Figure 1 illustrates, prominent developmental researchers, Prof Michael Frank and Dr. Jennifer Pfeifer, have labelled the Society for Research in Child Development’s (SRCD) open science policy as ‘weak’ and as one that ‘undervalues openness.’ More recently, the Editor-in-Chief of Infant and Child Development, Prof Moin Syed, stated that the uptake of open science within the field of developmental psychology has been ‘slow and uneven’ [@syed2020infant]. A survey supporting these viewpoints showed that, on average, 80% of researchers publishing in *Child Development* felt their institutions failed to provide adequate guidance or financial support for sharing data, (SRCD Task Force on Scientific Integrity and Openness Survey (2017), cited in Gennetian et al., [-@gennetian2020advancing]. As such, developmental researchers may be slower to adopt open science practices than those in other psychological disciplines, however, this possibility has yet to be empirically investigated. 
 
 
 FIGURE 1
 
-```{r eval = FALSE}
+```{r}
+
 knitr::include_graphics(here::here("Manuscript", "Figure1_mf.png"))
-```
-```{r eval = FALSE}
+
 knitr::include_graphics(here::here("Manuscript", "Figure1_jp.png"))
 ```
 
-Meta-research, the study of research itself, can empirically assess whether developmental psychology is truly behind in the open science movement. Previous investigations, including Kidwell et al. [@kidwell2016badges], have revealed that open science incentives can increase the use of open science practices. However, what remains unclear is whether the uptake of open science has been consistent across psychological subfields and sustained over time. To address this research question, we used the open data from the Kidwell et al. study to examine whether rates of data and material sharing, following the implementation of Open Science Badges at Psychological Science, differed as a function of subfield. In addition, we conducted the same open data and materials coding for articles published in the most recent 18 months (July 2019-Dec 2020) to test whether the badges have continued to be impactful and whether the impact has been consistent across subfields. We were particularly interested in determining whether developmental psychology researchers papers published in developmental  impact of badges has beenrovement  sharing practices in the Whilst we expected to observe subfield differences in the use of open science practices, the nature and magnitude of these differences remained unclear. Study 1A was preregistered at the Open Science Framework: https://osf.io/3tsmy/.  
+Meta-research, the study of research itself, can empirically assess whether developmental psychology is truly behind in the open science movement. Previous investigations, including Kidwell et al. [-@kidwell2016badges], have revealed that open science incentives can increase the use of open science practices. However, what remains unclear is whether the uptake of open science has been consistent across psychological subfields and sustained over time. To address this research question, we used the open data from the Kidwell et al. study to examine whether rates of data and material sharing, following the implementation of Open Science Badges at Psychological Science, differed as a function of subfield. In addition, we conducted the same open data and materials coding for articles published in the most recent 18 months (July 2019-Dec 2020) to test whether the badges have continued to be impactful and whether the impact has been consistent across subfields. We were particularly interested in determining whether developmental psychology researchers publishing in Psychological Science engaged with open science practices at the same rate as researchers from other subdomains of psychology. Our methods and analysis plan was preregistered at the Open Science Framework: https://osf.io/3tsmy/.  
 
  
 
-> Christina working below here
-
-
 # Methods
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
 
-## Participants
 
-## Material
+## Design 
 
-## Procedure
+This study had a quasi-experimental design; all articles were systematically assigned to one of seven subfields. Changes in data and material sharing were observed over six-month intervals and were measured using two scores that indexed the transparency of each article’s data and materials, respectively.
+
+
+## Sample
+
+The sample comprised of all *Psychological Science* articles published between January 2014 and May 2015 (N = 367). As described in the Introduction, Kidwell et al. (2016) had previously coded these articles to evaluate the openness of their data and materials. To identify how data and material sharing may have changed since 2014-15, our sample also included all *Psychological Science* articles that were published between July 2019 and December 2020 (N = 242). Non-empirical articles that did not contain an experiment or analysis, including editorials, commentaries, replies, corrigenda, errata and retractions, were excluded from our analysis. After filtering out these non-empirical articles from the sample, 322 articles published between 2014-15 and 193 articles published between 2019-20, remained.
+
+## Materials
+
+To assess the transparency of each article’s data and materials, Kidwell et al. (2016) employed a systematic coding system (see Appendix A) comprising of a series of variables, defined in Appendix B. We downloaded the data Kidwell et al. coded from their OSF repository (https://osf.io/rfgdw/) and filtered the dataset to only include data from *Psychological Science* articles published between January 2014 and May 2015.
+In addition to the variables Kidwell et al. coded, we also coded for whether the authors of each article specified the type of software that was used to analyse their data. When authors’ identify their analysis software, the analysis procedure can be easier to follow, and the chance of others’ successfully reproducing the study’s data, may increase (National Academics of Sciences Engineering and Medicine, 2019). Thus, although Kidwell et al. did not code for analysis software, it is an important variable to consider when assessing the transparency of a study’s data. We coded for two variables to account for analysis software; first, whether the article specified their analysis software or not, and second, which type of analysis software had been specified (e.g., R, JASP, SPSS etc.). 
+To code the articles that were published between July 2019 and December 2020, we used the same amended version of the Kidwell et al. coding system, which included the two additional variables that accounted for the article’s analysis software. 
+
+To assign all the articles to a subfield, we used the coding system outlined in Appendix D. Articles were assigned to one of seven psychological subfields: Developmental Psychology, Social Psychology, Cognition, Perception, Health Psychology, Cognitive Neuroscience and Behavioural Neuroscience. We identified these seven subfields as those that the vast majority of *Psychological Science* articles fall into, after thoroughly reviewing the journal’s website. The variables that we coded are defined in Appendix C. As an example, one of the variables we coded was the age of the participants recruited in the study. Distinguishing participants from children to adults allowed us to assign articles to the Developmental Psychology subfield. 
+
+Prior to data collection, each member of the coding team coded five trial articles. The trial articles aimed to confirm coders’ understanding of the coding process prior to them coding the target articles. These trial articles were *Psychological Science* articles originally coded by Mallory Kidwell, the primary investigator in the Kidwell et al. (2016) study. Kidwell’s coding acted as a ‘gold standard’ to which coders’ responses were compared. The senior coder in the current study generated the gold standard for the variables that weren’t included in the Kidwell et al. coding system. The trial articles varied in the transparency of their data and materials, and therefore, exposed coders to a representative range of coding outcomes.
+
+The coding team coded both the trial and target articles via a Qualtrics survey, containing a series of multiple-choice questions. The questions were structured in an ‘if-then’ manner, with consecutive questions only being asked if coders provided certain answers to the questions prior. For example, according to the coding system in Appendix D, coders were only asked about the participants’ age, if they had specified that the participants in the study were ‘Humans’ as opposed to ‘Animals.’ 
+
+## Procedure 
+
+After the investigation had been approved by the UNSW Human Research Ethics Advisory Panel, we assembled a team of volunteer coders, comprising of undergraduate UNSW psychology students. Once the coders coded the five trial articles and the senior coder was confident that each coder understood how to code all the variables correctly, the coders were provided access to the target set of articles and were allowed to begin coding. 
+Analysis procedure
+After all articles had been coded, we imported the data from Qualtrics into the software environment, R (R Core Team, 2021). For the articles that were published between 2014-15, we combined the newly collected data with the relevant Kidwell et al. (2016) data. Each article, across both the 2014-15 and 2019-20 datasets, was assigned to one of the seven psychological subfields, and received an open data and open materials score. A study’s open data score indexed the extent to which its data were transparent, whilst the open materials score indexed the extent to which the article’s materials were transparent. Therefore, to calculate the scores, we weighted each coded variable according to how much it improved the transparency of the article’s data and materials, respectively. There were three levels of transparency: low-level transparency variables received a value of 1, moderate-level transparency variables received a value of 2 and high-level transparency variables received a value of 5 (see Table 1). We summed these scores so that each article received an open data score out of a possible 25 and an open materials score out of a possible 19. Higher scores were indicative of a higher level of transparency. 
+
+# INSERT TABLE 1 HERE
+
+*Reliability* After the 2014-15 sample of articles had been coded, the senior coder randomly selected 25 empirical articles from the dataset (8% of the empirical sample), ensuring that an equal number had been coded by each coder (n = 5), and double-coded these articles to generate a gold standard for subfield assignment. Using the ‘kappa2’ function from the ‘irr’ package in R (Gamer et al., 2019), we ran a Cohen’s Kappa reliability analysis for subfield assignment, to assess how well the coders’ coding matched the gold standard. 
+For the 2019-20 sample of articles, the senior coder similarly selected 25 articles from the empirical sample (13%) and double-coded these articles to produce a gold standard. Each article received a total openness score, representing the sum of the open data and open materials score. To assess reliability, we used the ‘icc’ function from the ‘irr’ package in R to generate an intraclass correlation coefficient (ICC) from the coders’ total openness scores and the gold standard’s (Gamer et al., 2019). The ‘tolerance’ level was set at five Total Openness points; where scores fell within a five-point range of each other, they were considered to be equivalent.
+As a secondary measure of inter-rater reliability, we also calculated the percent agreement between the gold standard and coders’ responses, for both the 2014-15 and 2019-20 datasets. 
 
 ## Data analysis
+
 We used `r cite_r("r-references.bib")` for all our analyses.
 
-> Christina working above here
-> Jenny working below here
+*Confirmatory Analyses* Four Analysis of Variance (ANOVA) analyses were run to investigate differences in open data and open materials scores, separately, across the 2014-15 and 2019-20 datasets. In each analysis, we tested for a main effect of time, measured over three six-month intervals, and subfield. To ensure that there was a comparable number of articles in each subfield group, we combined Cognitive Neuroscience, Behavioural Neuroscience, Health Psychology and Perception into a single ‘Other’ category. As a result, a total of four subfield groups were included in our analysis: Developmental Psychology, Social Psychology, Cognition and Other. In each ANOVA analysis, we also included a time by subfield interaction to test whether the changes in open data and open materials scores over time, differed as a function of subfield. We measured effect sizes in terms of generalised eta squared (ges). For each ANOVA result, the ges represented the proportion of variance that was accounted for by the variable of interest (Olejnik & Algina, 2003). 
+To identify how the transparency of data and materials had changed between 2014-15 and 2019-20, we ran two additional ANOVA analyses, which tested for the same main effects and interaction effect as the previous ANOVAs. The time effect had two levels: 2014-15 and 2019-20. 
 
-# 1A Results
+*Exploratory Analyses* After scoring the data, we noticed that a large proportion of articles had received an open Data and open materials score of zero. This observation led us to generate two raincloud plots that illustrated the distribution of open data and open materials scores across 2019-20, respectively. Raincloud plots visualise the distribution of scores in a dataset by showing the concentration of subjects at each level of the dependent measure. In our case, where the plot was wider, the concentration of articles that received the corresponding open data or open materials score, was higher. The two raincloud plots illustrated the distribution of scores per subfield.
 
-```{r 1Aprep, message=FALSE, warning=FALSE, include=FALSE}
+In addition to analysing open data and open materials scores, we were also interested in identifying how the awarding of Open Science Badges related to researchers’ data and materials sharing practices. To generate two corresponding figures, we filtered the 2019-20 dataset to only include the articles that had received an Open Data Badge and an Open Materials Badge, respectively. We then plotted the percentage of these articles that met a series of data and materials sharing criteria, described in the Results section below. 
 
-# read Study1A data
+*Preregistration* We preregistered our aims, hypotheses, design, and planned analysis procedure for the study at the OSF: https://osf.io/3tsmy/. Whilst we attempted to follow each of the proposed procedures as closely as possible, we made one notable modification. Namely, we chose not to normalise the Open Data and Open Materials Scores (so that they were both out of 100). Since our study was focussed on measuring subfield differences and changes over time, within each type of score, rather than comparing the differences between the two scores, we ultimately realised that normalising the scores was not necessary. All the materials, data and analysis scripts from the study can be accessed via the OSF: https://osf.io/z8b7j/. 
 
+
+# Results
+
+```{r data-prep, message=FALSE, warning=FALSE, include=FALSE}
 options(scipen=999) # remove scientific notation
+# read 2014-15 data
 
 data1A <- read_csv(here("Data_Files", "Scored Study 1A Master Dataset.csv"))
-
 
 # subfield prep
 # Assign articles to a subfield group, behNS, cogNS, health and perception grouped together into "Other"
@@ -172,8 +188,6 @@ subfield_groups_A <- data1A %>%
 subfield_summary_A <- subfield_groups_A %>%
     count(subfield_groups) 
 
-subfield_summary_A
-
 # Time prep
 # Group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
 
@@ -184,20 +198,16 @@ dates_A <- subfield_groups_A %>%
     str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
   relocate(time_period, .after = article_id_number)
 
-# Timeperiod summary
+# Timeperiod count summary 
 
 timeperiod_summary_A <- dates_A %>%
   count(time_period)
 
-timeperiod_summary_A
-
-# Timeperiod and subfield summary
+# Timeperiod and subfield count summary
 
 timeperiod_subfield_summary_A <- dates_A %>%
   tabyl(subfield_groups, time_period) %>%
   select("subfield_groups", "1st half 2014", "2nd half 2014", "1st half 2015")
-
-timeperiod_subfield_summary_A
 
 ## Select relevant data for ANOVA analysis
 
@@ -209,10 +219,58 @@ final1A <- dates_A %>%
 final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
 
+## Read in 2019-20 data
+
+data1B <- read_csv(here("Data_Files", "Scored Study 1B Master Dataset.csv"))
+
+## First factor: Subfield
+# Assign articles to subfield groups
+subfield_groups_B <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# Delete the original subfield column
+subfield_groups_B <- subfield_groups_B %>%
+  select(-subfield)
+
+# Subfield count summary
+subfield_summary_B <- subfield_groups_B %>%
+    count(subfield_groups) 
+
+## Second factor: Time 
+dates_B <- subfield_groups_B %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
+    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
+    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
+  relocate(time_period, .after = article_id_number)
+
+# Timeperiod count summary
+timeperiod_summary_B <- dates_B %>%
+  count(time_period)
+
+# Timeperiod and subfield count summary
+timeperiod_subfield_summary_B <- dates_B %>%
+  tabyl(subfield_groups, time_period) 
+
+# Select only relevant data
+final1B <- dates_B %>%
+  select(article_id_number, subfield_groups, time_period, open_data_score, open_materials_score)
+
+# Set subfield and timeperiod variables as factors 
+final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020","2nd half 2020"))
+
 ```
 
-
-```{r 1A-d-anova, echo=FALSE, message=FALSE, warning=FALSE}
+```{r d-m-stats, echo=FALSE, message=FALSE, warning=FALSE}
+## 2014-15 
 ## DATA ANOVA Analysis 
 
 data_aov_A <- aov_ez(
@@ -223,11 +281,7 @@ data_aov_A <- aov_ez(
 
 data_apa_A <- apa_print(data_aov_A)
 
-```
-
-
-```{r 1A-d-ttests, echo=FALSE}
-## SUBFIELD T-TESTS
+# SUBFIELD T-TESTS
 ### DATA 
 # Subfield main effect for Open Data Scores was not significant, so no t-tests to run here
 
@@ -251,19 +305,9 @@ first2014_first2015 <- final1A %>%
 
 ttest_apa6_A <- apa_print(t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE))
 
-```
+### DESCRIPTIVES
 
-
-# 1AData scores text
-
-As illustrated in Figure 1, the two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_A$full$time_period`. However, the main effect of subfield, `r data_apa_A$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa_A$full$time_period_subfield_groups`, were not statistically significant. Articles published in the latter part of 2014 had significantly higher open data scores than article published in the first half of the year, `r ttest_apa4_A$statistic`, however there was no further increase across the early part of 2015,`r ttest_apa5_A$statistic`. Critically, there was no significant difference in the open data scores as a function of subfield (see Figure 1a). 
-
-
-```{r 1A-d-plots, echo=FALSE, message=FALSE, warning=FALSE}
-
-## PLOTS
-### DATA
-#### Subfield x Data Score
+#### Subfield x Data mean Score
 data_subfield_descriptives_A <- final1A %>%
   group_by(subfield_groups) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -271,21 +315,8 @@ data_subfield_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-d1_A <- data_subfield_descriptives_A %>%
-  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(a)')
 
-#### Time Period x Data Score
+#### Time Period x Data mean Score
 data_timeperiod_descriptives_A <- final1A %>%
   group_by(time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -293,59 +324,7 @@ data_timeperiod_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-# Specifying which levels of the time variable the significance bars need to compare
-d2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
-
-
-d2_A <- data_timeperiod_descriptives_A %>%
-  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)') +
-  geom_signif(comparisons = d2_A_comparisons, y_position = c(8, 11, 14), tip_length = 0.1, annotation = c("*", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
-
-
-### Interaction between time and subfield - Data scores 
-data_subfieldtime_descriptives_A <- final1A %>%
-  group_by(subfield_groups, time_period) %>%
-  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
-            SD = sd(open_data_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-
-d3_A <- data_subfieldtime_descriptives_A  %>%
-  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2, # narrower bars
-                position=position_dodge(.9))  +
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('(c)')
-
-(d1_A | d2_A) / d3_A
-
-```
-
-*Figure 1*: Mean open data scores for article published in 2014 and 2015, as a function of subfield and time period. 
-
-
-```{r 1A-m-anova, echo=FALSE, message=FALSE, warning=FALSE}
-
+## 2014-2015
 ## MATERIALS ANOVA Analysis 
 
 materials_aov_A <- aov_ez(
@@ -355,13 +334,6 @@ materials_aov_A <- aov_ez(
   type = "2")
 
 materials_apa_A <- apa_print(materials_aov_A)
-
-apa_table(materials_apa_A$table,
-          caption = "Between-subjects ANOVA for Open Materials Scores")
-```
-
-
-```{r 1A-m-ttests}
 
 ## SUBFIELD T-TESTS
 ### MATERIALS
@@ -397,17 +369,10 @@ ttest_apa8_A <- apa_print(t_test(open_materials_score ~ time_period, second2014_
 
 ### First half 2014 vs. First half 2015
 ttest_apa9_A <- apa_print(t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE))
-```
 
-# 1AMaterial scores text
+# DESCRIPTIVES
 
-In contrast, for open materials scores, two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_A$full$subfield_groups`, and a significant main effect of time period, `r materials_apa_A$full$time_period`. However the interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant. Papers in developmental psychology had lower open materials scores than those in both social, `r ttest_apa2_A$statistic`, and cognition, `r ttest_apa1_A$statistic`, but developmental open materials scores did not differ from papers allocated to the other subfield category, `r ttest_apa3_A$statistic`.  Open materials scores increased incrementally across 2014 and 2015; papers published in the first half of 2015 had significantly higher open materials scores than those published in the first half of 2014,`r ttest_apa9_A$statistic`.
-
-
-```{r 1A-m-plots, echo=FALSE, message=FALSE, warning=FALSE}
-### MATERIALS
-
-#### Subfield x Materials Score
+#### Subfield x Materials mean mean Score
 materials_subfield_descriptives_A <- final1A %>%
   group_by(subfield_groups) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
@@ -415,27 +380,7 @@ materials_subfield_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-# Specifying which levels of the subfield variable the significance bars need to compare
-m1_A_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
-
-# Plot
-
-m1_A <- materials_subfield_descriptives_A %>%
-  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)') + 
-  geom_signif(comparisons = m1_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
-
-#### Time Period x Materials Score
+#### Time Period x Materials mean Score
 materials_timeperiod_descriptives_A <- final1A %>%
   group_by(time_period) %>%
   summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
@@ -443,120 +388,8 @@ materials_timeperiod_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-# Specifying which levels of the time variable the significance bars need to compare
-m2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
-
-# Plot
-
-m2_A <- materials_timeperiod_descriptives_A %>%
-  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)') + 
-  geom_signif(comparisons = m2_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("n.s.", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
-
-
-#### Interaction between time and subfield - Materials Score
-
-materials_subfieldtime_descriptives_A <- final1A %>%
-  group_by(subfield_groups, time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Plot
-
-m3_A <- materials_subfieldtime_descriptives_A  %>%
-  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2, # narrower bars
-                position=position_dodge(.9)) + 
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('(c)')
-
-(m1_A | m2_A) / m3_A
-
-```
-
-**Figure 2**: Mean open materials scores for articles published in 2014 and 2015, as a function of subfield and time period. 
-
-
-# 1B Results
-
-```{r 1Bprep, include=FALSE}
-# STUDY 1B CONFIRMATORY - 2019-20
-
-## Read in data
-
-data1B <- read_csv(here("Data_Files", "Scored Study 1B Master Dataset.csv"))
-
-## First factor: Subfield
-# Assign articles to subfield groups
-subfield_groups_B <- data1B %>%
-  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
-                                     subfield == "Cognitive Neuroscience" ~ "Other",
-                                     subfield == "Health Psychology" ~ "Other",
-                                     subfield == "Perception" ~ "Other",
-                                     subfield == "Developmental Psychology" ~ "Development",
-                                     subfield == "Social Psychology" ~  "Social",
-                                     TRUE ~ as.character(subfield))) %>%
-  relocate(subfield_groups, .after = subfield)
-
-# Delete the original subfield column
-subfield_groups_B <- subfield_groups_B %>%
-  select(-subfield)
-
-# Subfield summary
-
-subfield_summary_B <- subfield_groups_B %>%
-    count(subfield_groups) 
-
-## Second factor: Time 
-
-dates_B <- subfield_groups_B %>%
-  mutate(time_period = case_when(
-    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
-    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
-    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
-  relocate(time_period, .after = article_id_number)
-
-# Timeperiod summary
-
-timeperiod_summary_B <- dates_B %>%
-  count(time_period)
-
-# Timeperiod and subfield summary
-
-timeperiod_subfield_summary_B <- dates_B %>%
-  tabyl(subfield_groups, time_period) 
-
-# Select only relevant data
-final1B <- dates_B %>%
-  select(article_id_number, subfield_groups, time_period, open_data_score, open_materials_score)
-
-# Set subfield and timeperiod variables as factors 
-
-final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
-final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020","2nd half 2020"))
-```
-
-```{r 1B-d-anova}
+## 2019-2020
+# DATA
 data_aov_B <- aov_ez(
   data = final1B, dv = "open_data_score", 
   id = "article_id_number", 
@@ -565,14 +398,8 @@ data_aov_B <- aov_ez(
 
 data_apa_B <- apa_print(data_aov_B)
 
-
-```
-
-```{r 1B-d-ttests}
 ## SUBFIELD T-TESTS
-
 ### DATA
-
 #### Development vs. Cognition
 
 devcog_data_B <- final1B %>%
@@ -595,9 +422,7 @@ devother_data_B <- final1B %>%
 ttest_apa3_B <- apa_print(t_test(open_data_score ~ subfield_groups, devother_data_B, paired = FALSE))
 
 ## TIME T-TESTS
-
 ### DATA
-
 #### Second half 2019 vs. First half 2020
 
 second2019_first2020 <- final1B %>%
@@ -619,15 +444,8 @@ second2019_second2020 <- final1B %>%
 
 ttest_apa9_B <- apa_print(t_test(open_data_score ~ time_period, second2019_second2020, paired = FALSE))
 
-```
 
-## 1BData scores text
-
-Consistent with the results from Study 1A, open data scores also increased significantly across 2019 and 2020, `r data_apa_B$full$time_period`, however across this time period, open data scores differed significantly by subfield, `r data_apa_B$full$subfield_groups`. The interaction between time period and subfield, `r data_apa_B$full$time_period_subfield_groups`, was not statistically significant. When we compared the open data scores from papers published in developmental psychology to each of the other subfield categories (Figure 2a), we found that papers in developmental psychology had significantly lower open data scores than papers in cognition, `r ttest_apa1_B$statistic`. The magnitude of open data scores did not differ from papers published in social psychology, `r ttest_apa2_B$statistic` or those that fell into the other category, `r ttest_apa3_B$statistic`. In terms of changes over time, open data scores increased significantly from late 2019 into 2020, `r ttest_apa7_B$statistic`, but were stable across 2020, `r ttest_apa8_B$statistic`.  
-
-```{r 1B-d-plots, echo=FALSE, message=FALSE, warning=FALSE}
-## PLOTS
-### DATA
+### DATA descriptives
 ### Subfield x Data Score
 data_subfield_descriptives_B <- final1B %>%
   group_by(subfield_groups) %>%
@@ -638,26 +456,8 @@ data_subfield_descriptives_B <- final1B %>%
 
 data_subfield_descriptives_B$subfield_groups <- fct_relevel(data_subfield_descriptives_B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
 
-
 # Specifying which levels of the subfield variable the significance bars need to compare
 d1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
-
-# Plot
-
-d1_B <- data_subfield_descriptives_B %>%
-  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(a)') + 
-  geom_signif(comparisons = d1_B_comparisons, y_position = c(17, 19.5, 22.5), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 #### Time Period x Data Score
 data_timeperiod_descriptives_B <- final1B %>%
@@ -667,60 +467,8 @@ data_timeperiod_descriptives_B <- final1B %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-# Specifying which levels of the time variable the significance bars need to compare
-d2_B_comparisons <- list( c("2nd half 2019", "1st half 2020"), c("1st half 2020", "2nd half 2020"), c("2nd half 2019", "2nd half 2020") )
-
-# Plot
-
-d2_B <- data_timeperiod_descriptives_B %>%
-  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)') +
-  geom_signif(comparisons = d2_B_comparisons, y_position = c(18, 20, 22.5), tip_length = 0.1,  annotation = c("*", "n.s.", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
-
-#### Interaction between time and subfield - Data scores 
-
-data_subfieldtime_descriptives_B <- final1B %>%
-  group_by(subfield_groups, time_period) %>%
-  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
-            SD = sd(open_data_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Plot
-
-d3_B <- data_subfieldtime_descriptives_B  %>%
-  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2, # narrower bars
-                position=position_dodge(.9)) + 
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('(c)')
-
-(d1_B | d2_B) / d3_B
-
-```
-
-*Figure 3*: Mean open data scores for articles published in 2019 and 2020, as a function of subfield and time period. 
-
-```{r 1B-m-anova}
-
+# 2019-2020
+#MATERIALS
 materials_aov_B <- aov_ez(
   data = final1B, dv = "open_materials_score", 
   id = "article_id_number", 
@@ -729,15 +477,8 @@ materials_aov_B <- aov_ez(
 
 materials_apa_B <- apa_print(materials_aov_B)
 
-apa_table(materials_apa_B$table,
-          caption = "Between-subjects ANOVA for Open Materials Scores")
-```
-
-```{r 1B-m-ttests}
 ### MATERIAL
-
 #### Developmental vs. Cognition
-
 devcog_materials_B <- final1B %>%
   filter(subfield_groups %in% c("Development", "Cognition"))
 
@@ -761,15 +502,7 @@ ttest_apa6_B <- apa_print(t_test(open_materials_score ~ subfield_groups, devothe
 
 # The time period main effect for Open Materials Scores was not statistically significant, so no t-tests to run here
 
-```
-
-
-## 1BMaterials scores text
-
-As in Study 1A, for open materials scores in 2019 and 2020, there was a significant main effect of subfield, `r materials_apa_B$full$subfield_groups`, however the main effect of time period, `r materials_apa_B$full$time_period`, and the interaction between time period and subfield, `r materials_apa_B$full$time_period_subfield_groups`, were not statistically significant (see Figure 2). Consistent with open data scores, papers published in developmental psychology had significantly lower open materials scores than paper published in cognition, `r ttest_apa4_B$statistic`, however, open materials scores did not differ between developmental and social psychology, `r ttest_apa5_B$statistic`, or between developmental psychology and the other subfield category, `r ttest_apa6_B$statistic`. There were no additional changes in open materials scores across this period between mid-2019 and the end of 2020. 
-
-```{r 1B-m-plots, echo=FALSE, message=FALSE, warning=FALSE}
-### MATERIALS
+## DESCRIPTIVES
 #### Subfield x Materials Score
 
 materials_subfield_descriptives_B <- final1B %>%
@@ -778,9 +511,86 @@ materials_subfield_descriptives_B <- final1B %>%
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
+
 # Specifying which levels of the subfield variable the significance bars need to compare
 m1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
 
+
+#### Time Period x Materials Score
+
+materials_timeperiod_descriptives_B <- final1B %>%
+  group_by(time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+
+```
+
+```{r d-m-plots, echo=FALSE, message=FALSE, warning=FALSE}
+
+## PLOTS
+### DATA 2014-2015
+
+d1_A <- data_subfield_descriptives_A %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('A: Open Data scores 2014-2015')
+
+
+### MATERIALS 2014-2015
+
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_A_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
+# Plot
+
+m1_A <- materials_subfield_descriptives_A %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('C: Open Materials scores 2014-2015') + 
+  geom_signif(comparisons = m1_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+## PLOTS data 2019-2020
+# Plot
+
+d1_B <- data_subfield_descriptives_B %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('B: Open Data scores 2019-2020') + 
+  geom_signif(comparisons = d1_B_comparisons, y_position = c(17, 19.5, 22.5), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+### MATERIALS 2019-2020
 # Plot
 
 m1_B <- materials_subfield_descriptives_B %>%
@@ -795,72 +605,10 @@ m1_B <- materials_subfield_descriptives_B %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)') + 
+  ggtitle('D: Open Materials scores 2019-2020') + 
   geom_signif(comparisons = m1_B_comparisons, y_position = c(11.5, 14.5, 17), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
-
-#### Time Period x Materials Score
-
-materials_timeperiod_descriptives_B <- final1B %>%
-  group_by(time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Plot
-
-m2_B <- materials_timeperiod_descriptives_B %>%
-  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)')
-
-#### Interaction between time and subfield - Materials Score
-
-
-materials_subfieldtime_descriptives_B <- final1B %>%
-  group_by(subfield_groups, time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-
-# Plot
-
-m3_B <- materials_subfieldtime_descriptives_B  %>%
-  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
-  geom_col(position = "dodge") +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2, # narrower bars
-                position=position_dodge(.9)) + 
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_all_text_size(size = 9) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-   theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('(c)')
-
-(m1_B | m2_B) / m3_B
-
-
 ```
-
-*Figure 4*: Mean open materials scores for articles published in 2019 and 2020, as a function of subfield and time period. 
-
-
-# AB ACROSS time
 
 ```{r ab_prep, include=FALSE}
 
@@ -872,7 +620,8 @@ alldata <- rbind(final1A, final1B)
 ## Condense to two levels of time
 
 dates_AB <- alldata %>%
-  mutate(time_period = case_when(time_period %in% c("1st half 2014", "2nd half 2014", "1st half 2015") ~ "2014-15", time_period %in% c("2nd half 2019", "1st half 2020", "2nd half 2020") ~ "2019-20"))
+  mutate(time_period = case_when(time_period %in% c("1st half 2014", "2nd half 2014", "1st half 2015") ~ "2014-15", 
+                                 time_period %in% c("2nd half 2019", "1st half 2020", "2nd half 2020") ~ "2019-20"))
 
 # Set subfield and timeperiod variables as factors 
 
@@ -889,8 +638,7 @@ timeperiod_summary_AB <- dates_AB %>%
 
 ```
 
-
-```{r ab_d-aov, echo=FALSE, message=FALSE, warning=FALSE}
+```{r ab_stats, echo=FALSE, message=FALSE, warning=FALSE}
 
 ## DATA ANOVA Analysis
 data_aov_AB <- aov_ez(
@@ -912,74 +660,7 @@ materials_aov_AB <- aov_ez(
 materials_apa_AB <- apa_print(materials_aov_AB)
 
 
-```
-
-
-```{r AB-d-plot, echo=FALSE}
-
-## PLOTS
-### DATA
-#### Subfield x Data Score
-
-data_subfield_descriptives_AB <- dates_AB %>%
-  group_by(subfield_groups) %>%
-  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
-            SD = sd(open_data_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-data_subfield_descriptives_AB$subfield_groups <- fct_relevel(data_subfield_descriptives_AB$subfield_groups, c("Development", "Social", "Cognition", "Other"))
-
-# Specifying which levels of the subfield variable the significance bars need to compare
-d1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
-
-# Plot
-
-d1_AB <- data_subfield_descriptives_AB %>%
-  ggplot(aes(x = reorder(subfield_groups, mean_data_score), y = mean_data_score, fill = subfield_groups)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_x_discrete(limits=c("Development", "Social", "Cognition", "Other")) +
-    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(a)') + 
-  geom_signif(comparisons = d1_AB_comparisons, y_position = c(10, 14, 18), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
-
-#### Time Period x Data Score
-data_timeperiod_descriptives_AB <- dates_AB %>%
-  group_by(time_period) %>%
-  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
-            SD = sd(open_data_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Specifying which levels of the time variable the significance bars need to compare
-d2_AB_comparisons <- list( c("2014-15", "2019-20"))
-
-# Plot
-
-d2_AB <- data_timeperiod_descriptives_AB %>%
-  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
-  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
-  ggtitle('(b)') +
-  geom_signif(comparisons = d2_AB_comparisons, y_position = 17, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
-
-#### Interaction between time and subfield - Data scores 
+### Interaction between time and subfield - Data scores 
 data_subfieldtime_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups, time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
@@ -987,7 +668,22 @@ data_subfieldtime_descriptives_AB <- dates_AB %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-# Plot
+
+#### Interaction between time and subfield - Materials Score
+
+materials_subfieldtime_descriptives_AB <- dates_AB %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+
+```
+
+````{r ab-plot}
+
+# Plot data
 
 d3_AB <- data_subfieldtime_descriptives_AB  %>%
   ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
@@ -1004,101 +700,7 @@ d3_AB <- data_subfieldtime_descriptives_AB  %>%
   theme(legend.title = element_blank()) + # remove legend title
   ggtitle('a) Open Data scores')
 
-```
-
-
-
-```{r ab_m-aov, echo=FALSE, message=FALSE, warning=FALSE}
-
-# MATERIALS ANOVA analysis
-materials_aov_AB <- aov_ez(
-  data = dates_AB, dv = "open_materials_score", 
-  id = "article_id_number", 
-  between = c("time_period", "subfield_groups"), 
-  type = "2")
-
-materials_apa_AB <- apa_print(materials_aov_AB)
-
-```
-
-
-# AB data/materials text
-
-When looking at open data scores across both time periods, we found that scores increased over time, `r data_apa_AB$full$time_period`, and differed as a function of subfield, `r data_apa_AB$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa_AB$full$time_period_subfield_groups`, was not statistically significant, suggesting that there were no subfield differences in the magnitude of open data scores over time (see Figure Xa). A similar pattern was found for open material scores; scores increased over time `r materials_apa_AB$full$time_period`, and differed by subfield, `r materials_apa_AB$full$subfield_groups`, but there was no evidence that the magnitude of improvement over time differed by subfield (see Figure Xb), `r materials_apa_AB$full$time_period_subfield_groups`. 
-
-> t-tests probably not necessary, b/c point was really to see if there was an interaction, also maybe the most appropriate plot is just the interaction one, rather than subfield + time
-
-```{r AB-m-plot, echo=FALSE}
-
-### MATERIALS
-
-#### Subfield x Materials Score
-materials_subfield_descriptives_AB <- dates_AB %>%
-  group_by(subfield_groups) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Specifying which levels of the subfield variable the significance bars need to compare
-m1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
-
-# Plot
-
-m1_AB <- materials_subfield_descriptives_AB %>%
-  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(a)') + 
-  geom_signif(comparisons = m1_AB_comparisons, y_position = c(7.5, 10.5, 13.5), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
-
-#### Time Period x Materials Score
-
-materials_timeperiod_descriptives_AB <- dates_AB %>%
-  group_by(time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Specifying which levels of the time variable the significance bars need to compare
-m2_AB_comparisons <- list( c("2014-15", "2019-20"))
-
-# Plot
-
-m2_AB <- materials_timeperiod_descriptives_AB %>%
-  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
-  geom_col() +
-  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
-                size=.3, # thinner lines
-                width=.2) + # narrower bars
-    theme_classic() +
-    scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
-  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
-  easy_remove_legend() +
-  easy_all_text_size(size = 8) + # change the size of the text
-  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('(b)') +
-  geom_signif(comparisons = m2_AB_comparisons, y_position = 11, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
-
-#### Interaction between time and subfield - Materials Score
-
-materials_subfieldtime_descriptives_AB <- dates_AB %>%
-  group_by(subfield_groups, time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-# Plot
+# Plot materials
 
 m3_AB <- materials_subfieldtime_descriptives_AB  %>%
   ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
@@ -1115,25 +717,42 @@ m3_AB <- materials_subfieldtime_descriptives_AB  %>%
     theme(legend.title = element_blank()) + # remove legend title
   ggtitle('b) Open Materials scores')
 
-#(m1_AB | m2_AB) / m3_AB
+```
+
+
+We first used the open data from Kidwell et al., (2016) and analysed whether open data and open materials scores improved across the 2014-2015 period and differed by subfield. As illustrated in Figure 2A, for open data scores the main effect of subfield, `r data_apa_A$full$subfield_groups`, was not significant, indicating that during the period immediately following the badge policy change, open data scores were uniformly low across subfields. There was a significant main effect of time period, `r data_apa_A$full$time_period`, however, the improvement in open data scores over this 18 month period did not differ as a function of subfield, `r data_apa_A$full$time_period_subfield_groups`. 
+
+```{r}
+(d1_A + d1_B) / (m1_A + m1_B)
+
+```
+*Figure 2*: Mean open data and open materials scores for articles published in *Psychological Science* between 2014-2015 and 2019-2020 as a function of subfield. 
+
+
+Across the 2019-2020 period, open data scores also increased significantly , `r data_apa_B$full$time_period`, and differed by subfield, `r data_apa_B$full$subfield_groups`. When we compared the open data scores from papers published in developmental psychology to each of the other subfield categories (Figure 2B), we found that papers in developmental psychology had significantly lower open data scores (*M* = `r data_subfield_descriptives_B$mean_data_score[1]`, *SD* = `r data_subfield_descriptives_B$SD[1]`) than papers in cognition (*M* = `r data_subfield_descriptives_B$mean_data_score[3]`, *SD* = `r data_subfield_descriptives_B$SD[3]`), `r ttest_apa1_B$statistic`, but did not differ from papers published in social psychology (*M* = `r data_subfield_descriptives_B$mean_data_score[2]`, *SD* = `r data_subfield_descriptives_B$SD[2]`), `r ttest_apa2_B$statistic` or those that fell into the other category (*M* = `r data_subfield_descriptives_B$mean_data_score[4]`, *SD* = `r data_subfield_descriptives_B$SD[4]`), `r ttest_apa3_B$statistic`. There was no significant time by subfield interaction, `r data_apa_B$full$time_period_subfield_groups`. 
+
+For open materials scores across 2014-2015, there were significant main effects of both subfield, `r materials_apa_A$full$subfield_groups`, and time period, `r materials_apa_A$full$time_period` (see Figure 2C). Papers in developmental psychology had lower open materials scores (*M* = `r materials_subfield_descriptives_A$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_A$SD[1]`) than those in both social (*M* = `r materials_subfield_descriptives_A$mean_materials_score[2]`, *SD* = `r materials_subfield_descriptives_A$SD[2]  `), `r ttest_apa2_A$statistic`, and cognition (*M* = `r materials_subfield_descriptives_A$mean_materials_score[3]`, *SD* = `r materials_subfield_descriptives_A$SD[3] `), `r ttest_apa1_A$statistic`, but developmental open materials scores did not differ from papers allocated to the other subfield category (*M* = `r materials_subfield_descriptives_A$mean_materials_score[4]`, *SD* = `r materials_subfield_descriptives_A$SD[4] `), `r ttest_apa3_A$statistic`. The interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant.
+
+As illustrated in Figure 2D, there were also subfield differences in open materials scores during the 2019-2020 period, `r materials_apa_B$full$subfield_groups`. Consistent with open data scores, papers published in developmental psychology had significantly lower open materials scores (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`) than papers published in cognition, (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa4_B$statistic`, however, open materials scores did not differ between developmental and social psychology (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa5_B$statistic`, or between developmental psychology and the other subfield category (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa6_B$statistic`. There were no additional changes in open materials scores across the time period between mid-2019 and the end of 2020, `r materials_apa_B$full$time_period`, and differences in subfield did not vary over time, `r materials_apa_B$full$time_period_subfield_groups`.
+
+It is clear that since the introduction of Open Science Badges in 2014, papers published in *Psychological Science* have become more open over time and that most recently, developmental psychology has lagged behind some, but not all, subfields. To determine whether the rate of improvement from 2014-2015 through 2019-2020 differed significantly by subfield, we combined the data across the two coded time periods and looked for subfield by time interactions in both open data and open materials scores. As illustrated in Figure 3, there was no evidence that the magnitude of improvement over time differed by subfield for either both open data scores `r data_apa_AB$full$time_period_subfield_groups` or open materials scores `r materials_apa_AB$full$time_period_subfield_groups`. 
+
+```{r}
 
 d3_AB / m3_AB
 
 ```
+*Figure 3*: Mean open data and open materials scores for articles published in *Psychological Science* as a function of subfield and time period. 
 
-> including just the combo of interaction plots here. Christina- can you remove the code that makes the subfield and time plots from the chunks above and work out how to make this patchwork plot share y axis labels and legends
 
 
-> JENNY UP TO HERE 
 
-# STUDY 1B EXPLORATORY
+# EXPLORATORY
 
-## RAINCLOUD PLOTS
-
-```{r 1ab-rain, echo=FALSE}
+```{r d-m-rain, echo=FALSE}
 
 ### 1A Data Plot
-# Note: We tried using the raincloud package function, but it only allowed us to compare two subfields at a time
+# Note: We tried using the raincloud package, but it only allowed us to compare two subfields at a time
 
 rainplot_data1 <- final1A %>%  
   ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
@@ -1187,16 +806,24 @@ rainplot_materials2 <- final1B %>%
   easy_remove_legend() + 
   ggtitle('(d)')
 
+
+```
+
+
+Our confirmatory analyses showed that on average, open data and materials scores for papers published in *Psychological Science* have increased markedly across all subfields, however, it is clear that scores within each subfield varied widely. To capture changes in variability over time, we used raincloud plots [@allen2019raincloud] to represent the distribution of open data and materials scores across subfields. Figure 4 illustrates that in 2014-2015, across all subfields, most open data and open materials scores were low, with between 70-80% of papers receiving scores less than 5. In contrast in 2019-2020, the distribution is bimodal. The majority of papers score on the upper half of the scale, however, there are still one third of papers published that receive scores less than 5. 
+
+```{r rain_combo}
 ### patch figure 
 
 (rainplot_data1 | rainplot_materials1) / 
 (rainplot_data2 | rainplot_materials2)
 ```
+**Figure 4**: Distribution of open data and open materials scores earned by articles published in *Psychological Science* as a function of subfield 
 
-## OPEN SCIENCE BADGES
+We were surprised how few articles received very high open data and materials scores even in 2019-2020. In order to receive very high scores, article authors needed to engage in behaviours that make shared resources most useful (i.e. sharing data with a accompanying codebook and analysis script) and we particularly interested in how common this kind of metadata sharing was among papers that had earned an Open Data or Open Materials Badge. To produce Figure 5, we filtered articles published within the 2019-20 window for those that were awarded open data and materials badges and then plotted the proportion of those articles that shared codebooks and scripts along with complete data. It is clear from the Figure that whie the vast majority of papers earning an open data badge had complete data available, only half shared a codebook and X% included a analysis script. Similarly for open materials, most articles earning a badge shared raw materials on an open repository but a relatively small percentage of articles also shared an script and/or detailed explanation of how to use the materials in a replication study. 
 
 
-```{r osb-prep, message=FALSE, warning=FALSE, include=FALSE}
+```{r odb-plot, message=FALSE, warning=FALSE, include=FALSE}
 
 ### Open Data Badge Plot
 #### Select only relevant 1A variables
@@ -1264,19 +891,15 @@ A_data_scripts_available <- A_select_data %>%
   mutate("Percent" = Yes/(Yes + No)*100) %>%
   select(Number = Yes, Percent) %>%
   mutate(Real_Stage = "Scripts Available")
-```
 
 #### Bind all statistics together
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 A_data_stats <- rbind(A_reportedly_available_data, A_locatable_data, A_correct_data, A_complete_data, A_software_specified, A_data_codebook_available, A_data_scripts_available)
 
 A_data_stats <- A_data_stats %>%
   mutate("Time" = "2014-15") 
-```
 
 #### Select only relevant 1B variables
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 B_select_data <- subfield_groups_B  %>%
   select(article_id_number, subfield_groups, data_badge, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
@@ -1285,11 +908,7 @@ B_select_data <- subfield_groups_B  %>%
 B_data_badge <- B_select_data %>%
   tabyl(data_badge)
 
-```
-
 #### Summary tables
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
 
 # reportedly available
 B_reportedly_available_data <- B_select_data %>%
@@ -1354,16 +973,11 @@ B_data_stats <- rbind(B_reportedly_available_data, B_locatable_data, B_correct_d
 B_data_stats <- B_data_stats %>%
   mutate("Time" = "2019-20") 
 
-```
-
 #### Combine 1A and 1B stats together
-```{r combo-data, include=FALSE}
 
 all_data_stats <- rbind(A_data_stats, B_data_stats)
-```
 
-#### Plot combined data
-```{r combo-plot, echo=FALSE}
+#### Plot combined 1A1B data
 
 combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colour = Time)) +
   coord_cartesian(ylim=c(0,100)) +
@@ -1376,7 +990,7 @@ combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colou
         axis.title.y = element_text(size=9)) +
   theme(axis.text.x = element_text(size=7),
         axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
-  easy_labs(y = "Percentage of Articles That Received an Open Data Badge", x = "Data Sharing Criteria") +
+  easy_labs(y = "Percentage of Articles", x = "Data Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
     theme(legend.position=c(0.2, .3)) +
   theme(legend.title=element_blank()) +
@@ -1386,12 +1000,35 @@ combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colou
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
 
-combined_data_plot
 
+ recent_data_plot <- all_data_stats %>%
+   filter(Time == "2019-20") %>%
+   ggplot(aes(x = Real_Stage, y=Percent, group = Time, colour=Time)) +
+   coord_cartesian(ylim=c(0,100)) +
+   geom_point() +
+   geom_line() +
+   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
+   theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
+    theme(legend.position=c(0.5, .2)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 9)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  theme(axis.line= element_line(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  easy_labs(y = "Percentage of Articles", x = "Data Sharing Criteria") +
+    scale_color_manual(values=c("#42A5F5"),
+                     labels=c("2019-20 (n = 133)")) 
+
+ 
 ```
 
 
-```{r omb-prep, message=FALSE, warning=FALSE, include=FALSE}
+
+```{r omb-plot, message=FALSE, warning=FALSE, include=FALSE}
 ### Open Materials Badge Plot
 #### Select only relevant 1A variables
 A_select_materials <- subfield_groups_A %>%
@@ -1400,10 +1037,7 @@ A_select_materials <- subfield_groups_A %>%
 # Percentage of articles that received a badge
 A_materials_badge <- A_select_materials %>%
   tabyl(did_the_article_receive_a_badge_for_open_materials)
-```
 
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
 #### Summary tables
 # reportedly available
 A_reportedly_available_materials <- A_select_materials %>%
@@ -1511,10 +1145,9 @@ B_material_stats <- B_material_stats %>%
 #### Combine 1A and 1B stats together
 
 all_material_stats <- rbind(A_material_stats, B_material_stats)
-```
 
 #### Plot combined data 
-```{r combo-m-plot, echo=FALSE}
+
 combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Time, colour = Time)) +
   coord_cartesian(ylim=c(0,100)) +
   geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
@@ -1526,7 +1159,7 @@ combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Ti
         axis.title.y = element_text(size=9)) +
   theme(axis.text.x = element_text(size=7),
         axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
-  easy_labs(y = "Percentage of Articles That Received an Open Materials Badge", x = "Material Sharing Criteria") +
+  easy_labs(y = "Percentage of Articles", x = "Material Sharing Criteria") +
   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
     theme(legend.position=c(.2, .3)) +
   theme(legend.title=element_blank()) +
@@ -1536,50 +1169,68 @@ combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Ti
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) 
 
-combined_materials_plot
+
+# just recent time period
+
+recent_material_plot <- all_material_stats %>%
+   filter(Time == "2019-20") %>%
+   ggplot(aes(x = Real_Stage, y=Percent, group = Time, colour=Time)) +
+   coord_cartesian(ylim=c(0,100)) +
+   geom_point() +
+   geom_line() +
+   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
+    theme(legend.position=c(0.5, .2)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 9)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  theme(axis.line= element_line(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  easy_labs(y = "Percentage of Articles", x = "Materials Sharing Criteria") +
+    scale_color_manual(values=c("#42A5F5"),
+                     labels=c("2019-20 (n = 107)")) 
+    
+          
 
 ```
 
 
+```{r}
+recent_data_plot / recent_material_plot
 
-
-
-
-
+```
+*Figure 5* Badges plot 
 
 # Discussion
 
-### REVERSE OUTLINE
+In the past few years, there has been concern from some academics that developmental psychology was lagging behind in its use of open science practices, compared to other psychological subfields. The results of the current study provide empirical support for this idea. Across both 2014-15 and 2019-20, developmental psychology articles published in *Psychological Science* had significantly lower Open Materials Scores than cognitive psychology articles. In 2019-20, developmental psychology articles also hadlower Open Data Scores relative to cognition articles.  
 
-1. summary of subfield differences in results
-  + explaining subfield diff (dev behind) with protocol violations
-  + explaining subfield diff (dev behind) with scarcity of data
-  + explaining subfield diff (dev behind) with different materials/methods
-2. practical implications
-  + solution re moving from traditional methods to digitised methods
-  + collaborative research projects 
-3. summary of open data and materials scores over time
-  + consistency of findings w kidwell, impact of different analysis methods
-  + link with the new 2021 study
-  + explain increase in scores in terms of increasing support for open science
-  + alternative explanation- policy changes at Psych Sci
-  + differ policy changes at psych sci
-4. practical implications change yet to be made
-  + framing benefits to personal rather than whole field
-5. shortcomings of open science badges , lack of link between earning badge and sharing meta data
-  + inconsistent application of criteria
-  + future proposed open science score instead of badges
-  + benefits of score over badges
-6. limitations/future research
-  + no control group, can results be generalised to whole field?
-  + future work automated code to assess field as a whole
-  + open science is limited in ability to tackle replication crisis
-  + why poor link between OS and reproducibility -- preregisteration argument
-CAUTION re open science practice
-CONCLUSION
+There are several factors that may be contributing to lower open data and open materials scores in developmental psychology. Notably, practicing open science may pose a greater reputational risk to developmental scientists compared to researchers from other subdisciplines  (Gilmore et al., 2020).  Participants in developmental research are temperamental and unpredictable, which makes it difficult for researchers to stick to strict experimental protocols (Peterson, 2016). For example, if a child is getting fussy, the experimenter may deviate from the experimental protocol and allow the parent to complete the paradigm with them (Slaughter & Suddendorf, 2007). These “off-protocol” decisions make experimental protocols difficult to replicate and add noise to experimental data (Peterson, 2016). Researchers may be reluctant to share data and materials online, out of fear that they will be criticised for a lack of scientific rigor, and that their reputation may be harmed (Gilmore et al., 2020). It is possible that the perceived risks of data and material sharing in developmental psychology may impact openness and transparency
 
-  
+The scarcity of data in developmental psychology may further impede data sharing.  Developmental scientists usually recruit their participants from off-campus locations (Peterson, 2016) making recruitment a time consuming and expensive process and sample sizes generally small (Davis-Kean & Ellis, 2019). In contrast, cognition researchers are typically able to recruit large samples of participants on campus or from online platforms (Benjamin, 2019). According to the law of supply and demand, which asserts that rare commodities are more highly valued (Steuart, 1767), developmental researchers may place greater value on their data than researchers in other subfields. Given that willingness to share decreases as the value of an item increases (Hellwig et al., 2015), it is possible that the nature of developmental data reduces the likelihood that developmental scientists will share compared to other psychological subfields, such as cognition.  
 
+Finally, the methods that developmental psychologists use may make it particularly difficult to share materials openly. As Peterson (2016) reports, in developmental studies, experimental stimuli are typically constructed by hand and are set up manually by research assistants. The physical nature of these experimental paradigms may make them more difficult, and sometimes impossible, to share online. In contrast, computer-based experimental paradigms are becoming increasingly popular in the fields of cognition and social psychology. These paradigms, which can be automated and run online, make it relatively easy to upload materials to online repositories (Paxton & Tullett, 2019). Therefore, the types of materials researchers employ may explain why developmental psychologists may be less likely to share materials than researchers in other subfields.  
+
+Although developmental psychology appears to be lagging behind other subfields, there is cause for optimism.  Open data and materials scores for developmental psychology articles published in *Psychological Science* improved from 2014 to 2020 at the same rate as articles in other subfields. It seems that developmental psychology researchers, at least those who are looking to publish in *Psychological Science*, are keeping up with their colleagues and becoming more and more likely to adopt open data and open materials into their research workflow.  
+
+It is clear that open data and materials practices are becoming more common, however, the current findings highlight the significant progress that has yet to be made in the open science movement across the field of psychology. We were surprised to see that in 2019-20, Open Data and Open Materials Scores were bimodally distributed (see Figure X), with a large proportion of articles receiving extremely low scores. In addition, very few articles were awarded the highest possible Open Data and Open Materials Score, indicating that even when data and materials were shared, they were often not accompanied by a codebook, analysis script and/or explanation of the materials.  Roche et al. (2015) suggests that without these metadata, open data and open materials may may be not be usable, both for the purpose of reproducing the findings of a particular study and conducting novel research (Roche et al., 2015). Like all open science incentives, Open Science Badges are not an end to themselves; although the aim is to increase the transparency of research methods, the ultimate goal is to improve the replicability. Open Science Badges may incentivise researchers to share their data and materials, but if they do not increase the availability of metadata, then their value in overcoming the replication crisis, remains debatable.  
+
+**that is necessary for data and materials to be usable. These underwhelming results suggest that researchers may need to be convinced that the benefits of open and transparent research practice, both personally and for the field, outweigh the time and effort required to change research workflow (Markowetz, 2015).**  
+
+Our results also raise concerns about how well Open Science Badges criteria are adhered to, in practice. According to the COS, Open Data Badges can only be awarded if a ‘data dictionary’ such as a codebook, or other related metadata is made available (Center for Open Science, 2013a). Similarly, for articles to be awarded an Open Materials Badge, the authors must provide a sufficiently detailed explanation of how the materials were used in the study, and how they can be reproduced, if they can’t be shared digitally (Center for Open Science, 2013b). We found that only 45% of the articles that were awarded an Open Data Badge in 2019-20, shared a codebook, and only 35% of those awarded an Open Materials Badge provided an explanation of their materials. These results not only suggest that a very small proportion of the articles that received an Open Data and/or Open Materials Badge were truly deserving of one, but they also show that the criteria for Open Science Badges may be applied inconsistently. Further research is required to identify whether this issue is specific to *Psychological Science*, or if it is a broader issue observed across all journals that award Open Science Badges. In any case, the potentially inconsistent application of the criteria for Open Science Badges questions how valid and reliable they are as indicators of transparency and usability.  
+
+Where to from here? It is clear that Open Badges have had an impact on author behaviour at *Psychological Science* but that there is still work to do in making psychology a truely open science. *Psychological Science* was ideally suited for our open science subfield comparison due to its broad publishing scope. However, because *Psychological Science* implemented Open Science Badges, and is one of psychology’s top tier journals, publishing only a very small subset of high quality and novel research articles, it is unclear whether the results from the current study reflect the field of psychology as whole. Future meta-research should focus on open science practices across a broader range of psychology journals to assess whether it is the badges per se, or a broader shift in research workflow that has resulted in improved transparency at *Psychological Science*. 
+
+Although Open Badges may encourage authors to be more transperant in their research, it is possible that they are rewarding researchers for doing the bare minimum, and not actually pushing the field toward a more replicable science. Perhaps journals should consider employing an open science scoring system, instead. Such a system (see Yang et al., 2020; Hartshorne & Schachner, 2012 for related examples) would involve psychology journals awarding each article they publish a "Reproduciblity Score” that indexes the likelihood of the findings being successfully reproduced based on the transparency of the data and materials. To maximise objectivity and to minimise time costs, an automated algorithm would generate the Reproducibility Score (Altmejd et al., 2019; Yang et al., 2020). Future research should test whether compared to Open Science Badges, scores may be a more precise and meaningful indicator of transparency and potential replicability. 
+
+To conclude, the present study provides support for the existence of subfield differences in the uptake of open science practices, across the field of psychology. Whilst the findings indicated that researchers’ use of open science practices have increased since *Psychological Science* introduced Open Science Badges in 2014, there appears to be considerable progress yet to be made. Although Open Science Badges do not appear to be as valuable in overcoming the replication crisis as they seem, an open science scoring system may provide a promising alternative. Overall, we hope that the results of the study enhance the way open science is endorsed and applied across psychological subfields. 
+
+
+ 
 
 
 \newpage

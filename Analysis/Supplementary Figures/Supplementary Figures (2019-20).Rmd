@@ -35,7 +35,7 @@ library(ggeasy)
 
 # Read and clean data
 
-data1B <- read_csv(here("Data Files", "Scored Study 1B Master Dataset.csv"))
+data1B <- read_csv(here("Data_Files", "Scored Study 1B Master Dataset.csv"))
 
 # Assign articles to subfield groups
 subfield_groups <- data1B %>%
