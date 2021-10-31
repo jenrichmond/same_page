@@ -1,6 +1,6 @@
 ---
-title             : "Are we all on the same page? Subfield differences in open science practice"
-shorttitle        : "Subfield "
+title             : "Are we all on the same page? Subfield differences in open science practices in psychology"
+shorttitle        : "Subfield differences in open science practices"
 
 author: 
   - name          : "Christina Riochios"
@@ -37,7 +37,7 @@ authornote: |
   School of Psychology, UNSW  
 
 abstract: |
-  Although open science has become a popular tool to combat the replication crisis, it is unclear whether the uptake of open science practices has been consistent across the field of psychology. In this study, we utilised open data from a previous study to determine whether data and material sharing, two prominent open science practices, differed as a function of psychological subfield at the distinguished journal, *Psychological Science*. The results showed that open data and open materials scores, indicators of data and material sharing, increased from 2014-15 to 2019-20. Of note, articles published in the field of developmental psychology generated considerably lower open Data and open Materials Scores, compared to articles in other subfields. These findings are discussed in the context of why developmental psychologists may be slower to adopt open science practices, compared to other researchers, and how journals can more effectively encourage authors to practice open science, across all psychological subfields. As part of our analyses, we also looked at how the awarding of Open Science Badges related to researchers’ open science behaviours. Whilst Open Science Badges were closely related to data and material sharing, the usability of the shared data and materials appeared to be questionable. Consequently, we question the value of Open Science Badges in overcoming the replication crisis and propose an alternative open science initiative, that may be more effective. 
+  Although open science has become a popular tool to combat the replication crisis, it is unclear whether the uptake of open science practices has been consistent across the field of psychology. In this study, we utilised open data from a previous study to determine whether data and material sharing, two prominent open science practices, differed as a function of psychological subfield at the distinguished journal, *Psychological Science*. The results showed that open data and open materials scores, indicators of data and material sharing, increased from 2014-2015 to 2019-2020. Of note, articles published in the field of developmental psychology generated considerably lower open data and open materials scores, compared to articles in other subfields. These findings are discussed in the context of why developmental psychologists may be slower to adopt open science practices, compared to other researchers, and how journals can more effectively encourage authors to practice open science, across all psychological subfields. As part of our analyses, we also looked at how the awarding of Open Science Badges related to researchers’ open science behaviours. Whilst Open Science Badges were closely related to data and material sharing, the shared data and materials were less usable expected. We propose an alternative open science initiative, that may be more effective in increasing the replicability of psychological research. 
   
 
   
@@ -49,7 +49,7 @@ wordcount         : "X"
 bibliography      : ["r-references.bib"]
 
 floatsintext      : yes
-figurelist        : no
+figurelist        : yes
 tablelist         : no
 footnotelist      : no
 linenumbers       : yes
@@ -71,10 +71,11 @@ library(apa)
 library(papaja)
 library(patchwork)
 library(afex)
-library(report)
 library(ggeasy)
 library(gghalves)
 library(ggsignif)
+library(kableExtra)
+library(scales)
 
 source("R_rainclouds copy.R")
 r_refs("r-references.bib")
@@ -83,82 +84,93 @@ r_refs("r-references.bib")
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(1)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed, fig.width=6, fig.height=4)
+
 ```
 
 
-The field of psychology, like many other scientific disciplines, is currently facing a replication crisis, in which researchers are struggling to replicate existing findings. In 2015, a group of 270 psychological researchers attempted to replicate the findings of 100 psychology experiments. Whilst 97% of the original studies generated statistically significant findings, only 36% of the replication attempts were statistically significant. In addition, the replicated effects were, on average, half the size of the original effects [@open2015estimating]. These findings illustrate the challenge of replicability in psychological research and the pressing need to rectify flawed research practices. 
+The field of psychology, like many other scientific disciplines, is currently facing a replication crisis, in which researchers are struggling to replicate existing findings. In 2015, a group of 270 psychological researchers attempted to replicate the findings of 100 psychology experiments. Whilst 97% of the original studies generated statistically significant findings, only 36% of the replication attempts were statistically significant. In addition, the replicated effects were, on average, half the size of the original effects [@open2015estimating]. These findings illustrate the poor replicability of psychological research and the pressing need to rectify flawed research practices.
 
-One strategy that has been used to combat the replication crisis within psychology is open science. Open science practices are those that increase the transparency of, and access to, scientific research [@klein2018practical]. Open data and open materials practices, for example, involve researchers sharing their raw data and experimental materials on publicly accessible online repositories. These practices make it easier for others to replicate the methodology and reproduce the results from published work [@klein2018practical].  
+Open science practices, which increase the transparency of, and access to, scientific research, have been used to combat the replication crisis within psychology. [@klein2018practical]. Open data and open materials practices, for example, involve researchers sharing their raw data and experimental materials on publicly accessible online repositories. These practices make it easier for others to replicate the methodology and reproduce the results from published work [@klein2018practical].  
  
-To encourage researchers to employ open science practices, many psychology journals have implemented incentives, like Open Science Badges. In 2013, the Center for Open Science established three Open Science Badges: Open Data, Open Materials and Preregistered, to acknowledge and reward researchers for their use of open science practices (Center for Open Science, 2021). The Open Data Badge and the Open Materials Badge are awarded when the data and materials that are required to reproduce the methods and results of a study are shared publicly online, whilst the Preregistered Badge is awarded when the design,  hypotheses and/or analysis plan are publicly archived prior to data collection. To date, 75 journals (40 in Psychology) have adopted the COS Open Science badges (Center for Open Science, 2021).  
+To encourage researchers to employ open science practices, many psychology journals have implemented incentives, like Open Science Badges. In 2013, the Center for Open Science established three Open Science Badges (Open Data, Open Materials and Preregistered) to acknowledge and reward researchers for their use of open science practices (Center for Open Science, 2021). The Open Data and Open Materials Badges, for example, are awarded when the data and materials that are required to reproduce the methods and results of a study are shared publicly online. To date, over 75 journals (40 in Psychology) have adopted Open Science Badges (Center for Open Science, 2021).  
 
-At *Psychological Science*, the Association of Psychological Science’s flagship journal, Open Science Badges appear to have been successful in encouraging researchers to adopt open science practices. In 2016, Kidwell et al. coded the frequency of data and material sharing in the 18 months before and after Open Science Badges were implemented at *Psychological Science*.  [@kidwell2016badges]. Kidwell et al. found that data sharing increased dramatically from 2.5% prior to badges to 39.4% following badges. Materials sharing also rose from 12.7% to 30.3%. Data and material sharing in control journals, such as the *Journal of Personality and Social Psychology*, which did not award badges, remained low over the same time period [@kidwell2016badges]. These results led Kidwell et al. to conclude that Open Science Badges successfully incentivise the uptake of open science practices.  
+At *Psychological Science*, the Association of Psychological Science’s flagship journal, Open Science Badges appear to have been successful in encouraging researchers to adopt open science practices. In 2016, Kidwell et al. coded the frequency of data and material sharing in the 18 months before and after Open Science Badges were implemented at *Psychological Science*. Kidwell et al. found that data sharing increased dramatically from 2.5% of articles prior to badges to 39.4% of articles following badges. Materials sharing also rose from 12.7% to 30.3%. Data and material sharing in control journals, such as the *Journal of Personality and Social Psychology*, which did not award badges, remained low over the same time period [@kidwell2016badges]. Although their results simply described the proportion of articles that engaged in data and materials sharing before and after the policy change, the results led Kidwell et al. to conclude that Open Science Badges successfully incentivised the uptake of open science practices at *Psychological Science*.  
 
-The support for open science continues to grow, however, it is not yet clear whether engagement with open science is consistent across different fields within psychology. Notably, developmental psychology has received significant criticism for its lack of receptivity towards open science. As Figure 1 illustrates, prominent developmental researchers, Prof Michael Frank and Dr. Jennifer Pfeifer, have labelled the Society for Research in Child Development’s (SRCD) open science policy as ‘weak’ and as one that ‘undervalues openness.’ More recently, the Editor-in-Chief of Infant and Child Development, Prof Moin Syed, stated that the uptake of open science within the field of developmental psychology has been ‘slow and uneven’ [@syed2020infant]. A survey supporting these viewpoints showed that, on average, 80% of researchers publishing in *Child Development* felt their institutions failed to provide adequate guidance or financial support for sharing data, (SRCD Task Force on Scientific Integrity and Openness Survey (2017), cited in Gennetian et al., [-@gennetian2020advancing]. As such, developmental researchers may be slower to adopt open science practices than those in other psychological disciplines, however, this possibility has yet to be empirically investigated. 
+The support for open science continues to grow, however, it is not yet clear whether engagement with open science is consistent across different fields within psychology. Notably, the field of developmental psychology has received significant criticism for its lack of receptivity towards open science. As Figure 1 illustrates, prominent developmental researchers, Prof Michael Frank and Dr. Jennifer Pfeifer, have labelled the Society for Research in Child Development’s (SRCD) open science policy as ‘weak’ and as one that ‘undervalues openness.’[@Frank_tweet;  @Pfeifer_tweet]. More recently, the Editor-in-Chief of Infant and Child Development, Prof Moin Syed, stated that the uptake of open science within the field of developmental psychology has been ‘slow and uneven’ [@syed2021infant]. A survey supporting these viewpoints showed that 80% of researchers publishing in *Child Development* felt their institutions failed to provide adequate guidance or financial support for sharing data (SRCD Task Force on Scientific Integrity and Openness Survey (2017), cited in Gennetian et al., [-@gennetian2020advancing]). Developmental psychology researchers may be slower to adopt open science practices than those in other psychological disciplines, however, this possibility has yet to be empirically investigated. 
 
+```{r, fig.align="center", fig.cap= "Twitter thread about Society for Child Development open science policy."}
 
-FIGURE 1
+knitr::include_graphics(here::here("Manuscript", "Figure 1.png"))
 
-```{r}
-
-knitr::include_graphics(here::here("Manuscript", "Figure1_mf.png"))
-
-knitr::include_graphics(here::here("Manuscript", "Figure1_jp.png"))
 ```
 
-Meta-research, the study of research itself, can empirically assess whether developmental psychology is truly behind in the open science movement. Previous investigations, including Kidwell et al. [-@kidwell2016badges], have revealed that open science incentives can increase the use of open science practices. However, what remains unclear is whether the uptake of open science has been consistent across psychological subfields and sustained over time. To address this research question, we used the open data from the Kidwell et al. study to examine whether rates of data and material sharing, following the implementation of Open Science Badges at Psychological Science, differed as a function of subfield. In addition, we conducted the same open data and materials coding for articles published in the most recent 18 months (July 2019-Dec 2020) to test whether the badges have continued to be impactful and whether the impact has been consistent across subfields. We were particularly interested in determining whether developmental psychology researchers publishing in Psychological Science engaged with open science practices at the same rate as researchers from other subdomains of psychology. Our methods and analysis plan was preregistered at the Open Science Framework: https://osf.io/3tsmy/.  
+Using meta-research, the study of research itself, we can empirically assess whether developmental psychology is truly behind in the open science movement. Previous investigations, including Kidwell et al. [-@kidwell2016badges], have revealed that open science incentives can increase the use of open science practices. However, it is unclear whether Open Science Badges, have had the same impact across different psychological subfields and whether the effect is sustained over time. To address this research question, we used the open data from the Kidwell et al., [-@kidwell2016badges] study and designed a quantitative scoring system to examine whether rates of data and material sharing, following the implementation of Open Science Badges at *Psychological Science*, differed as a function of subfield. In addition, we applied the same scoring system to articles published in the most recent 18 months (Jul 2019-Dec 2020) to test whether the badges have continued to be impactful and whether the impact has been consistent across subfields. We were particularly interested in determining whether developmental psychology researchers publishing in *Psychological Science* engaged with open science practices at the same rate as researchers from other subdomains of psychology. Our methods and analysis plan were preregistered at the Open Science Framework: https://osf.io/3tsmy/.  
 
- 
 
 # Methods
 
-
 ## Design 
 
-This study had a quasi-experimental design; all articles were systematically assigned to one of seven subfields. Changes in data and material sharing were observed over six-month intervals and were measured using two scores that indexed the transparency of each article’s data and materials, respectively.
-
+This study had a quasi-experimental design; all articles were systematically assigned to one of seven subfields. For each article, we used coded variables to compute two scores that indexed the transparency of data and materials, respectively. Changes in data and material sharing were analysed over six-month intervals. 
 
 ## Sample
 
-The sample comprised of all *Psychological Science* articles published between January 2014 and May 2015 (N = 367). As described in the Introduction, Kidwell et al. (2016) had previously coded these articles to evaluate the openness of their data and materials. To identify how data and material sharing may have changed since 2014-15, our sample also included all *Psychological Science* articles that were published between July 2019 and December 2020 (N = 242). Non-empirical articles that did not contain an experiment or analysis, including editorials, commentaries, replies, corrigenda, errata and retractions, were excluded from our analysis. After filtering out these non-empirical articles from the sample, 322 articles published between 2014-15 and 193 articles published between 2019-20, remained.
+The Kidwell et al., (2016) sample comprised of all *Psychological Science* articles published between January 2014 and May 2015 (N = 367), which were coded to evaluate the openness of their data and materials. To identify how data and material sharing may have changed since 2014-2015, our sample also included all *Psychological Science* articles that were published between July 2019 and December 2020 (N = 242). Non-empirical articles that did not contain an experiment or analysis, including editorials, commentaries, replies, corrigenda, errata and retractions, were excluded from our analysis. After filtering out these non-empirical articles from the sample, 322 articles published between 2014-2015 and 193 articles published between 2019-2020, remained.
 
 ## Materials
 
-To assess the transparency of each article’s data and materials, Kidwell et al. (2016) employed a systematic coding system (see Appendix A) comprising of a series of variables, defined in Appendix B. We downloaded the data Kidwell et al. coded from their OSF repository (https://osf.io/rfgdw/) and filtered the dataset to only include data from *Psychological Science* articles published between January 2014 and May 2015.
-In addition to the variables Kidwell et al. coded, we also coded for whether the authors of each article specified the type of software that was used to analyse their data. When authors’ identify their analysis software, the analysis procedure can be easier to follow, and the chance of others’ successfully reproducing the study’s data, may increase (National Academics of Sciences Engineering and Medicine, 2019). Thus, although Kidwell et al. did not code for analysis software, it is an important variable to consider when assessing the transparency of a study’s data. We coded for two variables to account for analysis software; first, whether the article specified their analysis software or not, and second, which type of analysis software had been specified (e.g., R, JASP, SPSS etc.). 
-To code the articles that were published between July 2019 and December 2020, we used the same amended version of the Kidwell et al. coding system, which included the two additional variables that accounted for the article’s analysis software. 
+To assess the transparency of data and materials for each article, Kidwell et al. (2016) employed a systematic coding system (https://osf.io/j4x23/; variable definitions https://osf.io/j4x23/). We downloaded the data Kidwell et al. coded from their OSF repository (https://osf.io/rfgdw/) and filtered the dataset to only include data from *Psychological Science* articles published between January 2014 and May 2015.
+In addition to the variables that Kidwell et al. had coded, we also coded for whether the article specified their analysis software or not, and which type of analysis software had been specified (e.g., R, JASP, SPSS etc). These variables were important to include because when authors’ identify their analysis software, the analysis procedure can be easier to follow and the chance of successfully reproducing the analysis may increase [@national2019reproducibility].
+The same amended version of the Kidwell et al. coding system, including the two additional analysis software variables, was used to code the articles that were published between July 2019 and December 2020. 
 
-To assign all the articles to a subfield, we used the coding system outlined in Appendix D. Articles were assigned to one of seven psychological subfields: Developmental Psychology, Social Psychology, Cognition, Perception, Health Psychology, Cognitive Neuroscience and Behavioural Neuroscience. We identified these seven subfields as those that the vast majority of *Psychological Science* articles fall into, after thoroughly reviewing the journal’s website. The variables that we coded are defined in Appendix C. As an example, one of the variables we coded was the age of the participants recruited in the study. Distinguishing participants from children to adults allowed us to assign articles to the Developmental Psychology subfield. 
+We designed an additional coding system (https://osf.io/a9vgr/; variable definitions https://osf.io/md5eu/) to assign all the articles to one of seven psychological subfields: Developmental Psychology, Social Psychology, Cognition, Perception, Health Psychology, Cognitive Neuroscience and Behavioural Neuroscience. We identified these seven subfields as those that the vast majority of *Psychological Science* articles fall into, after thoroughly reviewing the journal website. 
 
-Prior to data collection, each member of the coding team coded five trial articles. The trial articles aimed to confirm coders’ understanding of the coding process prior to them coding the target articles. These trial articles were *Psychological Science* articles originally coded by Mallory Kidwell, the primary investigator in the Kidwell et al. (2016) study. Kidwell’s coding acted as a ‘gold standard’ to which coders’ responses were compared. The senior coder in the current study generated the gold standard for the variables that weren’t included in the Kidwell et al. coding system. The trial articles varied in the transparency of their data and materials, and therefore, exposed coders to a representative range of coding outcomes.
+Prior to data collection, each member of the coding team coded five trial articles, to confirm their understanding of the coding process. These trial articles were *Psychological Science* articles originally coded by Mallory Kidwell, the primary investigator in the Kidwell et al. (2016) study. Kidwell’s coding acted as the standard to which coders’ responses were compared. The senior coder in the current study generated the standard for the variables that weren’t included in the Kidwell et al. coding system. The trial articles varied in the transparency of their data and materials, and therefore, exposed coders to a representative range of coding outcomes.
 
-The coding team coded both the trial and target articles via a Qualtrics survey, containing a series of multiple-choice questions. The questions were structured in an ‘if-then’ manner, with consecutive questions only being asked if coders provided certain answers to the questions prior. For example, according to the coding system in Appendix D, coders were only asked about the participants’ age, if they had specified that the participants in the study were ‘Humans’ as opposed to ‘Animals.’ 
+The coding team coded both the trial and target articles via a Qualtrics survey, containing a series of multiple-choice questions. The questions were structured in an ‘if-then’ manner, with some questions only being asked if coders provided particular  answers to the questions prior. For example, coders were only asked about the participants’ age, if they had specified that the participants in the study were ‘Humans’ as opposed to ‘Animals’. 
 
 ## Procedure 
 
-After the investigation had been approved by the UNSW Human Research Ethics Advisory Panel, we assembled a team of volunteer coders, comprising of undergraduate UNSW psychology students. Once the coders coded the five trial articles and the senior coder was confident that each coder understood how to code all the variables correctly, the coders were provided access to the target set of articles and were allowed to begin coding. 
-Analysis procedure
-After all articles had been coded, we imported the data from Qualtrics into the software environment, R (R Core Team, 2021). For the articles that were published between 2014-15, we combined the newly collected data with the relevant Kidwell et al. (2016) data. Each article, across both the 2014-15 and 2019-20 datasets, was assigned to one of the seven psychological subfields, and received an open data and open materials score. A study’s open data score indexed the extent to which its data were transparent, whilst the open materials score indexed the extent to which the article’s materials were transparent. Therefore, to calculate the scores, we weighted each coded variable according to how much it improved the transparency of the article’s data and materials, respectively. There were three levels of transparency: low-level transparency variables received a value of 1, moderate-level transparency variables received a value of 2 and high-level transparency variables received a value of 5 (see Table 1). We summed these scores so that each article received an open data score out of a possible 25 and an open materials score out of a possible 19. Higher scores were indicative of a higher level of transparency. 
+After the investigation had been approved by the Human Research Ethics Advisory Panel, we assembled a team of volunteer coders, comprising of undergraduate UNSW psychology students. Once the coders coded the five trial articles and the senior coder was confident that each coder understood how to code all the variables correctly, the coders were provided access to the target set of articles to begin coding using the Qualtric survey. 
 
-# INSERT TABLE 1 HERE
 
-*Reliability* After the 2014-15 sample of articles had been coded, the senior coder randomly selected 25 empirical articles from the dataset (8% of the empirical sample), ensuring that an equal number had been coded by each coder (n = 5), and double-coded these articles to generate a gold standard for subfield assignment. Using the ‘kappa2’ function from the ‘irr’ package in R (Gamer et al., 2019), we ran a Cohen’s Kappa reliability analysis for subfield assignment, to assess how well the coders’ coding matched the gold standard. 
-For the 2019-20 sample of articles, the senior coder similarly selected 25 articles from the empirical sample (13%) and double-coded these articles to produce a gold standard. Each article received a total openness score, representing the sum of the open data and open materials score. To assess reliability, we used the ‘icc’ function from the ‘irr’ package in R to generate an intraclass correlation coefficient (ICC) from the coders’ total openness scores and the gold standard’s (Gamer et al., 2019). The ‘tolerance’ level was set at five Total Openness points; where scores fell within a five-point range of each other, they were considered to be equivalent.
-As a secondary measure of inter-rater reliability, we also calculated the percent agreement between the gold standard and coders’ responses, for both the 2014-15 and 2019-20 datasets. 
+### Scoring procedure
 
-## Data analysis
+After all articles had been coded, we imported the data from Qualtrics into the software environment, R [@R-base]. For the articles that were published between 2014-2015, we combined the newly collected data with the relevant Kidwell et al. (2016) data. Each article, across both the 2014-2015 and 2019-2020 datasets, was assigned to one of the seven psychological subfields, and received an open data and open materials score. The open data score indexed the extent to which its data were transparent, whilst the open materials score indexed the extent to which the materials were transparent. Therefore, to calculate the scores, we weighted each coded variable according to how much it improved the transparency of the data and materials, respectively. 
+
+*Table 1*: Open data scoring (left) and open materials scoring (right) criteria 
+
+```{r, out.width="49%", out.height="20%", fig.cap = "", fig.show='hold', fig.align='center'}
+
+knitr::include_graphics(c("data_scoring.png", "mat_scoring.png"))
+
+```
+
+There were three levels of transparency: low-level transparency variables received a value of 1, moderate-level transparency variables received a value of 2 and high-level transparency variables received a value of 5 (see Table 1 & 2). We summed these scores so that each article received an open data score out of a possible 25 and an open materials score out of a possible 19. Higher scores reflected a higher level of transparency. 
+
+### Reliability
+
+After the 2014-2015 sample of articles had been coded, the senior coder randomly selected 25 empirical articles from the dataset (8% of the empirical sample), ensuring that an equal number had been coded by each coder (n = 5), and double-coded these articles. Using the ‘kappa2’ function from the ‘irr’ package in R [@R-irr], we ran a Cohen’s Kappa reliability analysis for subfield assignment, which revealed that the coding team had good reliability compared to the senior coder’s standard, k = .605, according to Fleiss’s [-@fleiss1981balanced] guidelines. The percent agreement rating between the standard and the coding team was 72%. Upon examining cases where the standard and the coding team disagreed on an article’s subfield assignment, we found that the discrepancy could usually be attributed to the subject matter spanning across multiple subfields. Since our coding system did not account for the possibility of a study belonging to multiple subfields, the results from our reliability analysis may be conservative.
+
+For the 2019-2020 sample of articles, the senior coder similarly selected 25 articles from the empirical sample (13%) and double-coded these articles. Each article received a total openness score, representing the sum of the open data and open materials score. To assess reliability, we used the ‘icc’ function from the ‘irr’ package in R to generate an intraclass correlation coefficient (ICC) [@R-irr]. The ‘tolerance’ level was set at five Total Openness points; where scores fell within a five-point range of each other, they were considered to be equivalent.
+The ICC analysis showed that the coding team had excellent reliability relative to the senior coder’s standard, according to Cicchetti’s [-@cicchetti1994guidelines] guidelines, ICC = .905, 95% CI (.772, .962). As a secondary measure of inter-rater reliability, we also calculated the percent agreement between the standard and coders’ responses, for both the 2014-2015 and 2019-2020 datasets. The agreement rating between the coders and the standard was 73.7%, with a tolerance level of five Total Openness points.
+
+
+### Data analysis
 
 We used `r cite_r("r-references.bib")` for all our analyses.
 
-*Confirmatory Analyses* Four Analysis of Variance (ANOVA) analyses were run to investigate differences in open data and open materials scores, separately, across the 2014-15 and 2019-20 datasets. In each analysis, we tested for a main effect of time, measured over three six-month intervals, and subfield. To ensure that there was a comparable number of articles in each subfield group, we combined Cognitive Neuroscience, Behavioural Neuroscience, Health Psychology and Perception into a single ‘Other’ category. As a result, a total of four subfield groups were included in our analysis: Developmental Psychology, Social Psychology, Cognition and Other. In each ANOVA analysis, we also included a time by subfield interaction to test whether the changes in open data and open materials scores over time, differed as a function of subfield. We measured effect sizes in terms of generalised eta squared (ges). For each ANOVA result, the ges represented the proportion of variance that was accounted for by the variable of interest (Olejnik & Algina, 2003). 
-To identify how the transparency of data and materials had changed between 2014-15 and 2019-20, we ran two additional ANOVA analyses, which tested for the same main effects and interaction effect as the previous ANOVAs. The time effect had two levels: 2014-15 and 2019-20. 
+**Confirmatory Analyses.** Analysis of Variance (ANOVA) analyses were run to investigate differences in open data and open materials scores, separately, across the 2014-2015 and 2019-2020 datasets. In each analysis, we tested for a main effect of time, measured over three six-month intervals, and subfield. To ensure that there was a comparable number of articles in each subfield group, we combined Cognitive Neuroscience, Behavioural Neuroscience, Health Psychology and Perception into a single ‘Other’ category. As a result, a total of four subfield groups were included in our analysis: Developmental Psychology, Social Psychology, Cognition and Other. We report effect sizes in terms of generalised eta squared (ges). 
 
-*Exploratory Analyses* After scoring the data, we noticed that a large proportion of articles had received an open Data and open materials score of zero. This observation led us to generate two raincloud plots that illustrated the distribution of open data and open materials scores across 2019-20, respectively. Raincloud plots visualise the distribution of scores in a dataset by showing the concentration of subjects at each level of the dependent measure. In our case, where the plot was wider, the concentration of articles that received the corresponding open data or open materials score, was higher. The two raincloud plots illustrated the distribution of scores per subfield.
+**Exploratory Analyses.** After data collection, we were also interested in the distribution of scores and how the spread of scores might differ by subfield. To illustrate this we generated two raincloud plots that illustrated the distribution of open data and open materials scores across 2019-2020. Raincloud plots visualise the distribution of scores in a dataset by showing the density of subjects at each level of the dependent measure [@allen2019raincloud]. In our case, where the violin plot was wider, the concentration of articles that received the corresponding open data or open materials score, was greater. 
 
-In addition to analysing open data and open materials scores, we were also interested in identifying how the awarding of Open Science Badges related to researchers’ data and materials sharing practices. To generate two corresponding figures, we filtered the 2019-20 dataset to only include the articles that had received an Open Data Badge and an Open Materials Badge, respectively. We then plotted the percentage of these articles that met a series of data and materials sharing criteria, described in the Results section below. 
+We also wanted to learn how Open Science Badges related to researchers’ data and materials sharing practices. To generate two corresponding figures, we filtered the 2019-2020 dataset to only include the articles that had received an Open Data Badge and an Open Materials Badge, respectively. We then plotted the percentage of these articles that met a series of data and materials sharing criteria, described in the Results section below. 
 
-*Preregistration* We preregistered our aims, hypotheses, design, and planned analysis procedure for the study at the OSF: https://osf.io/3tsmy/. Whilst we attempted to follow each of the proposed procedures as closely as possible, we made one notable modification. Namely, we chose not to normalise the Open Data and Open Materials Scores (so that they were both out of 100). Since our study was focussed on measuring subfield differences and changes over time, within each type of score, rather than comparing the differences between the two scores, we ultimately realised that normalising the scores was not necessary. All the materials, data and analysis scripts from the study can be accessed via the OSF: https://osf.io/z8b7j/. 
+### Preregistration 
+
+We preregistered our aims, hypotheses, design, and planned analysis procedure for the study at the OSF: https://osf.io/3tsmy/. Whilst we attempted to follow each of the proposed procedures as closely as possible, we made one notable modification. Namely, we chose not to normalise the Open Data and Open Materials Scores (so that they were both out of 100). Since our study was focussed on measuring subfield differences and changes over time, within each type of score, rather than comparing the differences between the two scores, we ultimately realised that normalising the scores was not necessary. All the materials, data and analysis scripts from the study can be accessed via the OSF: https://osf.io/z8b7j/. 
 
 
 # Results
@@ -285,40 +297,11 @@ data_apa_A <- apa_print(data_aov_A)
 ### DATA 
 # Subfield main effect for Open Data Scores was not significant, so no t-tests to run here
 
-## TIME T-TESTS
-### DATA
-#### First half 2014 vs. Second half 2014
-first2014_second2014 <- final1A %>%
-  filter(time_period %in% c("1st half 2014", "2nd half 2014"))
-
-ttest_apa4_A <- apa_print(t_test(open_data_score ~ time_period, first2014_second2014, paired = FALSE))
-
-#### Second half 2014 vs. First half 2015
-second2014_first2015 <- final1A %>%
-  filter(time_period %in% c("2nd half 2014", "1st half 2015"))
-
-ttest_apa5_A <- apa_print(t_test(open_data_score ~ time_period, second2014_first2015, paired = FALSE))
-
-#### First half 2014 vs. First half 2015
-first2014_first2015 <- final1A %>%
-  filter(time_period %in% c("1st half 2014", "1st half 2015"))
-
-ttest_apa6_A <- apa_print(t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE))
-
 ### DESCRIPTIVES
 
 #### Subfield x Data mean Score
 data_subfield_descriptives_A <- final1A %>%
   group_by(subfield_groups) %>%
-  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
-            SD = sd(open_data_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
-
-
-#### Time Period x Data mean Score
-data_timeperiod_descriptives_A <- final1A %>%
-  group_by(time_period) %>%
   summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
             SD = sd(open_data_score, na.rm = TRUE),
             N = n(),
@@ -356,19 +339,6 @@ devother_materials_A <- final1A %>%
 
 ttest_apa3_A <- apa_print(t_test(open_materials_score ~ subfield_groups, devother_materials_A, paired = FALSE))
 
-### MATERIALS
-## TIME T-TESTS
-
-## MATERIALS
-### First half 2014 vs. Second half 2014
-ttest_apa7_A <- apa_print(t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE))
-
-
-### Second half 2014 vs. First half 2015
-ttest_apa8_A <- apa_print(t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE))
-
-### First half 2014 vs. First half 2015
-ttest_apa9_A <- apa_print(t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE))
 
 # DESCRIPTIVES
 
@@ -380,13 +350,7 @@ materials_subfield_descriptives_A <- final1A %>%
             N = n(),
             stderr = SD/sqrt(N))
 
-#### Time Period x Materials mean Score
-materials_timeperiod_descriptives_A <- final1A %>%
-  group_by(time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
+
 
 ## 2019-2020
 # DATA
@@ -421,28 +385,6 @@ devother_data_B <- final1B %>%
 
 ttest_apa3_B <- apa_print(t_test(open_data_score ~ subfield_groups, devother_data_B, paired = FALSE))
 
-## TIME T-TESTS
-### DATA
-#### Second half 2019 vs. First half 2020
-
-second2019_first2020 <- final1B %>%
-  filter(time_period %in% c("2nd half 2019", "1st half 2020"))
-
-ttest_apa7_B <- apa_print(t_test(open_data_score ~ time_period, second2019_first2020, paired = FALSE))
-
-#### First half 2020 vs. Second half 2020
-
-first2020_second2020 <- final1B %>%
-  filter(time_period %in% c("1st half 2020", "2nd half 2020"))
-
-ttest_apa8_B <- apa_print(t_test(open_data_score ~ time_period, first2020_second2020, paired = FALSE))
-
-#### Second half 2019 vs. Second half 2020
-
-second2019_second2020 <- final1B %>%
-  filter(time_period %in% c("2nd half 2019", "2nd half 2020"))
-
-ttest_apa9_B <- apa_print(t_test(open_data_score ~ time_period, second2019_second2020, paired = FALSE))
 
 
 ### DATA descriptives
@@ -459,13 +401,6 @@ data_subfield_descriptives_B$subfield_groups <- fct_relevel(data_subfield_descri
 # Specifying which levels of the subfield variable the significance bars need to compare
 d1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
 
-#### Time Period x Data Score
-data_timeperiod_descriptives_B <- final1B %>%
-  group_by(time_period) %>%
-  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
-            SD = sd(open_data_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
 
 # 2019-2020
 #MATERIALS
@@ -516,14 +451,6 @@ materials_subfield_descriptives_B <- final1B %>%
 m1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
 
 
-#### Time Period x Materials Score
-
-materials_timeperiod_descriptives_B <- final1B %>%
-  group_by(time_period) %>%
-  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
-            SD = sd(open_materials_score, na.rm = TRUE),
-            N = n(),
-            stderr = SD/sqrt(N))
 
 
 ```
@@ -567,7 +494,7 @@ m1_A <- materials_subfield_descriptives_A %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('C: Open Materials scores 2014-2015') + 
+  ggtitle('A: Open Materials scores 2014-2015') + 
   geom_signif(comparisons = m1_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 
@@ -605,7 +532,7 @@ m1_B <- materials_subfield_descriptives_B %>%
   easy_remove_legend() +
   easy_all_text_size(size = 8) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
-  ggtitle('D: Open Materials scores 2019-2020') + 
+  ggtitle('B: Open Materials scores 2019-2020') + 
   geom_signif(comparisons = m1_B_comparisons, y_position = c(11.5, 14.5, 17), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
 
 ```
@@ -659,7 +586,6 @@ materials_aov_AB <- aov_ez(
 
 materials_apa_AB <- apa_print(materials_aov_AB)
 
-
 ### Interaction between time and subfield - Data scores 
 data_subfieldtime_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups, time_period) %>%
@@ -669,7 +595,7 @@ data_subfieldtime_descriptives_AB <- dates_AB %>%
             stderr = SD/sqrt(N))
 
 
-#### Interaction between time and subfield - Materials Score
+### Interaction between time and subfield - mat scores 
 
 materials_subfieldtime_descriptives_AB <- dates_AB %>%
   group_by(subfield_groups, time_period) %>%
@@ -677,8 +603,6 @@ materials_subfieldtime_descriptives_AB <- dates_AB %>%
             SD = sd(open_materials_score, na.rm = TRUE),
             N = n(),
             stderr = SD/sqrt(N))
-
-
 ```
 
 ````{r ab-plot}
@@ -698,7 +622,7 @@ d3_AB <- data_subfieldtime_descriptives_AB  %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
   theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('a) Open Data scores')
+  ggtitle('A) Open Data scores')
 
 # Plot materials
 
@@ -715,69 +639,47 @@ m3_AB <- materials_subfieldtime_descriptives_AB  %>%
   easy_all_text_size(size = 9) + # change the size of the text
   easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
     theme(legend.title = element_blank()) + # remove legend title
-  ggtitle('b) Open Materials scores')
+  ggtitle('B) Open Materials scores')
+
 
 ```
 
 
-We first used the open data from Kidwell et al., (2016) and analysed whether open data and open materials scores improved across the 2014-2015 period and differed by subfield. As illustrated in Figure 2A, for open data scores the main effect of subfield, `r data_apa_A$full$subfield_groups`, was not significant, indicating that during the period immediately following the badge policy change, open data scores were uniformly low across subfields. There was a significant main effect of time period, `r data_apa_A$full$time_period`, however, the improvement in open data scores over this 18 month period did not differ as a function of subfield, `r data_apa_A$full$time_period_subfield_groups`. 
+We first used the open data from Kidwell et al., (2016) and analysed whether open data and open materials scores improved across the 2014-2015 period and differed by subfield. As illustrated in Figure 2A, for open data scores the main effect of subfield, `r data_apa_A$full$subfield_groups`, was not significant, indicating that during the period immediately following the badge policy change, open data scores were uniformly low across subfields. Whilst open data scores increased over time,`r data_apa_A$full$time_period`, this improvement did not differ as a function of subfield `r data_apa_A$full$time_period_subfield_groups`. 
 
-```{r}
-(d1_A + d1_B) / (m1_A + m1_B)
+```{r, fig.cap = "Mean open data scores for articles published in *Psychological Science* between 2014-2015 and 2019-2020 as a function of subfield."}
+
+(d1_A + d1_B)
 
 ```
-*Figure 2*: Mean open data and open materials scores for articles published in *Psychological Science* between 2014-2015 and 2019-2020 as a function of subfield. 
 
 
-Across the 2019-2020 period, open data scores also increased significantly , `r data_apa_B$full$time_period`, and differed by subfield, `r data_apa_B$full$subfield_groups`. When we compared the open data scores from papers published in developmental psychology to each of the other subfield categories (Figure 2B), we found that papers in developmental psychology had significantly lower open data scores (*M* = `r data_subfield_descriptives_B$mean_data_score[1]`, *SD* = `r data_subfield_descriptives_B$SD[1]`) than papers in cognition (*M* = `r data_subfield_descriptives_B$mean_data_score[3]`, *SD* = `r data_subfield_descriptives_B$SD[3]`), `r ttest_apa1_B$statistic`, but did not differ from papers published in social psychology (*M* = `r data_subfield_descriptives_B$mean_data_score[2]`, *SD* = `r data_subfield_descriptives_B$SD[2]`), `r ttest_apa2_B$statistic` or those that fell into the other category (*M* = `r data_subfield_descriptives_B$mean_data_score[4]`, *SD* = `r data_subfield_descriptives_B$SD[4]`), `r ttest_apa3_B$statistic`. There was no significant time by subfield interaction, `r data_apa_B$full$time_period_subfield_groups`. 
+Across the 2019-2020 period, open data scores also increased significantly, `r data_apa_B$full$time_period`, and differed by subfield, `r data_apa_B$full$subfield_groups`. When we compared the open data scores from papers published in developmental psychology to each of the other subfield categories (Figure 2B), we found that papers in developmental psychology had significantly lower open data scores (*M* = `r data_subfield_descriptives_B$mean_data_score[1]`, *SD* = `r data_subfield_descriptives_B$SD[1]`) than papers in cognition (*M* = `r data_subfield_descriptives_B$mean_data_score[3]`, *SD* = `r data_subfield_descriptives_B$SD[3]`), `r ttest_apa1_B$statistic`, but did not differ from papers published in social psychology (*M* = `r data_subfield_descriptives_B$mean_data_score[2]`, *SD* = `r data_subfield_descriptives_B$SD[2]`), `r ttest_apa2_B$statistic` or those that fell into the other category (*M* = `r data_subfield_descriptives_B$mean_data_score[4]`, *SD* = `r data_subfield_descriptives_B$SD[4]`), `r ttest_apa3_B$statistic`. There was no significant time by subfield interaction, `r data_apa_B$full$time_period_subfield_groups`. 
 
-For open materials scores across 2014-2015, there were significant main effects of both subfield, `r materials_apa_A$full$subfield_groups`, and time period, `r materials_apa_A$full$time_period` (see Figure 2C). Papers in developmental psychology had lower open materials scores (*M* = `r materials_subfield_descriptives_A$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_A$SD[1]`) than those in both social (*M* = `r materials_subfield_descriptives_A$mean_materials_score[2]`, *SD* = `r materials_subfield_descriptives_A$SD[2]  `), `r ttest_apa2_A$statistic`, and cognition (*M* = `r materials_subfield_descriptives_A$mean_materials_score[3]`, *SD* = `r materials_subfield_descriptives_A$SD[3] `), `r ttest_apa1_A$statistic`, but developmental open materials scores did not differ from papers allocated to the other subfield category (*M* = `r materials_subfield_descriptives_A$mean_materials_score[4]`, *SD* = `r materials_subfield_descriptives_A$SD[4] `), `r ttest_apa3_A$statistic`. The interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant.
+```{r, fig.cap = "Mean open materials scores for articles published in *Psychological Science* between 2014-2015 and 2019-2020 as a function of subfield."}
 
-As illustrated in Figure 2D, there were also subfield differences in open materials scores during the 2019-2020 period, `r materials_apa_B$full$subfield_groups`. Consistent with open data scores, papers published in developmental psychology had significantly lower open materials scores (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`) than papers published in cognition, (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa4_B$statistic`, however, open materials scores did not differ between developmental and social psychology (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa5_B$statistic`, or between developmental psychology and the other subfield category (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa6_B$statistic`. There were no additional changes in open materials scores across the time period between mid-2019 and the end of 2020, `r materials_apa_B$full$time_period`, and differences in subfield did not vary over time, `r materials_apa_B$full$time_period_subfield_groups`.
+(m1_A + m1_B)
 
-It is clear that since the introduction of Open Science Badges in 2014, papers published in *Psychological Science* have become more open over time and that most recently, developmental psychology has lagged behind some, but not all, subfields. To determine whether the rate of improvement from 2014-2015 through 2019-2020 differed significantly by subfield, we combined the data across the two coded time periods and looked for subfield by time interactions in both open data and open materials scores. As illustrated in Figure 3, there was no evidence that the magnitude of improvement over time differed by subfield for either both open data scores `r data_apa_AB$full$time_period_subfield_groups` or open materials scores `r materials_apa_AB$full$time_period_subfield_groups`. 
+```
 
-```{r}
+For open materials scores across 2014-2015, there were significant main effects of both subfield, `r materials_apa_A$full$subfield_groups`, and time period, `r materials_apa_A$full$time_period` (see Figure 3A). Papers in developmental psychology had lower open materials scores (*M* = `r materials_subfield_descriptives_A$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_A$SD[1]`) than those in both social (*M* = `r materials_subfield_descriptives_A$mean_materials_score[2]`, *SD* = `r materials_subfield_descriptives_A$SD[2]  `), `r ttest_apa2_A$statistic`, and cognition (*M* = `r materials_subfield_descriptives_A$mean_materials_score[3]`, *SD* = `r materials_subfield_descriptives_A$SD[3] `), `r ttest_apa1_A$statistic`, but developmental open materials scores did not differ from papers allocated to the other subfield category (*M* = `r materials_subfield_descriptives_A$mean_materials_score[4]`, *SD* = `r materials_subfield_descriptives_A$SD[4] `), `r ttest_apa3_A$statistic`. The interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant.
+
+As illustrated in Figure 3B, there were also subfield differences in open materials scores during the 2019-2020 period, `r materials_apa_B$full$subfield_groups`. Consistent with open data scores, papers published in developmental psychology had significantly lower open materials scores (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`) than papers published in cognition, (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa4_B$statistic`, however, open materials scores did not differ between developmental and social psychology (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa5_B$statistic`, nor between developmental psychology and the other subfield category (*M* = `r materials_subfield_descriptives_B$mean_materials_score[1]`, *SD* = `r materials_subfield_descriptives_B$SD[1]`), `r ttest_apa6_B$statistic`. There were no changes in open materials scores across the time period between mid-2019 and the end of 2020, `r materials_apa_B$full$time_period`, and differences in subfield did not vary over time, `r materials_apa_B$full$time_period_subfield_groups`.
+
+```{r, fig.cap="Mean open data and open materials scores for articles published in *Psychological Science* as a function of subfield and time period."}
 
 d3_AB / m3_AB
 
 ```
-*Figure 3*: Mean open data and open materials scores for articles published in *Psychological Science* as a function of subfield and time period. 
+
+It is clear that since the introduction of Open Science Badges in 2014, papers published in *Psychological Science* have become more open over time and that most recently, developmental psychology has lagged behind some, but not all, subfields. To determine whether the rate of improvement from 2014-2015 through 2019-2020 differed significantly by subfield, we combined the data across the two coded time periods and looked for subfield by time interactions in both open data and open materials scores. As illustrated in Figure 4, there was no evidence that the magnitude of improvement over time differed by subfield for either both open data scores `r data_apa_AB$full$time_period_subfield_groups` or open materials scores `r materials_apa_AB$full$time_period_subfield_groups`. 
 
 
 
 
-# EXPLORATORY
+
 
 ```{r d-m-rain, echo=FALSE}
-
-### 1A Data Plot
-# Note: We tried using the raincloud package, but it only allowed us to compare two subfields at a time
-
-rainplot_data1 <- final1A %>%  
-  ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
-  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
-    theme_classic() +
-    theme(axis.title.y = element_text(size=9)) +
-  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
-  labs(x = element_blank(), y = 'Open Data Score') +
-  easy_remove_legend() + 
-  ggtitle('(a)')
-
-### 1A Materials Plot
-rainplot_materials1 <- final1A %>%  
-  ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
-  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
-  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
-    theme_classic() +
-    theme(axis.title.y = element_text(size=9)) +
-  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
-  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
-  labs(x = element_blank(), y = 'Open Materials Score') +
-  easy_remove_legend() + 
-  ggtitle('(b)')
 
 ### 1B Data Plot
 rainplot_data2 <- final1B %>%  
@@ -789,8 +691,7 @@ rainplot_data2 <- final1B %>%
   scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   scale_x_discrete(labels=c("Development" = "Development\n(n = 34)","Social" = "Social\n(n = 57)","Cognition" = "Cognition\n(n = 61)","Other" = "Other\n(n = 41)")) +
   labs(x = element_blank(), y = 'Open Data Score') +
-  easy_remove_legend() + 
-  ggtitle('(c)')
+  easy_remove_legend() 
 
 ### 1B Materials Plot
 
@@ -803,102 +704,22 @@ rainplot_materials2 <- final1B %>%
   scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
   scale_x_discrete(labels=c("Development" = "Development\n(n = 34)","Social" = "Social\n(n = 57)","Cognition" = "Cognition\n(n = 61)","Other" = "Other\n(n = 41)")) +
   labs(x = element_blank(), y = 'Open Materials Score') +
-  easy_remove_legend() + 
-  ggtitle('(d)')
+  easy_remove_legend() 
 
 
 ```
 
+```{r rain, fig.cap = "Distribution of open data and open materials scores earned by articles published in *Psychological Science* between 2019 and 2020 as a function of subfield"}
 
-Our confirmatory analyses showed that on average, open data and materials scores for papers published in *Psychological Science* have increased markedly across all subfields, however, it is clear that scores within each subfield varied widely. To capture changes in variability over time, we used raincloud plots [@allen2019raincloud] to represent the distribution of open data and materials scores across subfields. Figure 4 illustrates that in 2014-2015, across all subfields, most open data and open materials scores were low, with between 70-80% of papers receiving scores less than 5. In contrast in 2019-2020, the distribution is bimodal. The majority of papers score on the upper half of the scale, however, there are still one third of papers published that receive scores less than 5. 
-
-```{r rain_combo}
-### patch figure 
-
-(rainplot_data1 | rainplot_materials1) / 
-(rainplot_data2 | rainplot_materials2)
+rainplot_data2 + rainplot_materials2
 ```
-**Figure 4**: Distribution of open data and open materials scores earned by articles published in *Psychological Science* as a function of subfield 
 
-We were surprised how few articles received very high open data and materials scores even in 2019-2020. In order to receive very high scores, article authors needed to engage in behaviours that make shared resources most useful (i.e. sharing data with a accompanying codebook and analysis script) and we particularly interested in how common this kind of metadata sharing was among papers that had earned an Open Data or Open Materials Badge. To produce Figure 5, we filtered articles published within the 2019-20 window for those that were awarded open data and materials badges and then plotted the proportion of those articles that shared codebooks and scripts along with complete data. It is clear from the Figure that whie the vast majority of papers earning an open data badge had complete data available, only half shared a codebook and X% included a analysis script. Similarly for open materials, most articles earning a badge shared raw materials on an open repository but a relatively small percentage of articles also shared an script and/or detailed explanation of how to use the materials in a replication study. 
+Our confirmatory analyses showed that on average, open data and materials scores for papers published in *Psychological Science* have increased markedly across all subfields, however, scores within each subfield varied widely. To capture changes in variability over time, we used raincloud plots [@allen2019raincloud] to represent the distribution of open data and materials scores across subfields. Figure 5 illustrates that in 2014-2015, across all subfields, most open data and open materials scores were low, with between 70-80% of papers receiving scores less than 5. In contrast in 2019-2020, the majority of papers score on the upper half of the scale, however, there are still one third of papers published that receive scores less than 5. 
 
 
-```{r odb-plot, message=FALSE, warning=FALSE, include=FALSE}
+```{r badge-plot, message=FALSE, warning=FALSE, include=FALSE}
 
 ### Open Data Badge Plot
-#### Select only relevant 1A variables
-
-A_select_data <- subfield_groups_A  %>%
-  select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
-
-# Percentage of articles that received a badge
-A_data_badge <- A_select_data %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data)
-
-#### Summary tables
-# reportedly available
-A_reportedly_available_data <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are) %>%
-  mutate("Percent" = Available/(Available)*100) %>%
-  select(Number = Available, Percent) %>%
-  mutate(Real_Stage = "Reportedly Available")
-
-# locatable data
-A_locatable_data <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, are_the_data_located_at_the_working_page) %>%
-  mutate("Percent" = Yes/(Yes)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Actually Locatable")
-
-# correct data 
-A_correct_data <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, does_the_data_correspond_to_what_is_reported_in_the_article) %>%
-  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Correct Data")
-
-# complete data
-A_complete_data <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, are_the_data_complete) %>%
-  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `No, not all of the data are available` + `Unclear whether or not all of the data are available`)*100) %>%
-  select(Number = `Yes, all of the data appear to be available`, Percent) %>%
-  mutate(Real_Stage = "Complete Data")
-
-# software specified
-A_software_specified <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, software) %>%
-  mutate("Percent" = Yes/(Yes + No)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Software Specified")
-
-# codebook available 
-A_data_codebook_available <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
-  mutate("Percent" = Yes/(Yes + No)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Codebook Available")
-
-# scripts available 
-A_data_scripts_available <- A_select_data %>%
-  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_data, are_analysis_scripts_included_with_the_data) %>%
-  mutate("Percent" = Yes/(Yes + No)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Scripts Available")
-
-#### Bind all statistics together
-
-A_data_stats <- rbind(A_reportedly_available_data, A_locatable_data, A_correct_data, A_complete_data, A_software_specified, A_data_codebook_available, A_data_scripts_available)
-
-A_data_stats <- A_data_stats %>%
-  mutate("Time" = "2014-15") 
-
 #### Select only relevant 1B variables
 
 B_select_data <- subfield_groups_B  %>%
@@ -971,119 +792,29 @@ B_data_scripts_available <- B_select_data %>%
 B_data_stats <- rbind(B_reportedly_available_data, B_locatable_data, B_correct_data, B_complete_data, B_software_specified, B_data_codebook_available, B_data_scripts_available)
 
 B_data_stats <- B_data_stats %>%
-  mutate("Time" = "2019-20") 
+  mutate("Time" = "2019-20") %>%
+  mutate(Real_Stage = factor(Real_Stage, levels = c("Scripts Available", "Software Specified","Codebook Available","Complete Data","Correct Data","Actually Locatable","Reportedly Available")))
 
-#### Combine 1A and 1B stats together
+levels(B_data_stats$Real_Stage )
 
-all_data_stats <- rbind(A_data_stats, B_data_stats)
-
-#### Plot combined 1A1B data
-
-combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colour = Time)) +
-  coord_cartesian(ylim=c(0,100)) +
-  geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
-  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
-    scale_color_manual(values=c("#EC407A","#42A5F5"),
-                     labels=c("2014-15 (n = 46)",
-                              "2019-20 (n = 133)")) +
-  theme(axis.text.y = element_text(size=9),
-        axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=7),
-        axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
+data_badge_plot <-  B_data_stats %>%
+  ggplot(aes(x = Real_Stage, y = Percent, fill = Real_Stage)) +
+  geom_col() +
   easy_labs(y = "Percentage of Articles", x = "Data Sharing Criteria") +
-  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
-    theme(legend.position=c(0.2, .3)) +
-  theme(legend.title=element_blank()) +
-  theme(legend.text = element_text(size = 9)) +
-  theme(legend.key.size = unit(1, "cm")) +
-  theme(axis.line= element_line(), 
-        panel.background = element_blank(), 
-        panel.grid.minor = element_blank()) 
-
-
- recent_data_plot <- all_data_stats %>%
-   filter(Time == "2019-20") %>%
-   ggplot(aes(x = Real_Stage, y=Percent, group = Time, colour=Time)) +
-   coord_cartesian(ylim=c(0,100)) +
-   geom_point() +
-   geom_line() +
-   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
-   theme(axis.text.y = element_text(size=9),
-        axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=7),
-        axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
-    theme(legend.position=c(0.5, .2)) +
-  theme(legend.title=element_blank()) +
-  theme(legend.text = element_text(size = 9)) +
-  theme(legend.key.size = unit(1, "cm")) +
+  theme(axis.text.y = element_text(size=8),
+        axis.title.y = element_text(size=10)) +
+  theme(axis.text.x = element_text(size=8),
+        axis.title.x = element_text(size=10, 
+            margin = margin(t = 2, r = 0, b = 0, l = 0))) +
+  scale_x_discrete(labels = wrap_format(10)) +
+   scale_fill_manual(values=c("#FFD54F", "#FFB74D","#E57373","#F06292", "#BA68C8", "#7986CB", "#1E88E5")) +
   theme(axis.line= element_line(), 
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) +
-  easy_labs(y = "Percentage of Articles", x = "Data Sharing Criteria") +
-    scale_color_manual(values=c("#42A5F5"),
-                     labels=c("2019-20 (n = 133)")) 
+  scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
+   easy_remove_legend() +
+  coord_flip()
 
- 
-```
-
-
-
-```{r omb-plot, message=FALSE, warning=FALSE, include=FALSE}
-### Open Materials Badge Plot
-#### Select only relevant 1A variables
-A_select_materials <- subfield_groups_A %>%
-  select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
-
-# Percentage of articles that received a badge
-A_materials_badge <- A_select_materials %>%
-  tabyl(did_the_article_receive_a_badge_for_open_materials)
-
-#### Summary tables
-# reportedly available
-A_reportedly_available_materials <- A_select_materials %>%
-  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are) %>%
-  mutate("Percent" = Available/(Available)*100) %>%
-  select(Number = Available, Percent) %>%
-  mutate(Real_Stage = "Reportedly Available")
-
-# locatable materials
-A_locatable_materials <- A_select_materials %>%
-  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_materials, are_the_materials_located_at_the_working_page) %>%
-  mutate("Percent" = Yes/(Yes)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Actually Locatable")
-
-# correct materials
-A_correct_materials <- A_select_materials %>%
-  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_materials, do_the_materials_correspond_to_what_is_reported_in_the_article) %>%
-  mutate("Percent" = Yes/(Yes)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Correct Materials")
-
-# complete materials
-A_complete_materials <- A_select_materials %>%
-  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_materials, are_the_materials_complete) %>%
-  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available`)*100) %>%
-  select(Number = `Yes, all of the materials appear to be available`, Percent) %>%
-  mutate(Real_Stage = "Complete Materials")
-
-# scripts available 
-A_material_scripts_available <- A_select_materials %>%
-  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
-  tabyl(did_the_article_receive_a_badge_for_open_materials, are_analysis_scripts_included_with_the_materials) %>%
-  mutate("Percent" = Yes/(Yes + No)*100) %>%
-  select(Number = Yes, Percent) %>%
-  mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
-
-#### Bind all statistics
-A_material_stats <- rbind(A_reportedly_available_materials, A_locatable_materials, A_correct_materials, A_complete_materials, A_material_scripts_available)
-
-A_material_stats <- A_material_stats %>%
-  mutate("Time" = "2014-15") 
 
 #### Select only relevant 1Bvariables
 
@@ -1140,92 +871,65 @@ B_material_scripts_available <- B_select_materials %>%
 B_material_stats <- rbind(B_reportedly_available_materials, B_locatable_materials, B_correct_materials, B_complete_materials, B_material_scripts_available)
 
 B_material_stats <- B_material_stats %>%
-  mutate("Time" = "2019-20") 
+  mutate("Time" = "2019-20") %>%
+  mutate(Real_Stage = factor(Real_Stage, levels = c("Scripts Available/\nExplanation Provided", "Complete Materials", "Correct Materials", "Actually Locatable" , "Reportedly Available")))
 
-#### Combine 1A and 1B stats together
-
-all_material_stats <- rbind(A_material_stats, B_material_stats)
+levels(B_material_stats$Real_Stage)
 
 #### Plot combined data 
-
-combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Time, colour = Time)) +
-  coord_cartesian(ylim=c(0,100)) +
-  geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
-  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
-    scale_color_manual(values=c("#EC407A","#42A5F5"),
-                     labels=c("2014-15 (n = 38)",
-                              "2019-20 (n = 107)")) +
-  theme(axis.text.y = element_text(size=9),
-        axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=7),
-        axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
-  easy_labs(y = "Percentage of Articles", x = "Material Sharing Criteria") +
-  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
-    theme(legend.position=c(.2, .3)) +
-  theme(legend.title=element_blank()) +
-  theme(legend.text = element_text(size = 9)) +
-  theme(legend.key.size = unit(1, "cm")) +
-  theme(axis.line= element_line(), 
-        panel.background = element_blank(), 
-        panel.grid.minor = element_blank()) 
-
-
 # just recent time period
 
-recent_material_plot <- all_material_stats %>%
-   filter(Time == "2019-20") %>%
-   ggplot(aes(x = Real_Stage, y=Percent, group = Time, colour=Time)) +
-   coord_cartesian(ylim=c(0,100)) +
-   geom_point() +
-   geom_line() +
-   scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
-  theme(axis.text.y = element_text(size=9),
-        axis.title.y = element_text(size=9)) +
-  theme(axis.text.x = element_text(size=7),
-        axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
-    theme(legend.position=c(0.5, .2)) +
-  theme(legend.title=element_blank()) +
-  theme(legend.text = element_text(size = 9)) +
-  theme(legend.key.size = unit(1, "cm")) +
+mat_badge_plot <-  B_material_stats %>%
+  ggplot(aes(x = Real_Stage, y = Percent, fill = Real_Stage)) +
+  geom_col() +
+  easy_labs(y = "Percentage of Articles", x = "Materials Sharing Criteria") +
+  theme(axis.text.y = element_text(size=8),
+        axis.title.y = element_text(size=10)) +
+  theme(axis.text.x = element_text(size=8),
+        axis.title.x = element_text(size=10, 
+            margin = margin(t = 2, r = 0, b = 0, l = 0))) +
+  scale_x_discrete(labels = wrap_format(10)) +
+  scale_fill_manual(values=c("#FFD54F","#F06292", "#BA68C8", "#7986CB", "#1E88E5")) +
   theme(axis.line= element_line(), 
         panel.background = element_blank(), 
         panel.grid.minor = element_blank()) +
-  easy_labs(y = "Percentage of Articles", x = "Materials Sharing Criteria") +
-    scale_color_manual(values=c("#42A5F5"),
-                     labels=c("2019-20 (n = 107)")) 
-    
-          
+  easy_remove_legend_title() +
+  scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
+  easy_remove_legend() +
+    coord_flip()
 
 ```
 
 
-```{r}
-recent_data_plot / recent_material_plot
+```{r fig.cap = "Proportion of articles published in *Psychological Science* in 2019-2020 that earned an Open Data Badge (left) or Open Materials Badge (right) and engaged with sharing criteria behaviours"}
 
+data_badge_plot + mat_badge_plot
 ```
-*Figure 5* Badges plot 
+
+We were surprised how few articles received very high open data and materials scores even in 2019-2020. In order to receive very high scores, article authors needed to engage in behaviours that make shared resources most useful (i.e. sharing data with a accompanying codebook and analysis script). We were particularly interested in how common this kind of metadata sharing was among papers that had earned an Open Data or Open Materials Badge. To produce Figure 6, we filtered articles published within the 2019-2020 window for those that were awarded open data and materials badges and then plotted the proportion of those articles that shared codebooks and scripts along with complete data. 
+
+The vast majority of papers earning an open data badge had complete data available, less than half shared a codebook and only 66% included a analysis script. Similarly for open materials, most articles earning a badge shared raw materials on an open repository but a relatively small percentage of articles also shared an script and/or detailed explanation of how to use the materials in a replication study. 
+
 
 # Discussion
 
-In the past few years, there has been concern from some academics that developmental psychology was lagging behind in its use of open science practices, compared to other psychological subfields. The results of the current study provide empirical support for this idea. Across both 2014-15 and 2019-20, developmental psychology articles published in *Psychological Science* had significantly lower Open Materials Scores than cognitive psychology articles. In 2019-20, developmental psychology articles also hadlower Open Data Scores relative to cognition articles.  
+In the past few years, there has been concern from some academics that developmental psychology was lagging behind in its use of open science practices, compared to other psychological subfields. The results of the current study provide empirical support for this idea. Across both 2014-2015 and 2019-2020, developmental psychology articles published in *Psychological Science* had significantly lower open materials scores than cognitive psychology articles. In 2019-2020, developmental psychology articles also had lower open data scores relative to cognition articles.  
 
-There are several factors that may be contributing to lower open data and open materials scores in developmental psychology. Notably, practicing open science may pose a greater reputational risk to developmental scientists compared to researchers from other subdisciplines  (Gilmore et al., 2020).  Participants in developmental research are temperamental and unpredictable, which makes it difficult for researchers to stick to strict experimental protocols (Peterson, 2016). For example, if a child is getting fussy, the experimenter may deviate from the experimental protocol and allow the parent to complete the paradigm with them (Slaughter & Suddendorf, 2007). These “off-protocol” decisions make experimental protocols difficult to replicate and add noise to experimental data (Peterson, 2016). Researchers may be reluctant to share data and materials online, out of fear that they will be criticised for a lack of scientific rigor, and that their reputation may be harmed (Gilmore et al., 2020). It is possible that the perceived risks of data and material sharing in developmental psychology may impact openness and transparency
+There are several factors that may be contributing to lower open data and open materials scores in developmental psychology. Notably, practicing open science may pose a greater reputational risk to developmental scientists compared to researchers from other subdisciplines  [@gilmore2020advancing].  Participants in developmental research are temperamental and unpredictable, which makes it difficult for researchers to stick to strict experimental protocols [@peterson2016baby]. For example, if a child is getting fussy, the experimenter may deviate from the experimental protocol and allow the parent to complete the paradigm with them [@slaughter2007participant]. These “off-protocol” decisions make experimental protocols difficult to replicate and add noise to experimental data [@peterson2016baby]. Researchers may be reluctant to share data and materials online, out of fear that they will be criticised for a lack of scientific rigor, and that their reputation may be harmed [@gilmore2020advancing]. It is possible that the perceived risks of data and material sharing in developmental psychology may impact openness and transparency
 
-The scarcity of data in developmental psychology may further impede data sharing.  Developmental scientists usually recruit their participants from off-campus locations (Peterson, 2016) making recruitment a time consuming and expensive process and sample sizes generally small (Davis-Kean & Ellis, 2019). In contrast, cognition researchers are typically able to recruit large samples of participants on campus or from online platforms (Benjamin, 2019). According to the law of supply and demand, which asserts that rare commodities are more highly valued (Steuart, 1767), developmental researchers may place greater value on their data than researchers in other subfields. Given that willingness to share decreases as the value of an item increases (Hellwig et al., 2015), it is possible that the nature of developmental data reduces the likelihood that developmental scientists will share compared to other psychological subfields, such as cognition.  
+The scarcity of data in developmental psychology may further impede data sharing.  Developmental scientists usually recruit their participants from off-campus locations [@peterson2016baby] making recruitment a time consuming and expensive process and sample sizes generally small [@davis2019overview]. In contrast, cognition researchers are typically able to recruit large samples of participants on campus or from online platforms [@benjamin2019]. According to the law of supply and demand, which asserts that rare commodities are more highly valued [@steuart1767inquiry], developmental researchers may place greater value on their data than researchers in other subfields. Given that willingness to share decreases as the value of an item increases [@hellwig2015exploring], it is possible that the nature of developmental data reduces the likelihood that developmental scientists will share compared to other psychological subfields, such as cognition.  
 
-Finally, the methods that developmental psychologists use may make it particularly difficult to share materials openly. As Peterson (2016) reports, in developmental studies, experimental stimuli are typically constructed by hand and are set up manually by research assistants. The physical nature of these experimental paradigms may make them more difficult, and sometimes impossible, to share online. In contrast, computer-based experimental paradigms are becoming increasingly popular in the fields of cognition and social psychology. These paradigms, which can be automated and run online, make it relatively easy to upload materials to online repositories (Paxton & Tullett, 2019). Therefore, the types of materials researchers employ may explain why developmental psychologists may be less likely to share materials than researchers in other subfields.  
+Finally, the methods that developmental psychologists use may make it particularly difficult to share materials openly. As Peterson [-@peterson2016baby] reports, in developmental studies, experimental stimuli are typically constructed by hand and are set up manually by research assistants. The physical nature of these experimental paradigms may make them more difficult, and sometimes impossible, to share online. In contrast, computer-based experimental paradigms are becoming increasingly popular in the fields of cognition and social psychology. These paradigms, which can be automated and run online, make it relatively easy to upload materials to online repositories [@paxton2019open]. Therefore, the types of materials researchers employ may explain why developmental psychologists may be less likely to share materials than researchers in other subfields.  
 
 Although developmental psychology appears to be lagging behind other subfields, there is cause for optimism.  Open data and materials scores for developmental psychology articles published in *Psychological Science* improved from 2014 to 2020 at the same rate as articles in other subfields. It seems that developmental psychology researchers, at least those who are looking to publish in *Psychological Science*, are keeping up with their colleagues and becoming more and more likely to adopt open data and open materials into their research workflow.  
 
-It is clear that open data and materials practices are becoming more common, however, the current findings highlight the significant progress that has yet to be made in the open science movement across the field of psychology. We were surprised to see that in 2019-20, Open Data and Open Materials Scores were bimodally distributed (see Figure X), with a large proportion of articles receiving extremely low scores. In addition, very few articles were awarded the highest possible Open Data and Open Materials Score, indicating that even when data and materials were shared, they were often not accompanied by a codebook, analysis script and/or explanation of the materials.  Roche et al. (2015) suggests that without these metadata, open data and open materials may may be not be usable, both for the purpose of reproducing the findings of a particular study and conducting novel research (Roche et al., 2015). Like all open science incentives, Open Science Badges are not an end to themselves; although the aim is to increase the transparency of research methods, the ultimate goal is to improve the replicability. Open Science Badges may incentivise researchers to share their data and materials, but if they do not increase the availability of metadata, then their value in overcoming the replication crisis, remains debatable.  
+It is clear that open data and materials practices are becoming more common, however, the current findings highlight the significant progress that has yet to be made in the open science movement across the field of psychology. We were surprised to see that in 2019-2020 with a large proportion of articles received extremely low scores open data and open materials scores. In addition, very few articles were awarded the highest possible open data and open materials score, indicating that even when data and materials were shared, they were often not accompanied by a codebook, analysis script and/or explanation of the materials.  Roche et al. [-@roche2015public] suggest that without these metadata, open data and open materials may may be not be usable, both for the purpose of reproducing the findings of a particular study and conducting novel research. Like all open science incentives, Open Science Badges are not an end to themselves; although the aim is to increase the transparency of research methods, the ultimate goal is to improve the replicability. Whilst Open Science Badges appear to incentivise researchers to share their data and materials, if they do not increase the availability of metadata, then their value in overcoming the replication crisis, remains debatable.  
 
-**that is necessary for data and materials to be usable. These underwhelming results suggest that researchers may need to be convinced that the benefits of open and transparent research practice, both personally and for the field, outweigh the time and effort required to change research workflow (Markowetz, 2015).**  
+Our results also raise concerns about how well Open Science Badges criteria are adhered to, in practice. According to the COS, Open Data Badges can only be awarded if a ‘data dictionary’ such as a codebook, or other related metadata is made available [@center_2013a]. Similarly, for articles to be awarded an Open Materials Badge, the authors must provide a sufficiently detailed explanation of how the materials were used in the study, and how they can be reproduced, if they can’t be shared digitally [@center_2013b]. We found that only 45% of the articles that were awarded an Open Data Badge in 2019-2020, shared a codebook, and only 35% of those awarded an Open Materials Badge provided an explanation of their materials. These results not only suggest that a very small proportion of the articles that received an Open Data and/or Open Materials Badge were truly deserving of one, but they also show that the criteria for Open Science Badges may be applied inconsistently. Further research is required to identify whether this issue is specific to *Psychological Science*, or if it is a broader issue observed across all journals that award Open Science Badges. In any case, the potentially inconsistent application of the criteria for Open Science Badges questions how valid and reliable they are as indicators of transparency and usability.  
 
-Our results also raise concerns about how well Open Science Badges criteria are adhered to, in practice. According to the COS, Open Data Badges can only be awarded if a ‘data dictionary’ such as a codebook, or other related metadata is made available (Center for Open Science, 2013a). Similarly, for articles to be awarded an Open Materials Badge, the authors must provide a sufficiently detailed explanation of how the materials were used in the study, and how they can be reproduced, if they can’t be shared digitally (Center for Open Science, 2013b). We found that only 45% of the articles that were awarded an Open Data Badge in 2019-20, shared a codebook, and only 35% of those awarded an Open Materials Badge provided an explanation of their materials. These results not only suggest that a very small proportion of the articles that received an Open Data and/or Open Materials Badge were truly deserving of one, but they also show that the criteria for Open Science Badges may be applied inconsistently. Further research is required to identify whether this issue is specific to *Psychological Science*, or if it is a broader issue observed across all journals that award Open Science Badges. In any case, the potentially inconsistent application of the criteria for Open Science Badges questions how valid and reliable they are as indicators of transparency and usability.  
+Where to from here? It is clear that Open Science Badges have had an impact on author behaviour at *Psychological Science* but that there is still work to do in making psychology a truely open science. *Psychological Science* was ideally suited for our open science subfield comparison due to its broad publishing scope. However, because *Psychological Science* implemented Open Science Badges, and is one of psychology’s top tier journals, publishing only a very small subset of high quality and novel research articles, it is unclear whether the results from the current study reflect the field of psychology as whole. Future meta-research should focus on open science practices across a broader range of psychology journals to assess whether it is the badges per se, or a broader shift in research workflow that has resulted in improved transparency at *Psychological Science*. 
 
-Where to from here? It is clear that Open Badges have had an impact on author behaviour at *Psychological Science* but that there is still work to do in making psychology a truely open science. *Psychological Science* was ideally suited for our open science subfield comparison due to its broad publishing scope. However, because *Psychological Science* implemented Open Science Badges, and is one of psychology’s top tier journals, publishing only a very small subset of high quality and novel research articles, it is unclear whether the results from the current study reflect the field of psychology as whole. Future meta-research should focus on open science practices across a broader range of psychology journals to assess whether it is the badges per se, or a broader shift in research workflow that has resulted in improved transparency at *Psychological Science*. 
-
-Although Open Badges may encourage authors to be more transperant in their research, it is possible that they are rewarding researchers for doing the bare minimum, and not actually pushing the field toward a more replicable science. Perhaps journals should consider employing an open science scoring system, instead. Such a system (see Yang et al., 2020; Hartshorne & Schachner, 2012 for related examples) would involve psychology journals awarding each article they publish a "Reproduciblity Score” that indexes the likelihood of the findings being successfully reproduced based on the transparency of the data and materials. To maximise objectivity and to minimise time costs, an automated algorithm would generate the Reproducibility Score (Altmejd et al., 2019; Yang et al., 2020). Future research should test whether compared to Open Science Badges, scores may be a more precise and meaningful indicator of transparency and potential replicability. 
+Although Open Science Badges may encourage authors to be more transperant in their research, it is possible that they are rewarding researchers for doing the bare minimum, and not actually pushing the field toward a more replicable science. Perhaps journals should consider employing an open science scoring system, instead. Such a system (see [@yang2020estimating; @hartshorne2012tracking] for related examples) would involve psychology journals awarding each article they publish a "Reproduciblity Score” that indexes the likelihood of the findings being successfully reproduced based on the transparency of the data and materials. To maximise objectivity and to minimise time costs, an automated algorithm would generate the Reproducibility Score [@altmejd2019predicting; @yang2020estimating]. Future research should test whether compared to Open Science Badges, scores may be a more precise and meaningful indicator of transparency and potential replicability. 
 
 To conclude, the present study provides support for the existence of subfield differences in the uptake of open science practices, across the field of psychology. Whilst the findings indicated that researchers’ use of open science practices have increased since *Psychological Science* introduced Open Science Badges in 2014, there appears to be considerable progress yet to be made. Although Open Science Badges do not appear to be as valuable in overcoming the replication crisis as they seem, an open science scoring system may provide a promising alternative. Overall, we hope that the results of the study enhance the way open science is endorsed and applied across psychological subfields. 
 
