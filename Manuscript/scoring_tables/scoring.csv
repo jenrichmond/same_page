@@ -1,0 +1,12 @@
+data_variable,data_score,mat_variable,mat_score
+Presence of data availability statement,1,Presence of materials availability statement,1
+Data reported to be available,1,Materials reported to be available,1
+Analysis software specified,1,Presence of materials URL,2
+Presence of data URL,2,Materials URL is functional,2
+Data URL is functional,2,Materials located at URL,2
+Data located at URL,2,Materials are downloadable,2
+Data are downloadable,2,Materials correspond to article,2
+Data correspond to article,2,Materials are complete,2
+Data are complete,2,Explanation of materials/corresponding scripts,5
+Codebook available with data,5,,
+Analysis scripts available with data,5,,

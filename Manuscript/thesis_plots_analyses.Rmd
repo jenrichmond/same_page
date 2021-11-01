@@ -1,0 +1,1709 @@
+---
+title: "Special Issue Markdown"
+output: html_document
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+library(janitor)
+library(here)
+library(ggeasy)
+library(apa)
+library(papaja)
+library(patchwork)
+library(afex)
+library(report)
+source("R_rainclouds copy.R")
+library(ggeasy)
+library(gghalves)
+library(ggsignif)
+set.seed(1)
+```
+
+# STUDY 1A
+
+## Read in data 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+options(scipen=999) # remove scientific notation
+
+data1A <- read_csv(here("Data_Files", "Scored Study 1A Master Dataset.csv"))
+
+```
+
+## First factor: Subfield
+```{r echo=FALSE}
+# Assign articles to a subfield group
+subfield_groups_A <- data1A %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# we can now delete the original subfield column
+subfield_groups_A <- subfield_groups_A %>%
+  select(-subfield)
+
+# Subfield summary
+
+subfield_summary_A <- subfield_groups_A %>%
+    count(subfield_groups) 
+
+subfield_summary_A
+```
+
+## Second factor: Time 
+
+```{r echo=FALSE}
+# Group the data in 3 six months: first half of 2014, second half of 2014 and first half of 2015
+
+dates_A <- subfield_groups_A %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "1-2014|2-2014|3-2014|4-2014|5-2014|6-2014") ~ "1st half 2014",
+    str_detect(article_id_number, "7-2014|8-2014|9-2014|10-2014|11-2014|12-2014") ~ "2nd half 2014",
+    str_detect(article_id_number, "1-2015|2-2015|3-2015|4-2015|5-2015") ~ "1st half 2015")) %>%
+  relocate(time_period, .after = article_id_number)
+
+# Timeperiod summary
+
+timeperiod_summary_A <- dates_A %>%
+  count(time_period)
+
+timeperiod_summary_A
+
+# Timeperiod and subfield summary
+
+timeperiod_subfield_summary_A <- dates_A %>%
+  tabyl(subfield_groups, time_period) 
+
+timeperiod_subfield_summary_A
+
+```
+
+
+```{r message=FALSE, include=FALSE}
+## Select relevant data 
+
+final1A <- dates_A %>%
+  select(article_id_number, subfield_groups, time_period, open_data_score, open_materials_score)
+
+# Setting subfield and timeperiod varaibles as factors 
+
+final1A$subfield_groups <- fct_relevel(final1A$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+final1A$time_period <- fct_relevel(final1A$time_period, c("1st half 2014", "2nd half 2014", "1st half 2015"))
+
+```
+
+## DATA ANOVA Analysis 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+data_aov_A <- aov_ez(
+  data = final1A, dv = "open_data_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+data_apa_A <- apa_print(data_aov_A)
+
+apa_table(data_apa_A$table,
+          caption = "Between-subjects ANOVA for Open Data Scores")
+
+```
+
+Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_A$full$time_period`. However, the main effect of subfield, `r data_apa_A$full$subfield_groups`, and the interaction between time period and subfield, `r data_apa_A$full$time_period_subfield_groups`, were not statistically significant. 
+
+## MATERIALS ANOVA Analysis 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+materials_aov_A <- aov_ez(
+  data = final1A, dv = "open_materials_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+materials_apa_A <- apa_print(materials_aov_A)
+
+apa_table(materials_apa_A$table,
+          caption = "Between-subjects ANOVA for Open Materials Scores")
+```
+
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_A$full$subfield_groups`, and a significant main effect of time period, `r materials_apa_A$full$time_period`. However the interaction between time period and subfield, `r materials_apa_A$full$time_period_subfield_groups`, was not statistically significant. 
+
+## PLOTS
+
+### DATA
+
+#### Subfield x Data Score
+
+```{r echo=FALSE}
+data_subfield_descriptives_A <- final1A %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfield_descriptives_A
+
+# Plot
+
+d1_A <- data_subfield_descriptives_A %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(a)')
+
+```
+
+#### Time Period x Data Score
+
+```{r echo=FALSE}
+data_timeperiod_descriptives_A <- final1A %>%
+  group_by(time_period) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_timeperiod_descriptives_A
+
+# Specifying which levels of the time variable the significance bars need to compare
+d2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
+
+# Plot
+
+d2_A <- data_timeperiod_descriptives_A %>%
+  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_A_comparisons, y_position = c(8, 11, 14), tip_length = 0.1, annotation = c("*", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+```
+
+#### Interaction between time and subfield - Data scores 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data_subfieldtime_descriptives_A <- final1A %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfieldtime_descriptives_A
+
+# Plot
+
+d3_A <- data_subfieldtime_descriptives_A  %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9))  +
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
+
+(d1_A | d2_A) / d3_A
+
+```
+
+### MATERIALS
+
+#### Subfield x Materials Score
+
+```{r echo=FALSE}
+materials_subfield_descriptives_A <- final1A %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfield_descriptives_A
+
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_A_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
+# Plot
+
+m1_A <- materials_subfield_descriptives_A %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+```
+
+#### Time Period x Materials Score
+
+```{r echo=FALSE}
+materials_timeperiod_descriptives_A <- final1A %>%
+  group_by(time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_timeperiod_descriptives_A
+
+# Specifying which levels of the time variable the significance bars need to compare
+m2_A_comparisons <- list( c("1st half 2014", "2nd half 2014"), c("2nd half 2014", "1st half 2015"), c("1st half 2014", "1st half 2015") )
+
+# Plot
+
+m2_A <- materials_timeperiod_descriptives_A %>%
+  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(b)') + 
+  geom_signif(comparisons = m2_A_comparisons, y_position = c(7, 9.5, 12), tip_length = 0.1, annotation = c("n.s.", "n.s.", "*"), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+```
+
+#### Interaction between time and subfield - Materials Score
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+materials_subfieldtime_descriptives_A <- final1A %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfieldtime_descriptives_A 
+
+# Plot
+
+m3_A <- materials_subfieldtime_descriptives_A  %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
+
+(m1_A | m2_A) / m3_A
+
+```
+
+## SUBFIELD T-TESTS
+
+### DATA 
+
+Subfield main effect for Open Data Scores was not significant, so no t-tests to run here
+
+### MATERIALS
+
+#### Developmental vs. Cognition
+
+```{r echo=FALSE}
+devcog_materials_A <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Cognition")) 
+
+ttest1_A <- t_test(open_materials_score ~ subfield_groups, devcog_materials_A, paired = FALSE)
+
+report(ttest1_A)
+```
+
+#### Developmental vs. Social
+
+```{r echo=FALSE}
+devsocial_materials_A <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest2_A <- t_test(open_materials_score ~ subfield_groups, devsocial_materials_A, paired = FALSE)
+
+report(ttest2_A)
+```
+
+#### Developmental vs. Other
+
+```{r echo=FALSE}
+devother_materials_A <- final1A %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest3_A <- t_test(open_materials_score ~ subfield_groups, devother_materials_A, paired = FALSE)
+
+report(ttest3_A)
+```
+
+## TIME T-TESTS
+
+### DATA
+
+#### First half 2014 vs. Second half 2014
+
+```{r echo=FALSE}
+first2014_second2014 <- final1A %>%
+  filter(time_period %in% c("1st half 2014", "2nd half 2014"))
+
+ttest4_A <- t_test(open_data_score ~ time_period, first2014_second2014, paired = FALSE)
+
+report(ttest4_A) 
+```
+
+#### Second half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+second2014_first2015 <- final1A %>%
+  filter(time_period %in% c("2nd half 2014", "1st half 2015"))
+
+ttest5_A <- t_test(open_data_score ~ time_period, second2014_first2015, paired = FALSE)
+
+report(ttest5_A)
+```
+
+### First half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+first2014_first2015 <- final1A %>%
+  filter(time_period %in% c("1st half 2014", "1st half 2015"))
+
+ttest6_A <- t_test(open_data_score ~ time_period, first2014_first2015, paired = FALSE)
+
+report(ttest6_A)
+```
+
+## MATERIALS
+
+### First half 2014 vs. Second half 2014
+
+```{r echo=FALSE}
+ttest7_A <- t_test(open_materials_score ~ time_period, first2014_second2014, paired = FALSE)
+
+report(ttest7_A)
+```
+
+### Second half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+ttest8_A <- t_test(open_materials_score ~ time_period, second2014_first2015, paired = FALSE)
+
+report(ttest8_A)
+```
+
+### First half 2014 vs. First half 2015
+
+```{r echo=FALSE}
+ttest9_A <- t_test(open_materials_score ~ time_period, first2014_first2015, paired = FALSE)
+
+report(ttest9_A)
+```
+
+# STUDY 1B CONFIRMATORY - 2019-20
+
+## Read in data
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+data1B <- read_csv(here("Data_Files", "Scored Study 1B Master Dataset.csv"))
+
+```
+
+## First factor: Subfield
+```{r echo=FALSE}
+# Assign articles to subfield groups
+subfield_groups_B <- data1B %>%
+  mutate(subfield_groups = case_when(subfield == "Behavioural Neuroscience" ~ "Other",
+                                     subfield == "Cognitive Neuroscience" ~ "Other",
+                                     subfield == "Health Psychology" ~ "Other",
+                                     subfield == "Perception" ~ "Other",
+                                     subfield == "Developmental Psychology" ~ "Development",
+                                     subfield == "Social Psychology" ~  "Social",
+                                     TRUE ~ as.character(subfield))) %>%
+  relocate(subfield_groups, .after = subfield)
+
+# Delete the original subfield column
+subfield_groups_B <- subfield_groups_B %>%
+  select(-subfield)
+
+# Subfield summary
+
+subfield_summary_B <- subfield_groups_B %>%
+    count(subfield_groups) 
+
+subfield_summary_B
+```
+
+## Second factor: Time 
+
+```{r echo=FALSE}
+dates_B <- subfield_groups_B %>%
+  mutate(time_period = case_when(
+    str_detect(article_id_number, "2019-30-7|2019-30-8|2019-30-9|2019-30-10|2019-30-11|2019-30-12") ~ "2nd half 2019",
+    str_detect(article_id_number, "2020-31-1|2020-31-2|2020-31-3|2020-31-4|2020-31-5|2020-31-6") ~ "1st half 2020",
+    str_detect(article_id_number, "2020-31-7|2020-31-8|2020-31-9|2020-31-10|2020-31-11|2020-31-12") ~ "2nd half 2020")) %>%
+  relocate(time_period, .after = article_id_number)
+
+# Timeperiod summary
+
+timeperiod_summary_B <- dates_B %>%
+  count(time_period)
+
+timeperiod_summary_B
+
+# Timeperiod and subfield summary
+
+timeperiod_subfield_summary_B <- dates_B %>%
+  tabyl(subfield_groups, time_period) 
+
+timeperiod_subfield_summary_B
+```
+
+
+```{r message=FALSE, include=FALSE}
+
+# Select only relevant data
+final1B <- dates_B %>%
+  select(article_id_number, subfield_groups, time_period, open_data_score, open_materials_score)
+
+# Set subfield and timeperiod variables as factors 
+
+final1B$subfield_groups <- fct_relevel(final1B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+final1B$time_period <- fct_relevel(final1B$time_period, c("2nd half 2019", "1st half 2020","2nd half 2020"))
+
+```
+
+## DATA ANOVA Analysis 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+data_aov_B <- aov_ez(
+  data = final1B, dv = "open_data_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+data_apa_B <- apa_print(data_aov_B)
+
+apa_table(data_apa_B$table,
+          caption = "Between-subjects ANOVA for Open Data Scores")
+
+```
+
+Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_B$full$time_period`, and a significant main effect of subfield, `r data_apa_B$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa_B$full$time_period_subfield_groups`, was not statistically significant. 
+
+
+## MATERIALS ANOVA Analysis 
+
+```{r echo=FALSE}
+
+materials_aov_B <- aov_ez(
+  data = final1B, dv = "open_materials_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+materials_apa_B <- apa_print(materials_aov_B)
+
+apa_table(materials_apa_B$table,
+          caption = "Between-subjects ANOVA for Open Materials Scores")
+```
+
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_B$full$subfield_groups`, however the main effect of time period, `r materials_apa_B$full$time_period`, and the interaction between time period and subfield, `r materials_apa_B$full$time_period_subfield_groups`, were not statistically significant. 
+
+
+## PLOTS
+
+### DATA
+
+#### Subfield x Data Score
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data_subfield_descriptives_B <- final1B %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfield_descriptives_B$subfield_groups <- fct_relevel(data_subfield_descriptives_B$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+
+data_subfield_descriptives_B
+
+# Specifying which levels of the subfield variable the significance bars need to compare
+d1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
+# Plot
+
+d1_B <- data_subfield_descriptives_B %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(a)') + 
+  geom_signif(comparisons = d1_B_comparisons, y_position = c(17, 19.5, 22.5), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+```
+
+#### Time Period x Data Score
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data_timeperiod_descriptives_B <- final1B %>%
+  group_by(time_period) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_timeperiod_descriptives_B
+
+# Specifying which levels of the time variable the significance bars need to compare
+d2_B_comparisons <- list( c("2nd half 2019", "1st half 2020"), c("1st half 2020", "2nd half 2020"), c("2nd half 2019", "2nd half 2020") )
+
+# Plot
+
+d2_B <- data_timeperiod_descriptives_B %>%
+  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_B_comparisons, y_position = c(18, 20, 22.5), tip_length = 0.1,  annotation = c("*", "n.s.", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+```
+
+#### Interaction between time and subfield - Data scores 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data_subfieldtime_descriptives_B <- final1B %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfieldtime_descriptives_B
+
+# Plot
+
+d3_B <- data_subfieldtime_descriptives_B  %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
+
+(d1_B | d2_B) / d3_B
+
+```
+
+### MATERIALS
+
+#### Subfield x Materials Score
+
+```{r echo=FALSE}
+materials_subfield_descriptives_B <- final1B %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfield_descriptives_B
+
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_B_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
+# Plot
+
+m1_B <- materials_subfield_descriptives_B %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_B_comparisons, y_position = c(11.5, 14.5, 17), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+```
+
+#### Time Period x Materials Score
+
+```{r echo=FALSE}
+materials_timeperiod_descriptives_B <- final1B %>%
+  group_by(time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_timeperiod_descriptives_B
+
+# Plot
+
+m2_B <- materials_timeperiod_descriptives_B %>%
+  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(b)')
+
+```
+
+#### Interaction between time and subfield - Materials Score
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+materials_subfieldtime_descriptives_B <- final1B %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfieldtime_descriptives_B
+
+# Plot
+
+m3_B <- materials_subfieldtime_descriptives_B  %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF9999", "#FF6666")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+   theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
+
+(m1_B | m2_B) / m3_B
+
+```
+
+## SUBFIELD T-TESTS
+
+### DATA
+
+#### Development vs. Cognition
+
+```{r echo=FALSE}
+devcog_data_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Cognition"))
+
+ttest1_B <- t_test(open_data_score ~ subfield_groups, devcog_data_B, paired = FALSE)
+
+report(ttest1_B)
+```
+
+#### Development vs. Social
+
+```{r echo=FALSE}
+devsocial_data_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest2_B <- t_test(open_data_score ~ subfield_groups, devsocial_data_B, paired = FALSE)
+
+report(ttest2_B)
+```
+
+#### Development vs. Other
+
+```{r echo=FALSE}
+devother_data_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest3_B <- t_test(open_data_score ~ subfield_groups, devother_data_B, paired = FALSE)
+
+report(ttest3_B)
+```
+
+### MATERIAL
+
+#### Developmental vs. Cognition
+
+```{r echo=FALSE}
+devcog_materials_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Cognition"))
+
+ttest4_B <- t_test(open_materials_score ~ subfield_groups, devcog_materials_B, paired = FALSE)
+
+report(ttest4_B)
+```
+
+#### Developmental vs. Social
+
+```{r echo=FALSE}
+devsocial_materials_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest5_B <- t_test(open_materials_score ~ subfield_groups, devsocial_materials_B, paired = FALSE)
+
+report(ttest5_B)
+```
+
+### Developmental vs. Other
+
+```{r echo=FALSE}
+devother_materials_B <- final1B %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest6_B <- t_test(open_materials_score ~ subfield_groups, devother_materials_B, paired = FALSE)
+
+report(ttest6_B)
+```
+
+## TIME T-TESTS
+
+### DATA
+
+#### Second half 2019 vs. First half 2020
+
+```{r echo=FALSE}
+second2019_first2020 <- final1B %>%
+  filter(time_period %in% c("2nd half 2019", "1st half 2020"))
+
+ttest7_B <- t_test(open_data_score ~ time_period, second2019_first2020, paired = FALSE)
+
+report(ttest7_B)
+```
+
+#### First half 2020 vs. Second half 2020
+
+```{r echo=FALSE}
+first2020_second2020 <- final1B %>%
+  filter(time_period %in% c("1st half 2020", "2nd half 2020"))
+
+ttest8_B <- t_test(open_data_score ~ time_period, first2020_second2020, paired = FALSE)
+
+report(ttest8_B)
+```
+
+#### Second half 2019 vs. Second half 2020
+
+```{r}
+second2019_second2020 <- final1B %>%
+  filter(time_period %in% c("2nd half 2019", "2nd half 2020"))
+
+ttest9_B <- t_test(open_data_score ~ time_period, second2019_second2020, paired = FALSE)
+
+report(ttest9_B)
+```
+
+### MATERIALS
+
+There time period main effect for Open Materials Scores was not statistically significant, so no t-tests to run here
+
+# STUDY 1B CONFIRMATORY - 2014-15 vs. 2019-20
+
+## Merge 1A and 1B data into one dataframe
+```{r include=FALSE}
+
+alldata <- rbind(final1A, final1B)
+```
+
+## Condense to two levels of time
+
+```{r echo=FALSE}
+dates_AB <- alldata %>%
+  mutate(time_period = case_when(time_period %in% c("1st half 2014", "2nd half 2014", "1st half 2015") ~ "2014-15", time_period %in% c("2nd half 2019", "1st half 2020", "2nd half 2020") ~ "2019-20"))
+
+# Set subfield and timeperiod variables as factors 
+
+dates_AB$subfield_groups <- fct_relevel(dates_AB$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+dates_AB$time_period <- fct_relevel(dates_AB$time_period, c("2014-15", "2019-20"))
+
+# Subfield group and Timeperiod summary
+
+subfield_summary_AB <- dates_AB %>%
+    count(subfield_groups) 
+
+subfield_summary_AB
+
+timeperiod_summary_AB <- dates_AB %>%
+  count(time_period)
+
+timeperiod_summary_AB
+
+````
+
+## DATA ANOVA Analysis
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+data_aov_AB <- aov_ez(
+  data = dates_AB, dv = "open_data_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+data_apa_AB <- apa_print(data_aov_AB)
+
+apa_table(data_apa_AB$table,
+          caption = "Between-subjects ANOVA for Open Data Scores")
+```
+
+Our two-way between-subjects ANOVA generated a significant main effect of time period, `r data_apa_AB$full$time_period`, and a significant main effect of subfield, `r data_apa_AB$full$subfield_groups`. However, the interaction between time period and subfield, `r data_apa_AB$full$time_period_subfield_groups`, was not statistically significant. 
+
+## MATERIALS ANOVA Analysis 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+materials_aov_AB <- aov_ez(
+  data = dates_AB, dv = "open_materials_score", 
+  id = "article_id_number", 
+  between = c("time_period", "subfield_groups"), 
+  type = "2")
+
+materials_apa_AB <- apa_print(materials_aov_AB)
+
+apa_table(materials_apa_AB$table,
+          caption = "Between-subjects ANOVA for Open Materials Scores")
+```
+
+Our two-way between-subjects ANOVA generated a significant main effect of subfield, `r materials_apa_AB$full$subfield_groups`, and time period, `r materials_apa_AB$full$time_period`. However, the interaction between time period and subfield, `r materials_apa_AB$full$time_period_subfield_groups`, was not statistically significant. 
+
+## PLOTS
+
+### DATA
+
+#### Subfield x Data Score
+
+```{r echo=FALSE}
+data_subfield_descriptives_AB <- dates_AB %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfield_descriptives_AB$subfield_groups <- fct_relevel(data_subfield_descriptives_AB$subfield_groups, c("Development", "Social", "Cognition", "Other"))
+
+data_subfield_descriptives_AB
+
+# Specifying which levels of the subfield variable the significance bars need to compare
+d1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
+# Plot
+
+d1_AB <- data_subfield_descriptives_AB %>%
+  ggplot(aes(x = reorder(subfield_groups, mean_data_score), y = mean_data_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_x_discrete(limits=c("Development", "Social", "Cognition", "Other")) +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(a)') + 
+  geom_signif(comparisons = d1_AB_comparisons, y_position = c(10, 14, 18), tip_length = 0.1, annotation = c("n.s.", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+```
+
+#### Time Period x Data Score
+
+```{r echo=FALSE}
+data_timeperiod_descriptives_AB <- dates_AB %>%
+  group_by(time_period) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_timeperiod_descriptives_AB
+
+# Specifying which levels of the time variable the significance bars need to compare
+d2_AB_comparisons <- list( c("2014-15", "2019-20"))
+
+# Plot
+
+d2_AB <- data_timeperiod_descriptives_AB %>%
+  ggplot(aes(x = time_period, y = mean_data_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Data Score") + # change the x and y labels
+  ggtitle('(b)') +
+  geom_signif(comparisons = d2_AB_comparisons, y_position = 17, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+```
+
+#### Interaction between time and subfield - Data scores 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data_subfieldtime_descriptives_AB <- dates_AB %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_data_score = mean(open_data_score, na.rm = TRUE),
+            SD = sd(open_data_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+data_subfieldtime_descriptives_AB 
+
+# Plot
+
+d3_AB <- data_subfieldtime_descriptives_AB  %>%
+  ggplot(aes(x = subfield_groups, y = mean_data_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_data_score - stderr, ymax = mean_data_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Data Score") + # change the x and y labels
+  theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
+
+(d1_AB | d2_AB) / d3_AB
+
+```
+
+### MATERIALS
+
+#### Subfield x Materials Score
+
+```{r echo=FALSE}
+materials_subfield_descriptives_AB <- dates_AB %>%
+  group_by(subfield_groups) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfield_descriptives_AB
+
+# Specifying which levels of the subfield variable the significance bars need to compare
+m1_AB_comparisons <- list(c("Development", "Social"), c("Development", "Cognition"),  c("Development", "Other") )
+
+# Plot
+
+m1_AB <- materials_subfield_descriptives_AB %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = subfield_groups)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(a)') + 
+  geom_signif(comparisons = m1_AB_comparisons, y_position = c(7.5, 10.5, 13.5), tip_length = 0.1, annotation = c("*", "*", "n.s."), textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+```
+
+#### Time Period x Materials Score
+
+```{r echo=FALSE}
+materials_timeperiod_descriptives_AB <- dates_AB %>%
+  group_by(time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_timeperiod_descriptives_AB
+
+# Specifying which levels of the time variable the significance bars need to compare
+m2_AB_comparisons <- list( c("2014-15", "2019-20"))
+
+# Plot
+
+m2_AB <- materials_timeperiod_descriptives_AB %>%
+  ggplot(aes(x = time_period, y = mean_materials_score, fill = time_period)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2) + # narrower bars
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_remove_legend() +
+  easy_all_text_size(size = 8) + # change the size of the text
+  easy_labs(x = "Time Period", y = "Mean Open Materials Score") + # change the x and y labels
+  ggtitle('(b)') +
+  geom_signif(comparisons = m2_AB_comparisons, y_position = 11, tip_length = 0.1,  annotation = "*", textsize = 3.5, vjust = -0.3) # adding significance bars
+
+
+```
+
+#### Interaction between time and subfield - Materials Score
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+materials_subfieldtime_descriptives_AB <- dates_AB %>%
+  group_by(subfield_groups, time_period) %>%
+  summarise(mean_materials_score = mean(open_materials_score, na.rm = TRUE),
+            SD = sd(open_materials_score, na.rm = TRUE),
+            N = n(),
+            stderr = SD/sqrt(N))
+
+materials_subfieldtime_descriptives_AB
+
+# Plot
+
+m3_AB <- materials_subfieldtime_descriptives_AB  %>%
+  ggplot(aes(x = subfield_groups, y = mean_materials_score, fill = time_period)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = mean_materials_score - stderr, ymax = mean_materials_score + stderr), # specifying what the standard error is
+                size=.3, # thinner lines
+                width=.2, # narrower bars
+                position=position_dodge(.9)) + 
+    theme_classic() +
+    scale_fill_manual(values=c("#FFCCCC","#FF6666")) +
+  scale_y_continuous(limits = c(0,19), expand = c(0,0)) + # getting the bars to start at the bottom of the graph
+  easy_all_text_size(size = 9) + # change the size of the text
+  easy_labs(x = "Subfield", y = "Mean Open Materials Score") + # change the x and y labels
+    theme(legend.title = element_blank()) + # remove legend title
+  ggtitle('(c)')
+
+(m1_AB | m2_AB) / m3_AB
+
+```
+
+## SUBFIELD T-TESTS
+
+### DATA
+
+#### Development vs. Cognition
+
+```{r echo=FALSE}
+devcog_data_AB <- dates_AB %>%
+  filter(subfield_groups %in% c("Development", "Cognition"))
+
+ttest1_AB <- t_test(open_data_score ~ subfield_groups, devcog_data_AB, paired = FALSE)
+
+report(ttest1_AB)
+```
+
+#### Development vs. Social
+
+```{r echo=FALSE}
+devsocial_data_AB <- dates_AB %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest2_AB <- t_test(open_data_score ~ subfield_groups, devsocial_data_AB, paired = FALSE)
+
+report(ttest2_AB)
+```
+
+#### Development vs. Other
+
+```{r echo=FALSE}
+devother_data_AB <- dates_AB %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest3_AB <- t_test(open_data_score ~ subfield_groups, devother_data_AB, paired = FALSE)
+
+report(ttest3_AB)
+```
+
+### MATERIAL
+
+#### Developmental vs. Cognition
+
+```{r echo=FALSE}
+devcog_materials_AB <- dates_AB %>%
+  filter(subfield_groups %in% c("Development", "Cognition"))
+
+ttest4_AB <- t_test(open_materials_score ~ subfield_groups, devcog_materials_AB, paired = FALSE)
+
+report(ttest4_AB)
+```
+
+#### Developmental vs. Social
+
+```{r echo=FALSE}
+devsocial_materials_AB <- dates_AB %>%
+  filter(subfield_groups %in% c("Development", "Social"))
+
+ttest5_AB <- t_test(open_materials_score ~ subfield_groups, devsocial_materials_AB, paired = FALSE)
+
+report(ttest5_AB)
+```
+
+#### Developmental vs. Other
+
+```{r echo=FALSE}
+devother_materials_AB <- dates_AB %>%
+  filter(subfield_groups %in% c("Development", "Other"))
+
+ttest6_AB <- t_test(open_materials_score ~ subfield_groups, devother_materials_AB, paired = FALSE)
+
+report(ttest6_AB)
+```
+
+## TIME T-TESTS
+
+### DATA
+
+```{r echo=FALSE}
+
+ttest7_AB <- t_test(open_data_score ~ time_period, dates_AB, paired = FALSE)
+
+report(ttest7_AB) 
+```
+
+### MATERIALS
+
+```{r echo=FALSE}
+
+ttest8_AB <- t_test(open_materials_score ~ time_period, dates_AB, paired = FALSE)
+
+report(ttest8_AB) 
+```
+# STUDY 1B EXPLORATORY
+
+## RAINCLOUD PLOTS
+
+### 1A Data Plot
+
+```{r echo=FALSE}
+
+# Note: We tried using the raincloud package function, but it only allowed us to compare two subfields at a time
+
+rainplot_data1 <- final1A %>%  
+  ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
+  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
+    theme_classic() +
+    theme(axis.title.y = element_text(size=9)) +
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
+  labs(x = element_blank(), y = 'Open Data Score') +
+  easy_remove_legend() + 
+  ggtitle('(a)')
+
+rainplot_data1
+
+```
+
+### 1A Materials Plot
+
+```{r echo=FALSE}
+
+rainplot_materials1 <- final1A %>%  
+  ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
+  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
+    theme_classic() +
+    theme(axis.title.y = element_text(size=9)) +
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_x_discrete(labels=c("Development" = "Development\n(n = 65)","Social" = "Social\n(n = 91)","Cognition" = "Cognition\n(n = 91)","Other" = "Other\n(n = 75)")) +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend() + 
+  ggtitle('(b)')
+
+rainplot_materials1
+
+```
+
+### 1B Data Plot
+
+```{r echo=FALSE}
+
+
+rainplot_data2 <- final1B %>%  
+  ggplot(aes(x = subfield_groups, y = open_data_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
+  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
+    theme_classic() +
+    theme(axis.title.y = element_text(size=9)) +
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_x_discrete(labels=c("Development" = "Development\n(n = 34)","Social" = "Social\n(n = 57)","Cognition" = "Cognition\n(n = 61)","Other" = "Other\n(n = 41)")) +
+  labs(x = element_blank(), y = 'Open Data Score') +
+  easy_remove_legend() + 
+  ggtitle('(c)')
+
+rainplot_data2
+```
+
+### 1B Materials Plot
+
+```{r echo=FALSE}
+
+rainplot_materials2 <- final1B %>%  
+  ggplot(aes(x = subfield_groups, y = open_materials_score, fill = subfield_groups)) +
+  geom_flat_violin(position = position_nudge(x = 0.025, y = 0),adjust = 0.5, alpha = 0.5) +
+  geom_half_point(alpha = .3, size = 1, range_scale = 1, position = position_nudge(x = -0.4, y = 0)) +
+    theme_classic() +
+  theme(axis.title.y = element_text(size=9)) +
+  scale_fill_manual(values=c("#EC407A","#42A5F5", "#FFCC33", "#00CC99")) +
+  scale_x_discrete(labels=c("Development" = "Development\n(n = 34)","Social" = "Social\n(n = 57)","Cognition" = "Cognition\n(n = 61)","Other" = "Other\n(n = 41)")) +
+  labs(x = element_blank(), y = 'Open Materials Score') +
+  easy_remove_legend() + 
+  ggtitle('(d)')
+
+rainplot_materials2
+```
+
+### Figure 
+
+```{r echo=FALSE}
+(rainplot_data1 | rainplot_materials1) / 
+(rainplot_data2 | rainplot_materials2)
+```
+
+## OPEN SCIENCE BADGES
+
+### Open Data Badge Plot
+
+#### Select only relevant 1A variables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+A_select_data <- subfield_groups_A  %>%
+  select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are, are_the_data_located_at_the_working_page, does_the_data_correspond_to_what_is_reported_in_the_article, software, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables, are_analysis_scripts_included_with_the_data, are_the_data_complete)
+
+# Percentage of articles that received a badge
+A_data_badge <- A_select_data %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data)
+
+```
+
+#### Summary tables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+# reportedly available
+A_reportedly_available_data <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, data_statement_indicates_that_data_are) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable data
+A_locatable_data <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, are_the_data_located_at_the_working_page) %>%
+  mutate("Percent" = Yes/(Yes)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct data 
+A_correct_data <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, does_the_data_correspond_to_what_is_reported_in_the_article) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Data")
+
+# complete data
+A_complete_data <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, are_the_data_complete) %>%
+  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `No, not all of the data are available` + `Unclear whether or not all of the data are available`)*100) %>%
+  select(Number = `Yes, all of the data appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Data")
+
+# software specified
+A_software_specified <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, software) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Software Specified")
+
+# codebook available 
+A_data_codebook_available <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, is_a_codebook_included_with_the_data_or_other_means_of_understanding_the_variables) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Codebook Available")
+
+# scripts available 
+A_data_scripts_available <- A_select_data %>%
+  filter(did_the_article_receive_a_badge_for_open_data == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_data, are_analysis_scripts_included_with_the_data) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+#### Bind all statistics together
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+A_data_stats <- rbind(A_reportedly_available_data, A_locatable_data, A_correct_data, A_complete_data, A_software_specified, A_data_codebook_available, A_data_scripts_available)
+
+A_data_stats <- A_data_stats %>%
+  mutate("Time" = "2014-15") 
+```
+
+#### Select only relevant 1B variables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+B_select_data <- subfield_groups_B  %>%
+  select(article_id_number, subfield_groups, data_badge, data_statement_indicates, data_locatable, data_correspond, software, data_codebook, data_scripts, data_complete)
+
+# Percentage of articles that received a badge
+B_data_badge <- B_select_data %>%
+  tabyl(data_badge)
+
+```
+
+#### Summary tables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+# reportedly available
+B_reportedly_available_data <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_statement_indicates) %>%
+  mutate("Percent" = Available/(Available + Unavailable)*100) %>%
+  select(Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable data
+B_locatable_data <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_locatable) %>%
+  mutate("Percent" = Yes/(Yes + No + `Requires permission`)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct data 
+B_correct_data <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_correspond) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Data")
+
+# complete data
+B_complete_data <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_complete) %>%
+  mutate("Percent" = `Yes, all of the data appear to be available`/(`Yes, all of the data appear to be available` + `Yes, but only some of the data are available` + `Unclear whether or not all the data are available`)*100) %>%
+  select(Number = `Yes, all of the data appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Data")
+
+# software specified
+B_software_specified <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, software) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Software Specified")
+
+# codebook available 
+B_data_codebook_available <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_codebook) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Codebook Available")
+
+# scripts available 
+B_data_scripts_available <- B_select_data %>%
+  filter(data_badge == "Yes") %>%
+  tabyl(data_badge, data_scripts) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available")
+```
+
+#### Bind all statistics together
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+B_data_stats <- rbind(B_reportedly_available_data, B_locatable_data, B_correct_data, B_complete_data, B_software_specified, B_data_codebook_available, B_data_scripts_available)
+
+B_data_stats <- B_data_stats %>%
+  mutate("Time" = "2019-20") 
+
+```
+
+#### Combine 1A and 1B stats together
+```{r include=FALSE}
+
+all_data_stats <- rbind(A_data_stats, B_data_stats)
+```
+
+#### Plot combined data
+```{r echo=FALSE}
+
+combined_data_plot <- ggplot(all_data_stats, aes(y=Percent,  group = Time, colour = Time)) +
+  coord_cartesian(ylim=c(0,100)) +
+  geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
+  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
+    scale_color_manual(values=c("#EC407A","#42A5F5"),
+                     labels=c("2014-15 (n = 46)",
+                              "2019-20 (n = 133)")) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=9, margin = margin(t = 8, r = 0, b = 0, l = 0))) +
+  easy_labs(y = "Percentage of Articles That Received an Open Data Badge", x = "Data Sharing Criteria") +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Data","Complete Data", "Codebook Available", "Software Specified", "Scripts Available")) +
+    theme(legend.position=c(0.2, .3)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 9)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  theme(axis.line= element_line(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+
+combined_data_plot
+
+```
+
+### Open Materials Badge Plot
+
+#### Select only relevant 1A variables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+A_select_materials <- subfield_groups_A %>%
+  select(article_id_number, subfield_groups, did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are, are_the_materials_located_at_the_working_page, do_the_materials_correspond_to_what_is_reported_in_the_article, are_the_materials_complete, are_analysis_scripts_included_with_the_materials)
+
+# Percentage of articles that received a badge
+A_materials_badge <- A_select_materials %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials)
+```
+
+#### Summary tables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+# reportedly available
+A_reportedly_available_materials <- A_select_materials %>%
+  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials, statement_indicates_that_materials_are) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable materials
+A_locatable_materials <- A_select_materials %>%
+  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials, are_the_materials_located_at_the_working_page) %>%
+  mutate("Percent" = Yes/(Yes)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct materials
+A_correct_materials <- A_select_materials %>%
+  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials, do_the_materials_correspond_to_what_is_reported_in_the_article) %>%
+  mutate("Percent" = Yes/(Yes)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Materials")
+
+# complete materials
+A_complete_materials <- A_select_materials %>%
+  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials, are_the_materials_complete) %>%
+  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available`)*100) %>%
+  select(Number = `Yes, all of the materials appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Materials")
+
+# scripts available 
+A_material_scripts_available <- A_select_materials %>%
+  filter(did_the_article_receive_a_badge_for_open_materials == "Yes") %>%
+  tabyl(did_the_article_receive_a_badge_for_open_materials, are_analysis_scripts_included_with_the_materials) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
+```
+
+#### Bind all statistics
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+A_material_stats <- rbind(A_reportedly_available_materials, A_locatable_materials, A_correct_materials, A_complete_materials, A_material_scripts_available)
+
+A_material_stats <- A_material_stats %>%
+  mutate("Time" = "2014-15") 
+
+```
+
+
+#### Select only relevant 1Bvariables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+B_select_materials <- subfield_groups_B %>%
+  select(article_id_number, subfield_groups, materials_badge, materials_statement_indicates, materials_locatable, materials_correspond, materials_complete, materials_explanation)
+
+# Percentage of articles that received a badge
+B_materials_badge <- B_select_materials %>%
+  tabyl(materials_badge)
+```
+
+#### Summary tables
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+# reportedly available
+B_reportedly_available_materials <- B_select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_statement_indicates) %>%
+  mutate("Percent" = Available/(Available)*100) %>%
+  select(Number = Available, Percent) %>%
+  mutate(Real_Stage = "Reportedly Available")
+
+# locatable materials
+B_locatable_materials <- B_select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_locatable) %>%
+  mutate("Percent" = Yes/(Yes + `Requires permission` + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Actually Locatable")
+
+# correct materials
+B_correct_materials <- B_select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_correspond) %>%
+  mutate("Percent" = Yes/(Yes + Unclear)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Correct Materials")
+
+# complete materials
+B_complete_materials <- B_select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_complete) %>%
+  mutate("Percent" = `Yes, all of the materials appear to be available`/(`Yes, all of the materials appear to be available` + `Yes, but only some of the materials are available` + `No, not all of the materials are available` + `Unclear whether or not all the materials are available`)*100) %>%
+  select(Number = `Yes, all of the materials appear to be available`, Percent) %>%
+  mutate(Real_Stage = "Complete Materials")
+
+# scripts available 
+B_material_scripts_available <- B_select_materials %>%
+  filter(materials_badge == "Yes") %>%
+  tabyl(materials_badge, materials_explanation) %>%
+  mutate("Percent" = Yes/(Yes + No)*100) %>%
+  select(Number = Yes, Percent) %>%
+  mutate(Real_Stage = "Scripts Available/\nExplanation Provided")
+```
+
+#### Bind all statistics
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+B_material_stats <- rbind(B_reportedly_available_materials, B_locatable_materials, B_correct_materials, B_complete_materials, B_material_scripts_available)
+
+B_material_stats <- B_material_stats %>%
+  mutate("Time" = "2019-20") 
+```
+
+#### Combine 1A and 1B stats together
+```{r include=FALSE}
+all_material_stats <- rbind(A_material_stats, B_material_stats)
+```
+
+#### Plot combined data 
+```{r echo=FALSE}
+combined_materials_plot <- ggplot(all_material_stats, aes(y=Percent,  group = Time, colour = Time)) +
+  coord_cartesian(ylim=c(0,100)) +
+  geom_line(aes(colour=Time, x=Real_Stage), size = 1) +
+  geom_point(aes(x=Real_Stage), size=3, position = position_dodge(width=0)) +
+    scale_color_manual(values=c("#EC407A","#42A5F5"),
+                     labels=c("2014-15 (n = 38)",
+                              "2019-20 (n = 107)")) +
+  theme(axis.text.y = element_text(size=9),
+        axis.title.y = element_text(size=9)) +
+  theme(axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=9, margin = margin(t = 2, r = 0, b = 0, l = 0))) +
+  easy_labs(y = "Percentage of Articles That Received an Open Materials Badge", x = "Material Sharing Criteria") +
+  scale_x_discrete(limits=c("Reportedly Available","Actually Locatable","Correct Materials","Complete Materials", "Scripts Available/\nExplanation Provided")) +
+    theme(legend.position=c(.2, .3)) +
+  theme(legend.title=element_blank()) +
+  theme(legend.text = element_text(size = 9)) +
+  theme(legend.key.size = unit(1, "cm")) +
+  theme(axis.line= element_line(), 
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank()) 
+
+combined_materials_plot
+
+```
