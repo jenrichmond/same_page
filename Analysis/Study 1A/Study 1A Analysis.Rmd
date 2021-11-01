@@ -1,8 +1,8 @@
 ---
 title: "Study 1A Analysis Output"
 output:
-  html_document: default
   word_document: default
+  html_document: default
 ---
 
 

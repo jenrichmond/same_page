@@ -1,6 +1,8 @@
 ---
 title: "Study 1B Exploratory Analysis - Raincloud Plots"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}

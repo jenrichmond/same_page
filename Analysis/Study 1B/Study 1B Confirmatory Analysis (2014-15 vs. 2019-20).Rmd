@@ -1,8 +1,8 @@
 ---
 title: "Study 1B Confirmatory Analysis (2014-15 vs. 2019-20) Output"
 output:
-  html_document: default
   word_document: default
+  html_document: default
 ---
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
