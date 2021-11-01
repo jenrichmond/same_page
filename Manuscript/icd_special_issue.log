@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.27)  31 OCT 2021 20:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.27)  1 NOV 2021 20:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -322,7 +322,13 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
-) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/xcolor/svgnam.def
+File: svgnam.def 2016/05/11 v2.12 Predefined colors according to SVG 1.1 (UK)
+) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/xcolor/x11nam.def
+File: x11nam.def 2016/05/11 v2.12 Predefined colors according to Unix/X11 (UK)
+)) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
 (/Users/jenny/Library/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
 Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
@@ -434,7 +440,9 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 86.
 )
 \Hy@SectionHShift=\skip75
-) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/was/upgreek.sty
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 50.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/was/upgreek.sty
 Package: upgreek 2003/02/12 v2.0 (WaS)
 Package upgreek Info: Using Euler Roman for upright Greek on input line 31.
 \symugrf@m=\mathgroup9
@@ -622,24 +630,24 @@ File: l3backend-pdftex.def 2021-10-18 L3 backend support: PDF output (pdfTeX)
 ) (./icd_special_issue.aux)
 \openout1 = `icd_special_issue.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 180.
-LaTeX Font Info:    ... okay on input line 180.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 185.
+LaTeX Font Info:    ... okay on input line 185.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -696,14 +704,14 @@ Package caption Info: longtable package is loaded.
 Package: ltcaption 2020/05/30 v1.4b longtable captions (AR)
 )
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 180.
+LaTeX Info: Redefining \microtypecontext on input line 185.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 180.
+LaTeX Info: Redefining \showhyphens on input line 185.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -711,7 +719,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-Package hyperref Info: Link coloring OFF on input line 180.
+Package hyperref Info: Link coloring ON on input line 185.
 (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
@@ -723,70 +731,28 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count325
 )
-LaTeX Info: Redefining \ref on input line 180.
-LaTeX Info: Redefining \pageref on input line 180.
-LaTeX Info: Redefining \nameref on input line 180.
+LaTeX Info: Redefining \ref on input line 185.
+LaTeX Info: Redefining \pageref on input line 185.
+LaTeX Info: Redefining \nameref on input line 185.
 (./icd_special_issue.out) (./icd_special_issue.out)
 \@outlinefile=\write5
 \openout5 = `icd_special_issue.out'.
 
 LaTeX Font Info:    Trying to load font information for T1+lmss on input line 1
-82.
+87.
 (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-82.
-(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
-File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-82.
-(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
-File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-182.
-(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
-File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-182.
-(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
-File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 182.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 182.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 182.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 182
-.
-(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 182
-.
-(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-eur.cfg
-File: mt-eur.cfg 2006/07/31 v1.1 microtype config. file: AMS Euler Roman (RS)
 ) [1{/Users/jenny/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ] [2] [3]
 </Users/jenny/Desktop/Desktop - N591/git/same_page/Manuscript/Figure 1.png, id=
-71, 420.57124pt x 619.31375pt>
+72, 420.57124pt x 619.31375pt>
 File: /Users/jenny/Desktop/Desktop - N591/git/same_page/Manuscript/Figure 1.png
  Graphic file (type png)
 <use /Users/jenny/Desktop/Desktop - N591/git/same_page/Manuscript/Figure 1.png>
 
 Package pdftex.def Info: /Users/jenny/Desktop/Desktop - N591/git/same_page/Manu
-script/Figure 1.png  used on input line 195.
+script/Figure 1.png  used on input line 200.
 (pdftex.def)             Requested size: 201.63446pt x 296.91757pt.
 
 Underfull \vbox (badness 4752) has occurred while \output is active []
@@ -795,65 +761,112 @@ Underfull \vbox (badness 4752) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [5 </Users/jenny/Desktop/Desktop - N591/git/same_page/Manuscript/Figure 1.png>]
-[6] [7]
-<data_scoring.png, id=103, 405.01312pt x 324.21124pt>
+[6]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[7]
+<data_scoring.png, id=105, 405.01312pt x 324.21124pt>
 File: data_scoring.png Graphic file (type png)
 <use data_scoring.png>
-Package pdftex.def Info: data_scoring.png  used on input line 244.
+Package pdftex.def Info: data_scoring.png  used on input line 250.
 (pdftex.def)             Requested size: 162.50294pt x 130.0829pt.
-<mat_scoring.png, id=104, 443.15562pt x 281.55188pt>
+<mat_scoring.png, id=106, 443.15562pt x 281.55188pt>
 File: mat_scoring.png Graphic file (type png)
 <use mat_scoring.png>
-Package pdftex.def Info: mat_scoring.png  used on input line 244.
+Package pdftex.def Info: mat_scoring.png  used on input line 250.
 (pdftex.def)             Requested size: 204.74663pt x 130.08252pt.
-[8 <./data_scoring.png> <./mat_scoring.png>] [9]
+[8 <./data_scoring.png> <./mat_scoring.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[9]
 Underfull \vbox (badness 4752) has occurred while \output is active []
 
-[10] [11]
-<icd_special_issue_files/figure-latex/unnamed-chunk-3-1.pdf, id=137, 433.62pt x
+[10]
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 2
+86.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
+File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 2
+86.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
+286.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
+286.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 286.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 286.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 286.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 286
+.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 286
+.
+(/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+) (/Users/jenny/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-eur.cfg
+File: mt-eur.cfg 2006/07/31 v1.1 microtype config. file: AMS Euler Roman (RS)
+) [11]
+<icd_special_issue_files/figure-latex/unnamed-chunk-3-1.pdf, id=138, 433.62pt x
  289.08pt>
 File: icd_special_issue_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (
 type pdf)
 <use icd_special_issue_files/figure-latex/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: icd_special_issue_files/figure-latex/unnamed-chunk-3-1
-.pdf  used on input line 283.
+.pdf  used on input line 290.
 (pdftex.def)             Requested size: 433.63878pt x 289.09251pt.
-[12 <./icd_special_issue_files/figure-latex/unnamed-chunk-3-1.pdf>]
-<icd_special_issue_files/figure-latex/unnamed-chunk-4-1.pdf, id=149, 433.62pt x
+<icd_special_issue_files/figure-latex/unnamed-chunk-4-1.pdf, id=139, 433.62pt x
  289.08pt>
 File: icd_special_issue_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (
 type pdf)
 <use icd_special_issue_files/figure-latex/unnamed-chunk-4-1.pdf>
 Package pdftex.def Info: icd_special_issue_files/figure-latex/unnamed-chunk-4-1
-.pdf  used on input line 291.
+.pdf  used on input line 298.
 (pdftex.def)             Requested size: 433.63878pt x 289.09251pt.
-
-Underfull \vbox (badness 2486) has occurred while \output is active []
+[12 <./icd_special_issue_files/figure-latex/unnamed-chunk-3-1.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [13 <./icd_special_issue_files/figure-latex/unnamed-chunk-4-1.pdf>]
-<icd_special_issue_files/figure-latex/unnamed-chunk-5-1.pdf, id=162, 433.62pt x
+<icd_special_issue_files/figure-latex/unnamed-chunk-5-1.pdf, id=163, 433.62pt x
  289.08pt>
 File: icd_special_issue_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (
 type pdf)
 <use icd_special_issue_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: icd_special_issue_files/figure-latex/unnamed-chunk-5-1
-.pdf  used on input line 301.
+.pdf  used on input line 308.
 (pdftex.def)             Requested size: 433.63878pt x 289.09251pt.
 [14 <./icd_special_issue_files/figure-latex/unnamed-chunk-5-1.pdf>]
-<icd_special_issue_files/figure-latex/rain-1.pdf, id=173, 433.62pt x 289.08pt>
+<icd_special_issue_files/figure-latex/rain-1.pdf, id=174, 433.62pt x 289.08pt>
 File: icd_special_issue_files/figure-latex/rain-1.pdf Graphic file (type pdf)
 <use icd_special_issue_files/figure-latex/rain-1.pdf>
 Package pdftex.def Info: icd_special_issue_files/figure-latex/rain-1.pdf  used 
-on input line 309.
+on input line 316.
 (pdftex.def)             Requested size: 433.63878pt x 289.09251pt.
 [15 <./icd_special_issue_files/figure-latex/rain-1.pdf>]
-<icd_special_issue_files/figure-latex/unnamed-chunk-6-1.pdf, id=189, 433.62pt x
+<icd_special_issue_files/figure-latex/unnamed-chunk-6-1.pdf, id=190, 433.62pt x
  289.08pt>
 File: icd_special_issue_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (
 type pdf)
 <use icd_special_issue_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: icd_special_issue_files/figure-latex/unnamed-chunk-6-1
-.pdf  used on input line 317.
+.pdf  used on input line 324.
 (pdftex.def)             Requested size: 433.63878pt x 289.09251pt.
 [16 <./icd_special_issue_files/figure-latex/unnamed-chunk-6-1.pdf>] [17]
 Underfull \vbox (badness 4752) has occurred while \output is active []
@@ -868,25 +881,25 @@ Underfull \vbox (badness 4752) has occurred while \output is active []
 name{ref-cicchetti1994guidelines}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.412 
+l.419 
       pdfTeX warning (ext4): destination with the same identifier (name{ref-fle
 iss1981balanced}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.412 
+l.419 
       ] [24] [25] [26] [27] [28] AED endfloat: Processing end Figures and Table
 s (./icd_special_issue.aux)
 Package rerunfilecheck Info: File `icd_special_issue.out' has not changed.
 (rerunfilecheck)             Checksum: F64183CCC610B6A99E6244996EAE167E;1223.
  ) 
 Here is how much of TeX's memory you used:
- 16982 strings out of 480539
- 265482 string characters out of 5901975
- 627069 words of memory out of 5000000
- 34054 multiletter control sequences out of 15000+600000
- 466078 words of font info for 132 fonts, out of 8000000 for 9000
+ 17065 strings out of 480539
+ 267059 string characters out of 5901975
+ 647306 words of memory out of 5000000
+ 34131 multiletter control sequences out of 15000+600000
+ 463079 words of font info for 130 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,11n,80p,2256b,481s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 72i,11n,80p,2256b,490s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/jenny/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/U
 sers/jenny/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/
 jenny/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/jenny/Lib
@@ -899,10 +912,10 @@ ype1/public/lm/lmr8.pfb></Users/jenny/Library/TinyTeX/texmf-dist/fonts/type1/pu
 blic/lm/lmri12.pfb></Users/jenny/Library/TinyTeX/texmf-dist/fonts/type1/public/
 lm/lmss8.pfb></Users/jenny/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lms
 y10.pfb>
-Output written on icd_special_issue.pdf (28 pages, 861469 bytes).
+Output written on icd_special_issue.pdf (28 pages, 860389 bytes).
 PDF statistics:
- 428 PDF objects out of 1000 (max. 8388607)
+ 427 PDF objects out of 1000 (max. 8388607)
  359 compressed objects within 4 object streams
  114 named destinations out of 1000 (max. 500000)
- 30857 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 28809 words of extra memory for PDF output out of 29859 (max. 10000000)
 
