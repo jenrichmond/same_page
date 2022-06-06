@@ -1,0 +1,57 @@
+---
+title: "supplementary materials"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include = FALSE}
+library(tidyverse)
+library(here)
+library(janitor)
+library(papaja)
+library(gt)
+```
+
+
+```{r include = FALSE}
+data1A <- read_csv(here("Data_Files", "Scored Study 1A Master Dataset.csv"))
+
+data1B <- read_csv(here("Data_Files", "Scored Study 1B Master Dataset.csv"))
+```
+
+```{r include = FALSE}
+
+df1A <- data1A %>% tabyl(subfield) %>% 
+  arrange(-n) %>%
+  adorn_pct_formatting() %>%
+  rename(Subfield = subfield, Count = n, Percent = percent) 
+
+
+df1B <- data1B %>% tabyl(subfield) %>% 
+  arrange(-n) %>%
+  adorn_pct_formatting() %>%
+  rename(Subfield = subfield, Count = n, Percent = percent) 
+
+
+```
+
+
+Table 1: Number of 2014-2015 Psychological Science articles coded in each subfield
+
+```{r echo = FALSE}
+gt(df1A)
+  
+```
+
+Table 2: Number of 2019-2020 Psychological Science articles coded in each subfield
+
+```{r echo = FALSE}
+gt(df1B)
+  
+```
+

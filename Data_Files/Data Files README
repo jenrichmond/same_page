@@ -7,3 +7,4 @@ Study 1B Master Dataset.csv: contains the raw data we collected from the Study 1
 Scored Study 1A Master Dataset.csv: contains the same data as "Study 1A Master Dataset.csv", however each article has been assigned to a subfield, and has received an Open Data and Open Materials Scores. As such, three extra variables appear in the data set: "subfield", "open_data_score", and "open_materials_score."
 
 Scored Study 1B Master Dataset.csv: contains the same data as "Study 1B Master Dataset.csv", however each article has been assigned to a subfield, and has received an Open Data and Open Materials Scores. As such, three extra variables appear in the data set: "subfield", "open_data_score", and "open_materials_score."
+
