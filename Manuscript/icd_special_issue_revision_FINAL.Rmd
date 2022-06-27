@@ -1,7 +1,20 @@
 ---
 title             : "Are we all on the same page? Subfield differences in open science practices in psychology"
 shorttitle        : "Subfield differences in open science practices"
- 
+author: 
+  - name          : "Christina Rochios"
+    affiliation   : "1"
+    corresponding : no    # Define only one corresponding author
+    email         : "c.rochios@unsw.edu.au"
+  - name          : "Jenny L. Richmond"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "School of Psychology, University of New South Wales, Sydney 2052, AUSTRALIA"
+    email         : "j.richmond@unsw.edu.au"
+affiliation:
+  - id            : "1"
+    institution   : "School of Psychology, University of New South Wales"
+
 authornote: |
   Availability Statement: All data, coding and analysis scripts are publicly available via the [Open Science Framework repository]( https://osf.io/z8b7j/?view_only=b97cd4c4f6d645bc9e8870d97b6f3da4). The preregistration can be accessed [here](https://osf.io/gqv9n/?view_only=b97cd4c4f6d645bc9e8870d97b6f3da4). 
   Conflict of Interest Disclosure: There were no conflicts of interest in relation to the authorship or publication of this article. 
@@ -31,7 +44,7 @@ draft             : no
 
 documentclass     : "apa6"
 classoption       : "man"
-output            : papaja::apa6_pdf
+output            : papaja::apa6_docx
 urlcolor          : blue
 ---
 
@@ -113,7 +126,7 @@ After all articles had been coded, we imported the data from Qualtrics into the 
 
 *Table 1*: Open data scoring (left) and open materials scoring (right) criteria 
 
-```{r, out.width="49%", out.height="20%", fig.cap = "", fig.show='hold', fig.align='center'}
+```{r, out.width="49%", out.height="20%", fig.cap = "", fig.show='hold'}
 
 knitr::include_graphics(c("data_scoring.png", "mat_scoring.png"))
 
